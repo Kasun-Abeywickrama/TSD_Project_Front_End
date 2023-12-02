@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:jwt_decode/jwt_decode.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tsd_project/home_page.dart';
+import 'package:tsd_project/question_page.dart';
 import 'package:tsd_project/register.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class login_user extends StatefulWidget {
   @override
@@ -17,6 +17,9 @@ class _login_userState extends State<login_user> {
 
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+
+  //Creating a Flutter secure storage
+  final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
 
   @override
   Widget build(BuildContext context) {
@@ -196,34 +199,29 @@ class _login_userState extends State<login_user> {
         final String? token = responseData['token'];
 
         if (token != null) {
-          final SharedPreferences prefs = await SharedPreferences.getInstance();
+          //Setting the token in secure storage
+          secureStorage.write(key: 'token', value: token);
 
-          prefs.setString('token', token);
-
+          //Decoding the token data
           final Map<String, dynamic> decodedToken = Jwt.parseJwt(token);
 
+          //Storing username and user_id in variables
           final String username = decodedToken['username'];
+          final int userId = decodedToken['user_id'];
+
           print('Username: $username');
-          prefs.setString('username', username);
+          print('User_id: $userId');
 
-          final SharedPreferences prefs1 =
-              await SharedPreferences.getInstance();
-          final String? username1 = prefs1.getString('username');
+          //Setting the username and user_id in secure storage
+          secureStorage.write(key: 'username', value: username);
+          secureStorage.write(key: 'user_id', value: userId.toString());
 
-          if (username1 != null) {
-            // Use the username for your logic
-            print('Username in OtherFile: $username1');
-          } else {
-            print('Username not found in SharedPreferences');
-          }
+          //Navigate to the Home page
+          Navigator.push(context,
+              (MaterialPageRoute(builder: (context) => QuestionPage())));
+        } else {
+          print('Token is null');
         }
-        //Navigate to the login screen
-        Navigator.push(
-            context,
-            (MaterialPageRoute(
-                builder: (context) => MyHomePage(
-                      title: 'Depression Detector',
-                    ))));
       } catch (e) {
         print('Unable to convert from JSON: $e');
       }
