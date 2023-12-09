@@ -35,9 +35,6 @@ dependencies:
   intl: ^0.17.0
   flutter:
     sdk: flutter
-  google_fonts: ^6.1.0
-  google_nav_bar: ^5.0.6
-  #  http: ^0.13.6
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -71,17 +68,8 @@ flutter:
   assets:
      - assets/images/splash_image.jpg
      - assets/images/register_image.jpg
-     - assets/images/profile_img.png
-     - assets/images/Happy.png
-     - assets/images/Calm.png
-     - assets/images/Relax.png
-     - assets/images/Angry.png
-     - assets/images/Sad.png
-     - assets/images/Quiz.png
-     - assets/images/sample.png
-
-
-
+     
+  
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
