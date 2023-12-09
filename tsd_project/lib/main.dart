@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tsd_project/quiz_receiver.dart';
 import 'package:tsd_project/splash_screen.dart';
 
 void main() {
@@ -10,8 +11,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Splash(),
-    );
+    return MaterialApp(home: Quiz_Receiver());
   }
 }

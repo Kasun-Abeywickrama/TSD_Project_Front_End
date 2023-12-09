@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:tsd_project/quiz_page.dart';
 
 class ResultCalculation extends StatelessWidget {
-  final Map<int, double> answerPointsMap;
+  final List<QuizResultModel> answerPoints;
 
   final int noOfQuestions;
 
   final int noOfDays;
 
-  ResultCalculation(this.answerPointsMap, this.noOfDays, this.noOfQuestions);
+  ResultCalculation(this.answerPoints, this.noOfDays, this.noOfQuestions);
 
   //Function created to get the current date
   DateTime getCurrentDate() {
@@ -22,16 +23,17 @@ class ResultCalculation extends StatelessWidget {
   }
 
   Map<String, dynamic> resultMapGenerator() {
-    double testScore;
+    double testScore = 0.0;
     String depressionLevel;
-    String finalResult;
+    String conclusion;
 
     //Calculating testScore
     //Adding all the values of the answerPoints map together and dividing the sum by the no.of questions
-    testScore = double.parse(
-        ((answerPointsMap.values.fold(0.0, (prev, element) => prev + element)) /
-                noOfQuestions)
-            .toStringAsFixed(2));
+    for (int i = 0; i < answerPoints.length; i++) {
+      testScore = testScore + answerPoints[i].mark;
+    }
+
+    testScore = testScore / noOfQuestions;
 
     //Determining the depression level
     if (testScore <= 19.00) {
@@ -51,23 +53,23 @@ class ResultCalculation extends StatelessWidget {
       String nextTestDate =
           DateFormat('yyyy-MM-dd').format(addDaysToCurrentDate(14 - noOfDays));
 
-      finalResult =
+      conclusion =
           'You had these effects for only $noOfDays days. Therefore we cannot give you a conclusion about your state. Please take this test again on $nextTestDate, then we will give you a conclusion about your state';
     } else {
       if (depressionLevel == 'Minimal') {
-        finalResult =
+        conclusion =
             'You have very few/none depression symptoms. There is nothing to worry about';
       } else if (depressionLevel == 'Mild') {
-        finalResult =
+        conclusion =
             'Some mild symptoms are present, which might be distressing, but manageble';
       } else if (depressionLevel == 'Moderate') {
-        finalResult =
+        conclusion =
             'Moderate Symptoms are present. Please seek professional help before this affects your general life';
       } else if (depressionLevel == 'Moderately Severe') {
-        finalResult =
+        conclusion =
             'Depression is already impacted daily life. Please seek to professional help immediately';
       } else {
-        finalResult =
+        conclusion =
             'Symptoms are severe, professional care is needed urgently';
       }
     }
@@ -76,7 +78,7 @@ class ResultCalculation extends StatelessWidget {
       'test_score': testScore,
       'depression_level': depressionLevel,
       'no_of_days': noOfDays,
-      'final_result': finalResult,
+      'conclusion': conclusion,
     };
 
     return resultMap;

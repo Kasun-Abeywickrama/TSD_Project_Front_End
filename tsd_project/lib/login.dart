@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:jwt_decode/jwt_decode.dart';
-import 'package:tsd_project/question_page.dart';
+import 'package:tsd_project/quiz_receiver.dart';
 import 'package:tsd_project/register.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -24,150 +24,190 @@ class _login_userState extends State<login_user> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: SingleChildScrollView(
+        body: Container(
+      decoration: BoxDecoration(color: Color(0xE51FC0E7)),
+      child: Center(
+        child: SingleChildScrollView(
             child: Center(
-      child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            //Adding an login image
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Image.asset(
-                'assets/images/register_image.jpg',
-                height: 150,
-              ),
-            ),
-
-            //Adding login text
-            const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text(
-                'LOGIN',
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 30,
-                    color: Color.fromARGB(255, 48, 17, 134)),
-              ),
-            ),
-
-            //Adding the Form
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Form(
-                  key: _logformKey,
-                  child: Column(children: [
-                    //username
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextFormField(
-                        controller: usernameController,
-                        keyboardType: TextInputType.name,
-                        decoration: const InputDecoration(
-                          labelText: 'Username',
-                          labelStyle: TextStyle(
-                            color: Colors.black,
-                          ),
-                          hintText: 'Enter Username',
-                          prefixIcon: Icon(Icons.person),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.blue, width: 2),
-                          ),
-                          errorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.red, width: 2),
-                          ),
-                        ),
-                        onChanged: (String value) {},
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Please enter a valid username';
-                          } else {
-                            return null;
-                          }
-                        },
-                      ),
-                    ),
-
-                    //password
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextFormField(
-                        controller: passwordController,
-                        keyboardType: TextInputType.visiblePassword,
-                        decoration: const InputDecoration(
-                          labelText: 'Password',
-                          labelStyle: TextStyle(
-                            color: Colors.black,
-                          ),
-                          hintText: 'Enter Password',
-                          prefixIcon: Icon(Icons.password),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.blue, width: 2),
-                          ),
-                          errorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.red, width: 2),
-                          ),
-                        ),
-                        onChanged: (String value) {},
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Please enter a valid password';
-                          } else {
-                            return null;
-                          }
-                        },
-                      ),
-                    ),
-
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: MaterialButton(
-                        minWidth: double.infinity,
-                        onPressed: () async {
-                          if (_logformKey.currentState!.validate()) {
-                            await submitForm();
-                          }
-                        },
-                        color: const Color.fromARGB(255, 48, 17, 134),
-                        textColor: Colors.white,
-                        child: const Text('Log In'),
-                      ),
-                    )
-                  ])),
-            ),
-
-            //Create the text or button to navigate to the register form right here.
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 0, 0, 16),
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const Text('Not Yet Registered ? '),
-                  InkWell(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => RegisterUser()));
-                    },
-                    child: const Text('Register',
-                        style: TextStyle(
-                          color: Colors.blue,
-                          decoration: TextDecoration.underline,
-                        )),
+                  //Adding login text
+                  const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text(
+                      'SIGN IN',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 30,
+                          color: Colors.black),
+                    ),
                   ),
-                ],
-              ),
-            )
-          ]),
-    )));
+
+                  //Adding the Form
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Form(
+                        key: _logformKey,
+                        child: Column(children: [
+                          //username
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              constraints:
+                                  const BoxConstraints(maxWidth: 450.0),
+                              child: TextFormField(
+                                controller: usernameController,
+                                keyboardType: TextInputType.name,
+                                decoration: InputDecoration(
+                                  labelStyle: const TextStyle(
+                                    color: Colors.black,
+                                  ),
+                                  hintText: 'Username',
+                                  prefixIcon: Icon(Icons.person),
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(30.0),
+                                    borderSide:
+                                        const BorderSide(color: Colors.white),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(30.0),
+                                    borderSide:
+                                        const BorderSide(color: Colors.white),
+                                  ),
+                                  errorBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(30.0),
+                                    borderSide: const BorderSide(
+                                        color: Colors.red, width: 2),
+                                  ),
+                                  focusedErrorBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(30.0),
+                                    borderSide: const BorderSide(
+                                        color: Colors.red, width: 2),
+                                  ),
+                                ),
+                                onChanged: (String value) {},
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return 'Please enter a valid username';
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                              ),
+                            ),
+                          ),
+
+                          //password
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              constraints: const BoxConstraints(
+                                maxWidth: 450.0,
+                              ),
+                              child: TextFormField(
+                                controller: passwordController,
+                                keyboardType: TextInputType.visiblePassword,
+                                decoration: InputDecoration(
+                                  hintText: 'Password',
+                                  prefixIcon: const Icon(Icons.password),
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(30.0),
+                                    borderSide:
+                                        const BorderSide(color: Colors.white),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(30.0),
+                                    borderSide:
+                                        const BorderSide(color: Colors.white),
+                                  ),
+                                  errorBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(30.0),
+                                    borderSide: const BorderSide(
+                                        color: Colors.red, width: 2),
+                                  ),
+                                  focusedErrorBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(30.0),
+                                    borderSide: const BorderSide(
+                                        color: Colors.red, width: 2),
+                                  ),
+                                ),
+                                onChanged: (String value) {},
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return 'Please enter a valid password';
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                              ),
+                            ),
+                          ),
+
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              height: 45,
+                              constraints: const BoxConstraints(
+                                maxWidth: 450.0,
+                              ),
+                              child: MaterialButton(
+                                color: Color(0xFF0039FF),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(35)),
+                                minWidth: double.infinity,
+                                onPressed: () async {
+                                  if (_logformKey.currentState!.validate()) {
+                                    await submitForm();
+                                  }
+                                },
+                                textColor: Colors.white,
+                                child: const Text('Sign In'),
+                              ),
+                            ),
+                          )
+                        ])),
+                  ),
+
+                  //Create the text or button to navigate to the register form right here.
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        const Text(
+                          'Not Yet Registered ? ',
+                          style: TextStyle(
+                              color: Colors.black, fontWeight: FontWeight.w500),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => RegisterUser()));
+                          },
+                          child: const Text('Sign Up',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500,
+                                  decoration: TextDecoration.underline,
+                                  decorationColor: Colors.white)),
+                        ),
+                      ],
+                    ),
+                  )
+                ]),
+          ),
+        )),
+      ),
+    ));
   }
 
   //Creating the function to send data and receive response
@@ -207,18 +247,19 @@ class _login_userState extends State<login_user> {
 
           //Storing username and user_id in variables
           final String username = decodedToken['username'];
-          final int userId = decodedToken['user_id'];
+          final int authUserId = decodedToken['auth_user_id'];
 
           print('Username: $username');
-          print('User_id: $userId');
+          print('Auth_user_id: $authUserId');
 
           //Setting the username and user_id in secure storage
           secureStorage.write(key: 'username', value: username);
-          secureStorage.write(key: 'user_id', value: userId.toString());
+          secureStorage.write(
+              key: 'auth_user_id', value: authUserId.toString());
 
           //Navigate to the Home page
           Navigator.push(context,
-              (MaterialPageRoute(builder: (context) => QuestionPage())));
+              (MaterialPageRoute(builder: (context) => Quiz_Receiver())));
         } else {
           print('Token is null');
         }
