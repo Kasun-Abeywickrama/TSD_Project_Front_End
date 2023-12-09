@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:tsd_project/login.dart';
+import 'package:tsd_project/screen/login.dart';
 
 //Steps that are used to create the splash screen of the mobile application
 //Create an stateless widget

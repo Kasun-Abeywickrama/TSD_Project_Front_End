@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tsd_project/quiz_receiver.dart';
-import 'package:tsd_project/splash_screen.dart';
+import 'package:tsd_project/screen/splash_screen.dart';
 
 void main() {
   runApp(const MyApp());

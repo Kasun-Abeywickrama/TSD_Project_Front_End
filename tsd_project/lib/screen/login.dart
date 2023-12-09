@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:tsd_project/login.dart';
+import 'package:jwt_decode/jwt_decode.dart';
+import 'package:tsd_project/quiz_receiver.dart';
+import 'package:tsd_project/screen/register.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-//Creating the user registration page for the mobile application
-
-//Created the stateless widget and then converted it into a stateful widget.
-class RegisterUser extends StatefulWidget {
+class login_user extends StatefulWidget {
   @override
-  State<RegisterUser> createState() => _RegisterUserState();
+  State<login_user> createState() => _login_userState();
 }
 
-class _RegisterUserState extends State<RegisterUser> {
+class _login_userState extends State<login_user> {
   //Declaring the form key to validate the fields
-  final GlobalKey<FormState> _regformKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _logformKey = GlobalKey<FormState>();
 
-  //Creating text editing controllers for the form fields
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController retypePasswordController =
-      TextEditingController();
+
+  //Creating a Flutter secure storage
+  final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
 
   @override
   Widget build(BuildContext context) {
@@ -30,16 +30,16 @@ class _RegisterUserState extends State<RegisterUser> {
         child: SingleChildScrollView(
             child: Center(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(0, 2, 0, 16),
+            padding: const EdgeInsets.fromLTRB(0, 0, 0, 16),
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  //Adding register text
+                  //Adding login text
                   const Padding(
                     padding: EdgeInsets.all(8.0),
                     child: Text(
-                      'SIGN UP',
+                      'SIGN IN',
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 30,
@@ -47,39 +47,43 @@ class _RegisterUserState extends State<RegisterUser> {
                     ),
                   ),
 
-                  //Creating the register form
+                  //Adding the Form
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Form(
-                        key: _regformKey,
+                        key: _logformKey,
                         child: Column(children: [
-                          //Username
+                          //username
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Container(
-                              constraints: const BoxConstraints(
-                                maxWidth: 450.0,
-                              ),
+                              constraints:
+                                  const BoxConstraints(maxWidth: 450.0),
                               child: TextFormField(
                                 controller: usernameController,
                                 keyboardType: TextInputType.name,
                                 decoration: InputDecoration(
+                                  labelStyle: const TextStyle(
+                                    color: Colors.black,
+                                  ),
                                   hintText: 'Username',
                                   prefixIcon: Icon(Icons.person),
                                   filled: true,
                                   fillColor: Colors.white,
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(30.0),
-                                    borderSide: BorderSide(color: Colors.white),
+                                    borderSide:
+                                        const BorderSide(color: Colors.white),
                                   ),
                                   focusedBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(30.0),
-                                    borderSide: BorderSide(color: Colors.white),
+                                    borderSide:
+                                        const BorderSide(color: Colors.white),
                                   ),
                                   errorBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(30.0),
-                                    borderSide:
-                                        BorderSide(color: Colors.red, width: 2),
+                                    borderSide: const BorderSide(
+                                        color: Colors.red, width: 2),
                                   ),
                                   focusedErrorBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(30.0),
@@ -90,9 +94,7 @@ class _RegisterUserState extends State<RegisterUser> {
                                 onChanged: (String value) {},
                                 validator: (value) {
                                   if (value!.isEmpty) {
-                                    return "Please enter a username";
-                                  } else if (RegExp(r'\d').hasMatch(value)) {
-                                    return 'Username cannot contain numbers';
+                                    return 'Please enter a valid username';
                                   } else {
                                     return null;
                                   }
@@ -101,7 +103,7 @@ class _RegisterUserState extends State<RegisterUser> {
                             ),
                           ),
 
-                          //Password
+                          //password
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Container(
@@ -112,22 +114,24 @@ class _RegisterUserState extends State<RegisterUser> {
                                 controller: passwordController,
                                 keyboardType: TextInputType.visiblePassword,
                                 decoration: InputDecoration(
-                                  hintText: 'New Password',
-                                  prefixIcon: Icon(Icons.password),
+                                  hintText: 'Password',
+                                  prefixIcon: const Icon(Icons.password),
                                   filled: true,
                                   fillColor: Colors.white,
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(30.0),
-                                    borderSide: BorderSide(color: Colors.white),
+                                    borderSide:
+                                        const BorderSide(color: Colors.white),
                                   ),
                                   focusedBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(30.0),
-                                    borderSide: BorderSide(color: Colors.white),
+                                    borderSide:
+                                        const BorderSide(color: Colors.white),
                                   ),
                                   errorBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(30.0),
-                                    borderSide:
-                                        BorderSide(color: Colors.red, width: 2),
+                                    borderSide: const BorderSide(
+                                        color: Colors.red, width: 2),
                                   ),
                                   focusedErrorBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(30.0),
@@ -138,9 +142,7 @@ class _RegisterUserState extends State<RegisterUser> {
                                 onChanged: (String value) {},
                                 validator: (value) {
                                   if (value!.isEmpty) {
-                                    return "Please enter a password";
-                                  } else if (value.length < 8) {
-                                    return "Password must contain at least 8 digits";
+                                    return 'Please enter a valid password';
                                   } else {
                                     return null;
                                   }
@@ -149,53 +151,6 @@ class _RegisterUserState extends State<RegisterUser> {
                             ),
                           ),
 
-                          //Retype Password
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              constraints: const BoxConstraints(
-                                maxWidth: 450.0,
-                              ),
-                              child: TextFormField(
-                                controller: retypePasswordController,
-                                keyboardType: TextInputType.visiblePassword,
-                                decoration: InputDecoration(
-                                  hintText: 'Retype Password',
-                                  prefixIcon: Icon(Icons.password),
-                                  filled: true,
-                                  fillColor: Colors.white,
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(30.0),
-                                    borderSide: BorderSide(color: Colors.white),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(30.0),
-                                    borderSide: BorderSide(color: Colors.white),
-                                  ),
-                                  errorBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(30.0),
-                                    borderSide:
-                                        BorderSide(color: Colors.red, width: 2),
-                                  ),
-                                  focusedErrorBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(30.0),
-                                    borderSide: const BorderSide(
-                                        color: Colors.red, width: 2),
-                                  ),
-                                ),
-                                onChanged: (String value) {},
-                                validator: (value) {
-                                  if (passwordController.text != value) {
-                                    return 'Please correctly retype the password';
-                                  } else {
-                                    return null;
-                                  }
-                                },
-                              ),
-                            ),
-                          ),
-
-                          //Submit button
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Container(
@@ -208,26 +163,26 @@ class _RegisterUserState extends State<RegisterUser> {
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(35)),
                                 minWidth: double.infinity,
-                                onPressed: () {
-                                  if (_regformKey.currentState!.validate()) {
-                                    submitForm();
+                                onPressed: () async {
+                                  if (_logformKey.currentState!.validate()) {
+                                    await submitForm();
                                   }
                                 },
                                 textColor: Colors.white,
-                                child: const Text('Register'),
+                                child: const Text('Sign In'),
                               ),
                             ),
                           )
                         ])),
                   ),
 
-                  //Create the link or button to naviagate to the login form right here.
+                  //Create the text or button to navigate to the register form right here.
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
                       children: [
                         const Text(
-                          'Already Registered ? ',
+                          'Not Yet Registered ? ',
                           style: TextStyle(
                               color: Colors.black, fontWeight: FontWeight.w500),
                         ),
@@ -236,9 +191,9 @@ class _RegisterUserState extends State<RegisterUser> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => login_user()));
+                                    builder: (context) => RegisterUser()));
                           },
-                          child: const Text('Sign In',
+                          child: const Text('Sign Up',
                               style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w500,
@@ -255,75 +210,93 @@ class _RegisterUserState extends State<RegisterUser> {
     ));
   }
 
-  //Function of submitting the data
-  void submitForm() async {
-    //Obtaining the URL to a variable
-    final String apiUrl = 'http://10.0.2.2:8000/register/';
+  //Creating the function to send data and receive response
+  Future<void> submitForm() async {
+    //Getting the url to a variable
+    final String apiUrl = 'http://10.0.2.2:8000/login/';
 
-    //Mapping the relavant data
-    Map<String, dynamic> auth_user = {
+    //Map the data into a dictionary
+    Map<String, dynamic> formData = {
       'username': usernameController.text,
       'password': passwordController.text,
     };
 
-    Map<String, dynamic> user = {};
-
-    Map<String, dynamic> formData = {
-      'auth_user': auth_user,
-      'user': user,
-    };
-
-    //Converting the url to uri
+    //Converting url to uri
     Uri uri = Uri.parse(apiUrl);
 
-    //Sending the data to the backend
+    //Sending the data to the backend as json and getting the response
     final response = await http.post(
       uri,
       headers: {'Content-Type': 'application/json'},
       body: json.encode(formData),
     );
 
-    //Returning an output according to the status code
-    if (response.statusCode == 201) {
-      print('Data submitted successfully');
-      //Displaying a successfull login dialog box and navigating to login screen through it
-      loginSuccessDialog();
-      //If status code is not 201
-    } else {
+    //Displaying a return statement according to the response
+    if (response.statusCode == 200) {
       try {
-        //Decode the response received from the server
-        final Map<String, dynamic> errorData = json.decode(response.body);
-        //If the error is username uniqueness
-        if (errorData['errors'].containsKey('username')) {
-          if (errorData['errors']['username']
-              .contains('A user with that username already exists.')) {
-            print('Username already exists');
-            usernameExistsDialog();
-          } else {
-            print('$errorData');
-          }
+        final Map<String, dynamic> responseData = json.decode(response.body);
+
+        final String? token = responseData['token'];
+
+        if (token != null) {
+          //Setting the token in secure storage
+          secureStorage.write(key: 'token', value: token);
+
+          //Decoding the token data
+          final Map<String, dynamic> decodedToken = Jwt.parseJwt(token);
+
+          //Storing username and user_id in variables
+          final String username = decodedToken['username'];
+          final int authUserId = decodedToken['auth_user_id'];
+
+          print('Username: $username');
+          print('Auth_user_id: $authUserId');
+
+          //Setting the username and user_id in secure storage
+          secureStorage.write(key: 'username', value: username);
+          secureStorage.write(
+              key: 'auth_user_id', value: authUserId.toString());
+
+          //Navigate to the Home page
+          Navigator.push(context,
+              (MaterialPageRoute(builder: (context) => Quiz_Receiver())));
+        } else {
+          print('Token is null');
         }
-        //If it is not
-        else {
-          print('$errorData');
-        }
+      } catch (e) {
+        print('Unable to convert from JSON: $e');
+      }
+    }
+    //If the authentication fails
+    else if (response.statusCode == 401) {
+      print('Invalid credentials');
+      invalidCredentialsDialog();
+    }
+    //If there is an other type of error
+    else {
+      try {
+        //Mapping the response data
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        //Printing the response data
+        print('$responseData');
       } catch (e) {
         print('Error converting to JSON : $e');
       }
     }
   }
 
-  //Creating the alert dialog box to display username already exists
-  void usernameExistsDialog() {
+  //Creating the alert dialog box to display invalid credentials
+  void invalidCredentialsDialog() {
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
-                side: const BorderSide(color: Color(0xFF0039FF), width: 5)),
-            title: const Text('Username Already Exists'),
-            content: const Text('Please enter an another username'),
+                side: const BorderSide(
+                    color: Color.fromARGB(255, 48, 17, 134), width: 4)),
+            title: const Text('Invalid Credentials'),
+            content: const Text('Please enter the valid username and password'),
             actions: [
               TextButton(
                   onPressed: () {
@@ -331,38 +304,7 @@ class _RegisterUserState extends State<RegisterUser> {
                   },
                   child: const Text(
                     'OK',
-                    style: TextStyle(
-                      color: Color(0xFF0039FF),
-                    ),
-                  ))
-            ],
-          );
-        });
-  }
-
-  //Creating the dialog box to display the successfull login and navigating to login screen
-  void loginSuccessDialog() {
-    showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-                side: const BorderSide(color: Color(0xFF0039FF), width: 5)),
-            title: const Text('Successfully Registered'),
-            content: const Text('Please Log In'),
-            actions: [
-              TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        (MaterialPageRoute(
-                            builder: (context) => login_user())));
-                  },
-                  child: const Text(
-                    'Login',
-                    style: TextStyle(color: Color(0xFF0039FF)),
+                    style: TextStyle(color: Color.fromARGB(255, 48, 17, 134)),
                   ))
             ],
           );

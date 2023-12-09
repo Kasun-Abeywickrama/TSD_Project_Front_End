@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:tsd_project/quiz_page.dart';
+import 'package:tsd_project/screen/quiz_page.dart';
 
 //The model that is used to store the quiz
 class QuizModel {
@@ -115,13 +115,10 @@ class _Quiz_ReceiverState extends State<Quiz_Receiver> {
               color: const Color(0xE51FC0E7),
               child: const Center(
                 child: SizedBox(
-                  height: 12.0,
+                    height: 12.0,
                     width: 200.0,
-                    child: LinearProgressIndicator(color: Color.fromRGBO(
-                        0,
-                        57,
-                        255,
-                        0.8))),
+                    child: LinearProgressIndicator(
+                        color: Color.fromRGBO(0, 57, 255, 0.8))),
               ),
             );
           } else if (snapshot.hasError) {

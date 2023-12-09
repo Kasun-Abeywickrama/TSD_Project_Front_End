@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:tsd_project/home_page.dart';
-import 'package:tsd_project/login.dart';
+import 'package:tsd_project/screen/home_page.dart';
+import 'package:tsd_project/screen/login.dart';
 import 'dart:math';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:tsd_project/quiz_receiver.dart';
 import 'package:tsd_project/result_calculation.dart';
-import 'package:tsd_project/result_page.dart';
+import 'package:tsd_project/screen/result_page.dart';
 
 //The model that stores quiz results of the user
 class QuizResultModel {
