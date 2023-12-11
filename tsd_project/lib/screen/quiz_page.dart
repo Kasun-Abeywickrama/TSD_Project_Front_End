@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tsd_project/screen/home_page.dart';
+import 'package:tsd_project/screen/home_screen.dart';
 import 'package:tsd_project/screen/login.dart';
 import 'dart:math';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -684,9 +684,7 @@ class _QuizPageState extends State<QuizPage> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const MyHomePage(
-                                  title: 'abc',
-                                )));
+                            builder: (context) => const HomeScreen()));
                   },
                   child: const Text(
                     'Yes',
