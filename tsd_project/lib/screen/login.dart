@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:jwt_decode/jwt_decode.dart';
-
-import 'package:tsd_project/screen/quiz_page.dart';
+import 'package:tsd_project/quiz_receiver.dart';
 import 'package:tsd_project/screen/register.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -259,8 +258,8 @@ class _login_userState extends State<login_user> {
               key: 'auth_user_id', value: authUserId.toString());
 
           //Navigate to the Home page
-          Navigator.push(
-              context, (MaterialPageRoute(builder: (context) => QuizPage())));
+          Navigator.push(context,
+              (MaterialPageRoute(builder: (context) => Quiz_Receiver())));
         } else {
           print('Token is null');
         }
