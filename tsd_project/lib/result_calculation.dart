@@ -3,13 +3,13 @@ import 'package:intl/intl.dart';
 import 'package:tsd_project/screen/quiz_page.dart';
 
 class ResultCalculation extends StatelessWidget {
-  final List<QuizResultModel> qandAData;
+  final List<QuizResultModel> answerPoints;
 
   final int noOfQuestions;
 
   final int noOfDays;
 
-  ResultCalculation(this.qandAData, this.noOfDays, this.noOfQuestions);
+  ResultCalculation(this.answerPoints, this.noOfDays, this.noOfQuestions);
 
   //Function created to get the current date
   DateTime getCurrentDate() {
@@ -23,30 +23,29 @@ class ResultCalculation extends StatelessWidget {
   }
 
   Map<String, dynamic> resultMapGenerator() {
-    double score = 0.0;
-    String dpLevel;
+    double testScore = 0.0;
+    String depressionLevel;
     String conclusion;
-    int counselor_or_not;
 
     //Calculating testScore
     //Adding all the values of the answerPoints map together and dividing the sum by the no.of questions
-    for (int i = 0; i < qandAData.length; i++) {
-      score = score + qandAData[i].mark;
+    for (int i = 0; i < answerPoints.length; i++) {
+      testScore = testScore + answerPoints[i].mark;
     }
 
-    score = score / noOfQuestions;
+    testScore = testScore / noOfQuestions;
 
     //Determining the depression level
-    if (score <= 19.00) {
-      dpLevel = 'Minimal';
-    } else if (score <= 39.0) {
-      dpLevel = 'Mild';
-    } else if (score <= 59.0) {
-      dpLevel = 'Moderate';
-    } else if (score <= 79.0) {
-      dpLevel = 'Moderately Severe';
+    if (testScore <= 19.00) {
+      depressionLevel = 'Minimal';
+    } else if (testScore <= 39.0) {
+      depressionLevel = 'Mild';
+    } else if (testScore <= 59.0) {
+      depressionLevel = 'Moderate';
+    } else if (testScore <= 79.0) {
+      depressionLevel = 'Moderately Severe';
     } else {
-      dpLevel = 'Severe';
+      depressionLevel = 'Severe';
     }
 
     //Determining the final result
@@ -54,43 +53,35 @@ class ResultCalculation extends StatelessWidget {
       String nextTestDate =
           DateFormat('yyyy-MM-dd').format(addDaysToCurrentDate(14 - noOfDays));
 
-      counselor_or_not = 0;
-
       conclusion =
           'You had these effects for only $noOfDays days. Therefore we cannot give you a conclusion about your state. Please take this test again on $nextTestDate, then we will give you a conclusion about your state';
     } else {
-      if (dpLevel == 'Minimal') {
-        counselor_or_not = 0;
+      if (depressionLevel == 'Minimal') {
         conclusion =
             'You have very few/none depression symptoms. There is nothing to worry about';
-      } else if (dpLevel == 'Mild') {
-        counselor_or_not = 0;
+      } else if (depressionLevel == 'Mild') {
         conclusion =
             'Some mild symptoms are present, which might be distressing, but manageble';
-      } else if (dpLevel == 'Moderate') {
-        counselor_or_not = 1;
+      } else if (depressionLevel == 'Moderate') {
         conclusion =
             'Moderate Symptoms are present. Please seek professional help before this affects your general life';
-      } else if (dpLevel == 'Moderately Severe') {
-        counselor_or_not = 1;
+      } else if (depressionLevel == 'Moderately Severe') {
         conclusion =
             'Depression is already impacted daily life. Please seek to professional help immediately';
       } else {
-        counselor_or_not = 1;
         conclusion =
             'Symptoms are severe, professional care is needed urgently';
       }
     }
 
-    Map<String, dynamic> quizResultMap = {
-      'score': score,
-      'dp_level': dpLevel,
+    Map<String, dynamic> resultMap = {
+      'test_score': testScore,
+      'depression_level': depressionLevel,
       'no_of_days': noOfDays,
       'conclusion': conclusion,
-      'counselor_or_not': counselor_or_not
     };
 
-    return quizResultMap;
+    return resultMap;
   }
 
   @override
