@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:tsd_project/bottom_navigation_bar.dart';
 import 'package:tsd_project/screen/home_screen.dart';
-import 'package:tsd_project/screen/login.dart';
 import 'dart:math';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:tsd_project/result_calculation.dart';
 import 'package:tsd_project/screen/quiz_result_page.dart';
+import 'package:tsd_project/top_app_bar.dart';
+import 'package:tsd_project/user_authentication.dart';
 
 class QuizPage extends StatefulWidget {
   @override
@@ -43,21 +45,8 @@ class _QuizPageState extends State<QuizPage> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() => checkLoginStatus());
+    Future.microtask(() => checkLoginStatus(context));
     requestQuiz();
-  }
-
-  //This function will check if the token is null, and if it is null, then redirects to the login page
-  Future<void> checkLoginStatus() async {
-    String? token = await secureStorage.read(key: 'token');
-
-    if (token != null) {
-      print('User is logged in');
-    } else {
-      print('user is not logged in');
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => login_user()));
-    }
   }
 
   @override
@@ -76,6 +65,11 @@ class _QuizPageState extends State<QuizPage> {
       },
       child: Scaffold(
         resizeToAvoidBottomInset: false,
+
+        bottomNavigationBar: CustomBottomNavigationBar(
+          initialIndex: -1,
+        ),
+        appBar: CustomTopAppBar(),
         //Creating a pageview
         body:
             // If the page is still loading, display an indicator, otherwise, display the content
