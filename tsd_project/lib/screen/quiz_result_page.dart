@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:tsd_project/bottom_navigation_bar.dart';
+import 'package:tsd_project/top_app_bar.dart';
+import 'package:tsd_project/user_authentication.dart';
 
 class QuizResultPage extends StatefulWidget {
   //Declaring the quiz result id that must be received when navigating
@@ -89,12 +92,18 @@ class _QuizResultPageState extends State<QuizResultPage> {
   @override
   void initState() {
     super.initState();
+    Future.microtask(() => checkLoginStatus(context));
     setQuizResultData();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        bottomNavigationBar: CustomBottomNavigationBar(
+          initialIndex: -1,
+        ),
+        appBar: CustomTopAppBar(),
+
         //If the page is still loading, display linear progress indicator, otherwise the content
         body: isLoading
             ? Container(

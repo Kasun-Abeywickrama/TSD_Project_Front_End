@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:jwt_decode/jwt_decode.dart';
+import 'package:tsd_project/screen/home_screen.dart';
 
-import 'package:tsd_project/screen/quiz_page.dart';
 import 'package:tsd_project/screen/register.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -246,21 +246,18 @@ class _login_userState extends State<login_user> {
           //Decoding the token data
           final Map<String, dynamic> decodedToken = Jwt.parseJwt(token);
 
-          //Storing username and user_id in variables
-          final String username = decodedToken['username'];
+          //Storing auth_user_id in a variable
           final int authUserId = decodedToken['auth_user_id'];
 
-          print('Username: $username');
           print('Auth_user_id: $authUserId');
 
-          //Setting the username and user_id in secure storage
-          secureStorage.write(key: 'username', value: username);
+          //Setting the auth_user_id in secure storage
           secureStorage.write(
               key: 'auth_user_id', value: authUserId.toString());
 
           //Navigate to the Home page
           Navigator.push(
-              context, (MaterialPageRoute(builder: (context) => QuizPage())));
+              context, (MaterialPageRoute(builder: (context) => HomeScreen())));
         } else {
           print('Token is null');
         }
