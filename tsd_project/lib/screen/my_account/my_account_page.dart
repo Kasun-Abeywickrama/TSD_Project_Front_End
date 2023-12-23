@@ -33,7 +33,7 @@ class _MyAccountState extends State<MyAccount> {
   //Function that gets the current username from the database
   Future<void> setCurrentUsername(BuildContext context) async {
     //This process Fetches the data from the backend
-    String? token = await secureStorage.read(key: 'token');
+    String? accessToken = await secureStorage.read(key: 'accessToken');
 
     if (context.mounted) {
       if (await checkLoginStatus(context)) {
@@ -48,7 +48,7 @@ class _MyAccountState extends State<MyAccount> {
           final response = await http.get(
             uri,
             headers: {
-              'Authorization': 'Bearer $token',
+              'Authorization': 'Bearer $accessToken',
               'Content-Type': 'application/json',
             },
           );

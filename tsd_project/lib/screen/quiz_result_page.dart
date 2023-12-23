@@ -41,7 +41,7 @@ class _QuizResultPageState extends State<QuizResultPage> {
     };
 
     //This process Fetches the data from the backend
-    String? token = await secureStorage.read(key: 'token');
+    String? accessToken = await secureStorage.read(key: 'accessToken');
 
     if (context.mounted) {
       //If this function returns true this will get executed.
@@ -60,7 +60,7 @@ class _QuizResultPageState extends State<QuizResultPage> {
           final response = await http.post(
             uri,
             headers: {
-              'Authorization': 'Bearer $token',
+              'Authorization': 'Bearer $accessToken',
               'Content-Type': 'application/json',
             },
             body: json.encode(formData),

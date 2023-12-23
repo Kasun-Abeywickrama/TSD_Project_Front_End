@@ -35,7 +35,7 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
   //Function that gets the existing data from the database
   Future<void> setUserDetails(BuildContext context) async {
     //This process Fetches the data from the backend
-    String? token = await secureStorage.read(key: 'token');
+    String? accessToken = await secureStorage.read(key: 'accessToken');
 
     if (context.mounted) {
       if (await checkLoginStatus(context)) {
@@ -50,7 +50,7 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
           final response = await http.get(
             uri,
             headers: {
-              'Authorization': 'Bearer $token',
+              'Authorization': 'Bearer $accessToken',
               'Content-Type': 'application/json',
             },
           );
@@ -695,7 +695,7 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
 
   Future<void> updateUserPersonalDetails(BuildContext context) async {
     //This process sends the data to the backend and update them
-    String? token = await secureStorage.read(key: 'token');
+    String? accessToken = await secureStorage.read(key: 'accessToken');
 
     if (context.mounted) {
       if (await checkLoginStatus(context)) {
@@ -719,7 +719,7 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
           final response = await http.post(
             uri,
             headers: {
-              'Authorization': 'Bearer $token',
+              'Authorization': 'Bearer $accessToken',
               'Content-Type': 'application/json',
             },
             body: json.encode(formData),

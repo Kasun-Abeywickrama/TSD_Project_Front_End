@@ -818,9 +818,7 @@ class _QuizPageState extends State<QuizPage> {
 
   //Creating the function to request the quiz
   Future<void> requestQuiz(BuildContext context) async {
-    String? token = await secureStorage.read(key: 'token');
-
-    //If the token is not null continue with the process
+    String? accessToken = await secureStorage.read(key: 'accessToken');
 
     if (context.mounted) {
       if (await checkLoginStatus(context)) {
@@ -835,7 +833,7 @@ class _QuizPageState extends State<QuizPage> {
           uri,
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer $token'
+            'Authorization': 'Bearer $accessToken'
           },
         );
 
@@ -881,8 +879,8 @@ class _QuizPageState extends State<QuizPage> {
   //This function will get the result map as the parameter and directly send it to the backend
   Future<void> submitResultData(
       Map<String, dynamic> quizResultMap, BuildContext context) async {
-    //Collecting the token from the secure storage
-    String? token = await secureStorage.read(key: 'token');
+    //Collecting the access token from the secure storage
+    String? accessToken = await secureStorage.read(key: 'accessToken');
 
     //If the token is not null continue with the process
 
@@ -914,7 +912,7 @@ class _QuizPageState extends State<QuizPage> {
           uri,
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer $token'
+            'Authorization': 'Bearer $accessToken'
           },
           body: json.encode(formData),
         );

@@ -284,17 +284,18 @@ class _login_userState extends State<login_user> {
         try {
           final Map<String, dynamic> responseData = json.decode(response.body);
 
-          final String? token = responseData['token'];
+          final String? accessToken = responseData['token'];
 
-          if (token != null) {
-            //Setting the token in secure storage
-            secureStorage.write(key: 'token', value: token);
+          if (accessToken != null) {
+            //Setting the access token in secure storage
+            secureStorage.write(key: 'accessToken', value: accessToken);
 
-            //Decoding the token data
-            final Map<String, dynamic> decodedToken = Jwt.parseJwt(token);
+            //Decoding the access token data
+            final Map<String, dynamic> decodedAccessToken =
+                Jwt.parseJwt(accessToken);
 
             //Storing auth_user_id in a variable
-            final int authUserId = decodedToken['auth_user_id'];
+            final int authUserId = decodedAccessToken['auth_user_id'];
 
             print('Auth_user_id: $authUserId');
 
@@ -310,7 +311,7 @@ class _login_userState extends State<login_user> {
                       builder: (context) => const HomeScreen())));
             }
           } else {
-            print('Token is null');
+            print('Access Token is null');
           }
         } catch (e) {
           print('Unable to convert from JSON: $e');

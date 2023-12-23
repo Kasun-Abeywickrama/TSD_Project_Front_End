@@ -398,7 +398,7 @@ class _ChangeUserPasswordState extends State<ChangeUserPassword> {
 
   Future<void> updatePassword(BuildContext context) async {
     //This process sends the data to the backend and update them
-    String? token = await secureStorage.read(key: 'token');
+    String? accessToken = await secureStorage.read(key: 'accessToken');
 
     if (context.mounted) {
       if (await checkLoginStatus(context)) {
@@ -423,7 +423,7 @@ class _ChangeUserPasswordState extends State<ChangeUserPassword> {
           final response = await http.post(
             uri,
             headers: {
-              'Authorization': 'Bearer $token',
+              'Authorization': 'Bearer $accessToken',
               'Content-Type': 'application/json',
             },
             body: json.encode(formData),

@@ -36,7 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
   //Function that gets the existing data from the database
   Future<void> setUserPersonalDetails(BuildContext context) async {
     //This process Fetches the data from the backend
-    String? token = await secureStorage.read(key: 'token');
+    String? accessToken = await secureStorage.read(key: 'accessToken');
 
     if (context.mounted) {
       if (await checkLoginStatus(context)) {
@@ -51,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
           final response = await http.get(
             uri,
             headers: {
-              'Authorization': 'Bearer $token',
+              'Authorization': 'Bearer $accessToken',
               'Content-Type': 'application/json',
             },
           );
