@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:tsd_project/important_tools/user_authentication.dart';
+import 'package:tsd_project/screen/home_screen.dart';
 
 class Welcome extends StatefulWidget {
   const Welcome({super.key});
@@ -13,9 +14,21 @@ class _WelcomeState extends State<Welcome> {
   @override
   void initState() {
     super.initState();
-    Timer(const Duration(seconds: 2), () {
-      checkWelcomeScreenLoginStatus(context);
-    });
+    initialProcess(context);
+  }
+
+  Future<void> initialProcess(BuildContext context) async {
+    if (context.mounted) {
+      await Future.delayed(const Duration(seconds: 2));
+      if (context.mounted) {
+        if (await checkLoginStatus(context)) {
+          if (context.mounted) {
+            Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (context) => const HomeScreen()));
+          }
+        }
+      }
+    }
   }
 
   @override

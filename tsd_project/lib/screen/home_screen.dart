@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:jwt_decode/jwt_decode.dart';
 import 'package:quickalert/quickalert.dart';
 import 'package:tsd_project/decoration_tools/bottom_navigation_bar.dart';
 import 'package:tsd_project/decoration_tools/custom_loading_indicator.dart';
@@ -13,7 +12,6 @@ import 'package:tsd_project/important_tools/user_authentication.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../important_tools/api_endpoints.dart';
-import 'login.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -37,10 +35,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   //Function that gets the existing data from the database
   Future<void> setUserPersonalDetails(BuildContext context) async {
+    //This process Fetches the data from the backend
+    String? token = await secureStorage.read(key: 'token');
+
     if (context.mounted) {
-      //This process Fetches the data from the backend
-      String? token = await secureStorage.read(key: 'token');
-      if (token != null && Jwt.isExpired(token) == false) {
+      if (await checkLoginStatus(context)) {
         try {
           // Obtaining the URL to a variable
           const String apiUrl = requestUserPersonalDetailsEndpoint;
@@ -80,11 +79,6 @@ class _HomeScreenState extends State<HomeScreen> {
           }
         } catch (e) {
           print('Exception occured: $e');
-        }
-      } else {
-        if (context.mounted) {
-          Navigator.push(
-              context, (MaterialPageRoute(builder: (context) => login_user())));
         }
       }
     }

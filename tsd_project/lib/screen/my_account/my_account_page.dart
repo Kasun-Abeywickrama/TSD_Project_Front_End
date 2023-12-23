@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:jwt_decode/jwt_decode.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:tsd_project/decoration_tools/bottom_navigation_bar.dart';
 import 'package:tsd_project/decoration_tools/custom_loading_indicator.dart';
 import 'package:tsd_project/important_tools/api_endpoints.dart';
 import 'package:tsd_project/screen/home_screen.dart';
-import 'package:tsd_project/screen/login.dart';
 import 'package:tsd_project/screen/my_account/change_password.dart';
 import 'package:tsd_project/screen/my_account/change_username.dart';
 import 'package:tsd_project/screen/my_account/edit_personal_details.dart';
@@ -34,10 +32,11 @@ class _MyAccountState extends State<MyAccount> {
 
   //Function that gets the current username from the database
   Future<void> setCurrentUsername(BuildContext context) async {
+    //This process Fetches the data from the backend
+    String? token = await secureStorage.read(key: 'token');
+
     if (context.mounted) {
-      //This process Fetches the data from the backend
-      String? token = await secureStorage.read(key: 'token');
-      if (token != null && Jwt.isExpired(token) == false) {
+      if (await checkLoginStatus(context)) {
         try {
           // Obtaining the URL to a variable
           const String apiUrl = requestUserAuthUserDetailsEndpoint;
@@ -73,11 +72,6 @@ class _MyAccountState extends State<MyAccount> {
           }
         } catch (e) {
           print('Exception occured: $e');
-        }
-      } else {
-        if (context.mounted) {
-          Navigator.push(
-              context, (MaterialPageRoute(builder: (context) => login_user())));
         }
       }
     }

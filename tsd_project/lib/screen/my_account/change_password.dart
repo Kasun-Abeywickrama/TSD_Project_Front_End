@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:jwt_decode/jwt_decode.dart';
 import 'package:quickalert/quickalert.dart';
 import 'package:tsd_project/important_tools/api_endpoints.dart';
-import 'package:tsd_project/screen/login.dart';
 import 'package:tsd_project/decoration_tools/top_app_bar.dart';
 import 'package:tsd_project/important_tools/user_authentication.dart';
 
@@ -399,10 +397,11 @@ class _ChangeUserPasswordState extends State<ChangeUserPassword> {
   }
 
   Future<void> updatePassword(BuildContext context) async {
+    //This process sends the data to the backend and update them
+    String? token = await secureStorage.read(key: 'token');
+
     if (context.mounted) {
-      //This process sends the data to the backend and update them
-      String? token = await secureStorage.read(key: 'token');
-      if (token != null && Jwt.isExpired(token) == false) {
+      if (await checkLoginStatus(context)) {
         try {
           // Obtaining the URL to a variable
           const String apiUrl = updateUserAuthUserDetailsEndpoint;
@@ -442,11 +441,6 @@ class _ChangeUserPasswordState extends State<ChangeUserPassword> {
           }
         } catch (e) {
           print('Exception occured: $e');
-        }
-      } else {
-        if (context.mounted) {
-          Navigator.push(
-              context, (MaterialPageRoute(builder: (context) => login_user())));
         }
       }
     }

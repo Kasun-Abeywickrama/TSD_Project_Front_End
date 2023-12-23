@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:jwt_decode/jwt_decode.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'dart:math';
@@ -10,7 +9,6 @@ import 'package:simple_gradient_text/simple_gradient_text.dart';
 import 'package:tsd_project/decoration_tools/custom_loading_indicator.dart';
 import 'package:tsd_project/important_tools/api_endpoints.dart';
 import 'package:tsd_project/important_tools/result_calculation.dart';
-import 'package:tsd_project/screen/login.dart';
 import 'package:tsd_project/screen/quiz_result_page.dart';
 import 'package:tsd_project/decoration_tools/top_app_bar.dart';
 import 'package:tsd_project/important_tools/user_authentication.dart';
@@ -820,11 +818,12 @@ class _QuizPageState extends State<QuizPage> {
 
   //Creating the function to request the quiz
   Future<void> requestQuiz(BuildContext context) async {
-    if (context.mounted) {
-      String? token = await secureStorage.read(key: 'token');
+    String? token = await secureStorage.read(key: 'token');
 
-      //If the token is not null continue with the process
-      if (token != null && Jwt.isExpired(token) == false) {
+    //If the token is not null continue with the process
+
+    if (context.mounted) {
+      if (await checkLoginStatus(context)) {
         // Obtaining the URL to a variable
         const String apiUrl = requestQuizEndpoint;
 
@@ -874,11 +873,6 @@ class _QuizPageState extends State<QuizPage> {
         } else {
           print('unable to receive data: ${response.body}');
         }
-      } else {
-        if (context.mounted) {
-          Navigator.push(
-              context, (MaterialPageRoute(builder: (context) => login_user())));
-        }
       }
     }
   }
@@ -887,12 +881,13 @@ class _QuizPageState extends State<QuizPage> {
   //This function will get the result map as the parameter and directly send it to the backend
   Future<void> submitResultData(
       Map<String, dynamic> quizResultMap, BuildContext context) async {
-    if (context.mounted) {
-      //Collecting the token from the secure storage
-      String? token = await secureStorage.read(key: 'token');
+    //Collecting the token from the secure storage
+    String? token = await secureStorage.read(key: 'token');
 
-      //If the token is not null continue with the process
-      if (token != null && Jwt.isExpired(token) == false) {
+    //If the token is not null continue with the process
+
+    if (context.mounted) {
+      if (await checkLoginStatus(context)) {
         // Obtaining the URL to a variable
         const String apiUrl = quizResultStoreEndpoint;
 
@@ -947,11 +942,6 @@ class _QuizPageState extends State<QuizPage> {
           }
         } else {
           print('unable to submit data: ${response.body}');
-        }
-      } else {
-        if (context.mounted) {
-          Navigator.push(
-              context, (MaterialPageRoute(builder: (context) => login_user())));
         }
       }
     }

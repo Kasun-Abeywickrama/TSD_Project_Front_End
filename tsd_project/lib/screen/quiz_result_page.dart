@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:jwt_decode/jwt_decode.dart';
 import 'package:tsd_project/decoration_tools/custom_loading_indicator.dart';
 import 'package:tsd_project/important_tools/api_endpoints.dart';
-import 'package:tsd_project/screen/login.dart';
 import 'package:tsd_project/decoration_tools/top_app_bar.dart';
 import 'package:tsd_project/important_tools/user_authentication.dart';
 
@@ -37,15 +35,20 @@ class _QuizResultPageState extends State<QuizResultPage> {
 
   //Creating the function that sets the relavant fields
   void setQuizResultData(BuildContext context) async {
-    if (context.mounted) {
-      //Declaring the requested quiz result id
-      final Map<String, dynamic> formData = {
-        'quiz_result_id': widget.quizResultId,
-      };
+    //Declaring the requested quiz result id
+    final Map<String, dynamic> formData = {
+      'quiz_result_id': widget.quizResultId,
+    };
 
-      //This process Fetches the data from the backend
-      String? token = await secureStorage.read(key: 'token');
-      if (token != null && Jwt.isExpired(token) == false) {
+    //This process Fetches the data from the backend
+    String? token = await secureStorage.read(key: 'token');
+
+    if (context.mounted) {
+      //If this function returns true this will get executed.
+      //Otherwise, the user will be redirected to the login screen from this function.
+      //The login screen redirection will be handled inside this function.
+
+      if (await checkLoginStatus(context)) {
         try {
           // Obtaining the URL to a variable
           const String apiUrl = viewQuizResultEndpoint;
@@ -87,11 +90,6 @@ class _QuizResultPageState extends State<QuizResultPage> {
           }
         } catch (e) {
           print('Exception occured: $e');
-        }
-      } else {
-        if (context.mounted) {
-          Navigator.push(
-              context, (MaterialPageRoute(builder: (context) => login_user())));
         }
       }
     }
