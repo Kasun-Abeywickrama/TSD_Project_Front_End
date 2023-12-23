@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:tsd_project/bottom_navigation_bar.dart';
-import 'package:tsd_project/screen/my_account/my_account_page.dart';
-import 'package:tsd_project/top_app_bar.dart';
-import 'package:tsd_project/user_authentication.dart';
+import 'package:jwt_decode/jwt_decode.dart';
+import 'package:quickalert/quickalert.dart';
+import 'package:tsd_project/important_tools/api_endpoints.dart';
+import 'package:tsd_project/screen/login.dart';
+import 'package:tsd_project/decoration_tools/top_app_bar.dart';
+import 'package:tsd_project/important_tools/user_authentication.dart';
 
 class ChangeUserPassword extends StatefulWidget {
   @override
@@ -33,53 +35,73 @@ class _ChangeUserPasswordState extends State<ChangeUserPassword> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        bottomNavigationBar: CustomBottomNavigationBar(
-          initialIndex: 3,
+        appBar: CustomTopAppBar(
+          pageIndex: 1,
+          pageName: "Change Password",
         ),
-        appBar: CustomTopAppBar(),
         body: Container(
-          color: const Color(0xE51FC0E7),
-          child: CustomScrollView(slivers: [
-            SliverFillRemaining(
-              hasScrollBody: false,
-              child: Center(
-                  child: Padding(
-                padding: const EdgeInsets.all(25.0),
-                child: Column(
-                  children: [
-                    Container(
-                      constraints: BoxConstraints(maxWidth: 450),
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(15),
-                          topRight: Radius.circular(15),
-                          bottomLeft: Radius.circular(15),
-                          bottomRight: Radius.circular(15),
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                              color: Color.fromRGBO(0, 0, 0, 0.25),
-                              offset: Offset(5, 5),
-                              blurRadius: 4)
-                        ],
-                        color: Colors.white,
+          color: Colors.white,
+          child: ListView(children: [
+            Center(
+                child: Padding(
+              padding: const EdgeInsets.all(25.0),
+              child: Column(
+                children: [
+                  Container(
+                    constraints: const BoxConstraints(maxWidth: 450),
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(15),
+                        topRight: Radius.circular(15),
+                        bottomLeft: Radius.circular(15),
+                        bottomRight: Radius.circular(15),
                       ),
-                      child: Padding(
-                        padding: EdgeInsets.all(15.0),
-                        child: Form(
-                          key: _changePasswordformKey,
-                          child: Column(
-                            children: [
-                              //Change Password text
-                              const Row(
+                      boxShadow: [
+                        BoxShadow(
+                            color: Color.fromARGB(255, 5, 43, 157),
+                            offset: Offset(5, 5),
+                            blurRadius: 20)
+                      ],
+                      color: Color.fromARGB(255, 255, 255, 255),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Form(
+                        key: _changePasswordformKey,
+                        child: Column(
+                          children: [
+                            //Change Password text
+                            const Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    'Change The Password',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: Color.fromRGBO(3, 71, 120, 1),
+                                        fontSize: 25,
+                                        letterSpacing: 0,
+                                        fontWeight: FontWeight.bold,
+                                        height: 1),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 30,
+                            ),
+                            //Displaying the current password text
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Row(
                                 children: [
                                   Expanded(
                                     child: Text(
-                                      'Change The Password',
-                                      textAlign: TextAlign.center,
+                                      "Current Password : ",
+                                      textAlign: TextAlign.left,
                                       style: TextStyle(
                                           color: Color.fromRGBO(3, 71, 120, 1),
-                                          fontSize: 25,
+                                          fontSize: 18,
                                           letterSpacing: 0,
                                           fontWeight: FontWeight.bold,
                                           height: 1),
@@ -87,414 +109,369 @@ class _ChangeUserPasswordState extends State<ChangeUserPassword> {
                                   ),
                                 ],
                               ),
-                              const SizedBox(
-                                height: 30,
-                              ),
-                              //Displaying the current password text
-                              const Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        "Current Password : ",
-                                        textAlign: TextAlign.left,
-                                        style: TextStyle(
-                                            color:
-                                                Color.fromRGBO(3, 71, 120, 1),
-                                            fontSize: 18,
-                                            letterSpacing: 0,
-                                            fontWeight: FontWeight.bold,
-                                            height: 1),
-                                      ),
+                            ),
+                            //Displaying the current password form field
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(8.0, 0, 8, 15),
+                              child: Container(
+                                constraints: const BoxConstraints(
+                                  maxWidth: 450.0,
+                                ),
+                                child: TextFormField(
+                                  controller: _currentPasswordController,
+                                  keyboardType: TextInputType.visiblePassword,
+                                  decoration: InputDecoration(
+                                    hintText: 'Enter the Current Password',
+                                    prefixIcon: const Icon(Icons.password),
+                                    filled: true,
+                                    fillColor: const Color.fromARGB(
+                                        255, 232, 230, 230),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      borderSide: const BorderSide(
+                                          color: Color.fromARGB(
+                                              255, 232, 230, 230)),
                                     ),
-                                  ],
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(30.0),
+                                      borderSide: const BorderSide(
+                                          color: Color.fromARGB(
+                                              255, 232, 230, 230)),
+                                    ),
+                                    errorBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(30.0),
+                                      borderSide: const BorderSide(
+                                          color: Colors.red, width: 2),
+                                    ),
+                                    focusedErrorBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(30.0),
+                                      borderSide: const BorderSide(
+                                          color: Colors.red, width: 2),
+                                    ),
+                                  ),
+                                  onChanged: (String value) {},
+                                  validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return "Please enter the current password";
+                                    } else {
+                                      return null;
+                                    }
+                                  },
                                 ),
                               ),
-                              //Displaying the current password form field
-                              Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(8.0, 0, 8, 15),
-                                child: Container(
-                                  constraints: const BoxConstraints(
-                                    maxWidth: 450.0,
-                                  ),
-                                  child: TextFormField(
-                                    controller: _currentPasswordController,
-                                    keyboardType: TextInputType.visiblePassword,
-                                    decoration: InputDecoration(
-                                      hintText: 'Enter the Current Password',
-                                      prefixIcon: const Icon(Icons.password),
-                                      filled: true,
-                                      fillColor: const Color.fromARGB(
-                                          255, 232, 230, 230),
-                                      enabledBorder: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
-                                        borderSide: const BorderSide(
-                                            color: Color.fromARGB(
-                                                255, 232, 230, 230)),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(30.0),
-                                        borderSide: const BorderSide(
-                                            color: Color.fromARGB(
-                                                255, 232, 230, 230)),
-                                      ),
-                                      errorBorder: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(30.0),
-                                        borderSide: const BorderSide(
-                                            color: Colors.red, width: 2),
-                                      ),
-                                      focusedErrorBorder: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(30.0),
-                                        borderSide: const BorderSide(
-                                            color: Colors.red, width: 2),
-                                      ),
-                                    ),
-                                    onChanged: (String value) {},
-                                    validator: (value) {
-                                      if (value!.isEmpty) {
-                                        return "Please enter the current password";
-                                      } else {
-                                        return null;
-                                      }
-                                    },
-                                  ),
-                                ),
-                              ),
-                              //Displaying the new password text
-                              const Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        "New Password : ",
-                                        textAlign: TextAlign.left,
-                                        style: TextStyle(
-                                            color:
-                                                Color.fromRGBO(3, 71, 120, 1),
-                                            fontSize: 18,
-                                            letterSpacing: 0,
-                                            fontWeight: FontWeight.bold,
-                                            height: 1),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              //Displaying the new password form field
-                              Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(8.0, 0, 8, 15),
-                                child: Container(
-                                  constraints: const BoxConstraints(
-                                    maxWidth: 450.0,
-                                  ),
-                                  child: TextFormField(
-                                    controller: _newPasswordController,
-                                    keyboardType: TextInputType.visiblePassword,
-                                    decoration: InputDecoration(
-                                      hintText: 'Enter The New Password',
-                                      prefixIcon: const Icon(Icons.password),
-                                      filled: true,
-                                      fillColor: const Color.fromARGB(
-                                          255, 232, 230, 230),
-                                      enabledBorder: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
-                                        borderSide: const BorderSide(
-                                            color: Color.fromARGB(
-                                                255, 232, 230, 230)),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(30.0),
-                                        borderSide: const BorderSide(
-                                            color: Color.fromARGB(
-                                                255, 232, 230, 230)),
-                                      ),
-                                      errorBorder: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(30.0),
-                                        borderSide: const BorderSide(
-                                            color: Colors.red, width: 2),
-                                      ),
-                                      focusedErrorBorder: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(30.0),
-                                        borderSide: const BorderSide(
-                                            color: Colors.red, width: 2),
-                                      ),
-                                    ),
-                                    onChanged: (String value) {},
-                                    validator: (value) {
-                                      if (value!.isEmpty) {
-                                        return "Please enter a new password";
-                                      } else {
-                                        return null;
-                                      }
-                                    },
-                                  ),
-                                ),
-                              ),
-                              //Displaying the retype new password text
-                              const Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        "Retype New Password : ",
-                                        textAlign: TextAlign.left,
-                                        style: TextStyle(
-                                            color:
-                                                Color.fromRGBO(3, 71, 120, 1),
-                                            fontSize: 18,
-                                            letterSpacing: 0,
-                                            fontWeight: FontWeight.bold,
-                                            height: 1),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              //Displaying the Retype New password form field
-                              Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(8.0, 0, 8, 15),
-                                child: Container(
-                                  constraints: const BoxConstraints(
-                                    maxWidth: 450.0,
-                                  ),
-                                  child: TextFormField(
-                                    keyboardType: TextInputType.visiblePassword,
-                                    decoration: InputDecoration(
-                                      hintText: 'Retype New Password',
-                                      prefixIcon: const Icon(Icons.password),
-                                      filled: true,
-                                      fillColor: const Color.fromARGB(
-                                          255, 232, 230, 230),
-                                      enabledBorder: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
-                                        borderSide: const BorderSide(
-                                            color: Color.fromARGB(
-                                                255, 232, 230, 230)),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(30.0),
-                                        borderSide: const BorderSide(
-                                            color: Color.fromARGB(
-                                                255, 232, 230, 230)),
-                                      ),
-                                      errorBorder: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(30.0),
-                                        borderSide: const BorderSide(
-                                            color: Colors.red, width: 2),
-                                      ),
-                                      focusedErrorBorder: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(30.0),
-                                        borderSide: const BorderSide(
-                                            color: Colors.red, width: 2),
-                                      ),
-                                    ),
-                                    onChanged: (String value) {},
-                                    validator: (value) {
-                                      if (value !=
-                                          _newPasswordController.text) {
-                                        return "Please correctly retype the new password";
-                                      } else {
-                                        return null;
-                                      }
-                                    },
-                                  ),
-                                ),
-                              ),
-
-                              const SizedBox(
-                                height: 20,
-                              ),
-
-                              Row(
+                            ),
+                            //Displaying the new password text
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Row(
                                 children: [
-                                  //Cancel button
                                   Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Container(
-                                        height: 40,
-                                        constraints: const BoxConstraints(
-                                          maxWidth: 200.0,
-                                        ),
-                                        child: MaterialButton(
-                                          color: Color(0xFF0039FF),
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(35)),
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                          textColor: Colors.white,
-                                          child: const Text(
-                                            'Cancel',
-                                            style: TextStyle(fontSize: 17),
-                                          ),
-                                        ),
-                                      ),
+                                    child: Text(
+                                      "New Password : ",
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(
+                                          color: Color.fromRGBO(3, 71, 120, 1),
+                                          fontSize: 18,
+                                          letterSpacing: 0,
+                                          fontWeight: FontWeight.bold,
+                                          height: 1),
                                     ),
                                   ),
-                                  //Update button
-                                  Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Container(
-                                        height: 40,
-                                        constraints: const BoxConstraints(
-                                          maxWidth: 200.0,
-                                        ),
-                                        child: MaterialButton(
-                                          color: Color(0xFF0039FF),
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(35)),
-                                          onPressed: () {
-                                            if (_changePasswordformKey
-                                                .currentState!
-                                                .validate()) {
-                                              updatePassword();
-                                            }
-                                          },
-                                          textColor: Colors.white,
-                                          child: const Text(
-                                            'Update',
-                                            style: TextStyle(fontSize: 17),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  )
                                 ],
                               ),
-                            ],
-                          ),
+                            ),
+                            //Displaying the new password form field
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(8.0, 0, 8, 15),
+                              child: Container(
+                                constraints: const BoxConstraints(
+                                  maxWidth: 450.0,
+                                ),
+                                child: TextFormField(
+                                  controller: _newPasswordController,
+                                  keyboardType: TextInputType.visiblePassword,
+                                  decoration: InputDecoration(
+                                    hintText: 'Enter The New Password',
+                                    prefixIcon: const Icon(Icons.password),
+                                    filled: true,
+                                    fillColor: const Color.fromARGB(
+                                        255, 232, 230, 230),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      borderSide: const BorderSide(
+                                          color: Color.fromARGB(
+                                              255, 232, 230, 230)),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(30.0),
+                                      borderSide: const BorderSide(
+                                          color: Color.fromARGB(
+                                              255, 232, 230, 230)),
+                                    ),
+                                    errorBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(30.0),
+                                      borderSide: const BorderSide(
+                                          color: Colors.red, width: 2),
+                                    ),
+                                    focusedErrorBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(30.0),
+                                      borderSide: const BorderSide(
+                                          color: Colors.red, width: 2),
+                                    ),
+                                  ),
+                                  onChanged: (String value) {},
+                                  validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return "Please enter a new password";
+                                    } else {
+                                      return null;
+                                    }
+                                  },
+                                ),
+                              ),
+                            ),
+                            //Displaying the retype new password text
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      "Retype New Password : ",
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(
+                                          color: Color.fromRGBO(3, 71, 120, 1),
+                                          fontSize: 18,
+                                          letterSpacing: 0,
+                                          fontWeight: FontWeight.bold,
+                                          height: 1),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            //Displaying the Retype New password form field
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(8.0, 0, 8, 15),
+                              child: Container(
+                                constraints: const BoxConstraints(
+                                  maxWidth: 450.0,
+                                ),
+                                child: TextFormField(
+                                  keyboardType: TextInputType.visiblePassword,
+                                  decoration: InputDecoration(
+                                    hintText: 'Retype New Password',
+                                    prefixIcon: const Icon(Icons.password),
+                                    filled: true,
+                                    fillColor: const Color.fromARGB(
+                                        255, 232, 230, 230),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      borderSide: const BorderSide(
+                                          color: Color.fromARGB(
+                                              255, 232, 230, 230)),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(30.0),
+                                      borderSide: const BorderSide(
+                                          color: Color.fromARGB(
+                                              255, 232, 230, 230)),
+                                    ),
+                                    errorBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(30.0),
+                                      borderSide: const BorderSide(
+                                          color: Colors.red, width: 2),
+                                    ),
+                                    focusedErrorBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(30.0),
+                                      borderSide: const BorderSide(
+                                          color: Colors.red, width: 2),
+                                    ),
+                                  ),
+                                  onChanged: (String value) {},
+                                  validator: (value) {
+                                    if (value != _newPasswordController.text) {
+                                      return "Please correctly retype the new password";
+                                    } else {
+                                      return null;
+                                    }
+                                  },
+                                ),
+                              ),
+                            ),
+
+                            const SizedBox(
+                              height: 20,
+                            ),
+
+                            Row(
+                              children: [
+                                //Cancel button
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          gradient: const LinearGradient(
+                                            colors: [
+                                              Color(0xff66bef4),
+                                              Color(0xff2a58e5)
+                                            ],
+                                            stops: [0.1, 0.6],
+                                            begin: Alignment.topLeft,
+                                            end: Alignment.bottomRight,
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(35)),
+                                      height: 40,
+                                      constraints: const BoxConstraints(
+                                        maxWidth: 200.0,
+                                      ),
+                                      child: MaterialButton(
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(35)),
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        textColor: Colors.white,
+                                        child: const Text(
+                                          'Cancel',
+                                          style: TextStyle(fontSize: 17),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                //Update button
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          gradient: const LinearGradient(
+                                            colors: [
+                                              Color(0xff2a58e5),
+                                              Color(0xff66bef4),
+                                            ],
+                                            stops: [0.25, 0.9],
+                                            begin: Alignment.topLeft,
+                                            end: Alignment.bottomRight,
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(35)),
+                                      height: 40,
+                                      constraints: const BoxConstraints(
+                                        maxWidth: 200.0,
+                                      ),
+                                      child: MaterialButton(
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(35)),
+                                        onPressed: () {
+                                          if (_changePasswordformKey
+                                              .currentState!
+                                              .validate()) {
+                                            updatePassword(context);
+                                          }
+                                        },
+                                        textColor: Colors.white,
+                                        child: const Text(
+                                          'Update',
+                                          style: TextStyle(fontSize: 17),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ],
                         ),
                       ),
-                    )
-                  ],
-                ),
-              )),
-            ),
+                    ),
+                  )
+                ],
+              ),
+            )),
           ]),
         ));
   }
 
-  Future<void> updatePassword() async {
-    //This process sends the data to the backend and update them
-    String? token = await secureStorage.read(key: 'token');
-    if (token != null) {
-      try {
-        // Obtaining the URL to a variable
-        final String apiUrl =
-            'http://10.0.2.2:8000/update_user_auth_user_details/';
+  Future<void> updatePassword(BuildContext context) async {
+    if (context.mounted) {
+      //This process sends the data to the backend and update them
+      String? token = await secureStorage.read(key: 'token');
+      if (token != null && Jwt.isExpired(token) == false) {
+        try {
+          // Obtaining the URL to a variable
+          const String apiUrl = updateUserAuthUserDetailsEndpoint;
 
-        //Converting the url to uri
-        Uri uri = Uri.parse(apiUrl);
+          //Converting the url to uri
+          Uri uri = Uri.parse(apiUrl);
 
-        Map<String, dynamic> newPassword = {
-          'password': _newPasswordController.text,
-        };
+          Map<String, dynamic> newPassword = {
+            'password': _newPasswordController.text,
+          };
 
-        //The data map that must be send to the backend
-        Map<String, dynamic> formData = {
-          'current_password': _currentPasswordController.text,
-          'user_auth_user_details': newPassword,
-        };
+          //The data map that must be send to the backend
+          Map<String, dynamic> formData = {
+            'current_password': _currentPasswordController.text,
+            'user_auth_user_details': newPassword,
+          };
 
-        //Requesting the data from the backend
-        final response = await http.post(
-          uri,
-          headers: {
-            'Authorization': 'Bearer $token',
-            'Content-Type': 'application/json',
-          },
-          body: json.encode(formData),
-        );
+          //Requesting the data from the backend
+          final response = await http.post(
+            uri,
+            headers: {
+              'Authorization': 'Bearer $token',
+              'Content-Type': 'application/json',
+            },
+            body: json.encode(formData),
+          );
 
-        if (response.statusCode == 201) {
-          print('Data updated successfully');
-          dataSuccessfullyUpdatedDialogBox();
-        } else if (response.statusCode == 401) {
-          incorrectPasswordDialog();
-        } else {
-          //Decode the response received from the server
-          final Map<String, dynamic> errorData = json.decode(response.body);
-          print('Failed to submit data : $errorData');
+          if (response.statusCode == 201) {
+            print('Data updated successfully');
+            dataSuccessfullyUpdatedDialogBox();
+          } else if (response.statusCode == 401) {
+            incorrectPasswordDialog();
+          } else {
+            //Decode the response received from the server
+            final Map<String, dynamic> errorData = json.decode(response.body);
+            print('Failed to submit data : $errorData');
+          }
+        } catch (e) {
+          print('Exception occured: $e');
         }
-      } catch (e) {
-        print('Exception occured: $e');
+      } else {
+        if (context.mounted) {
+          Navigator.push(
+              context, (MaterialPageRoute(builder: (context) => login_user())));
+        }
       }
-    } else {
-      print('Token is null');
     }
   }
 
   void dataSuccessfullyUpdatedDialogBox() {
-    showDialog(
+    QuickAlert.show(
         context: context,
+        type: QuickAlertType.success,
+        title: 'Password Changed',
+        text: 'Successfully changed the password',
+        onConfirmBtnTap: () {
+          Navigator.of(context).pop();
+          Navigator.of(context).pop();
+        },
         barrierDismissible: false,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-                side: const BorderSide(color: Color(0xFF0039FF), width: 5)),
-            title: const Text('Successfully Updated'),
-            content: const Text('Password has been successfully updated'),
-            actions: [
-              TextButton(
-                  onPressed: () {
-                    Navigator.push(context,
-                        (MaterialPageRoute(builder: (context) => MyAccount())));
-                  },
-                  child: const Text(
-                    'OK',
-                    style: TextStyle(color: Color(0xFF0039FF)),
-                  ))
-            ],
-          );
-        });
+        disableBackBtn: true);
   }
 
   //Creating the alert dialog box to display invalid credentials
   void incorrectPasswordDialog() {
-    showDialog(
+    QuickAlert.show(
         context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-                side: const BorderSide(
-                    color: Color.fromARGB(255, 48, 17, 134), width: 4)),
-            title: const Text('Incorrect Password'),
-            content: const Text('Please enter the correct password'),
-            actions: [
-              TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text(
-                    'OK',
-                    style: TextStyle(color: Color.fromARGB(255, 48, 17, 134)),
-                  ))
-            ],
-          );
-        });
+        type: QuickAlertType.error,
+        title: 'Incorrect Password',
+        text: 'Please enter the correct password');
   }
 }

@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:tsd_project/bottom_navigation_bar.dart';
-import 'package:tsd_project/screen/home_screen.dart';
+import 'package:jwt_decode/jwt_decode.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'dart:math';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:tsd_project/result_calculation.dart';
+import 'package:simple_gradient_text/simple_gradient_text.dart';
+import 'package:tsd_project/decoration_tools/custom_loading_indicator.dart';
+import 'package:tsd_project/important_tools/api_endpoints.dart';
+import 'package:tsd_project/important_tools/result_calculation.dart';
+import 'package:tsd_project/screen/login.dart';
 import 'package:tsd_project/screen/quiz_result_page.dart';
-import 'package:tsd_project/top_app_bar.dart';
-import 'package:tsd_project/user_authentication.dart';
+import 'package:tsd_project/decoration_tools/top_app_bar.dart';
+import 'package:tsd_project/important_tools/user_authentication.dart';
 
 class QuizPage extends StatefulWidget {
   @override
@@ -45,8 +50,15 @@ class _QuizPageState extends State<QuizPage> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() => checkLoginStatus(context));
-    requestQuiz();
+    initialProcess(context);
+  }
+
+  Future<void> initialProcess(BuildContext context) async {
+    if (await checkLoginStatus(context)) {
+      if (context.mounted) {
+        requestQuiz(context);
+      }
+    }
   }
 
   @override
@@ -66,31 +78,22 @@ class _QuizPageState extends State<QuizPage> {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
 
-        bottomNavigationBar: CustomBottomNavigationBar(
-          initialIndex: -1,
+        appBar: CustomTopAppBar(
+          pageIndex: 2,
+          pageName: "Quiz",
         ),
-        appBar: CustomTopAppBar(),
         //Creating a pageview
         body:
             // If the page is still loading, display an indicator, otherwise, display the content
             isLoading
-                ? Container(
-                    color: const Color(0xE51FC0E7),
-                    child: const Center(
-                      child: SizedBox(
-                          height: 12.0,
-                          width: 200.0,
-                          child: LinearProgressIndicator(
-                              color: Color.fromRGBO(0, 57, 255, 0.8))),
-                    ),
-                  )
+                ? CustomLoadingIndicator()
                 : SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Container(
                       constraints: BoxConstraints(
                         maxWidth: screenWidth,
                       ),
-                      decoration: const BoxDecoration(color: Color(0xE51FC0E7)),
+                      decoration: const BoxDecoration(color: Colors.white),
                       child: PageView.builder(
                         //Assigning the questionPageController as the controller
                         controller: questionPageController,
@@ -149,12 +152,23 @@ class _QuizPageState extends State<QuizPage> {
                                                                       blurRadius:
                                                                           4)
                                                                 ],
-                                                                    color: Color
-                                                                        .fromRGBO(
-                                                                            0,
-                                                                            57,
-                                                                            255,
-                                                                            0.8))),
+                                                                    gradient:
+                                                                        LinearGradient(
+                                                                      colors: [
+                                                                        Color(
+                                                                            0xff2a58e5),
+                                                                        Color(
+                                                                            0xff66bef4),
+                                                                      ],
+                                                                      stops: [
+                                                                        0.25,
+                                                                        0.9
+                                                                      ],
+                                                                      begin: Alignment
+                                                                          .centerLeft,
+                                                                      end: Alignment
+                                                                          .centerRight,
+                                                                    ))),
                                                       )),
                                                   Positioned(
                                                       top: 60,
@@ -192,17 +206,11 @@ class _QuizPageState extends State<QuizPage> {
                                                   Positioned(
                                                       top: 73,
                                                       left: 8,
-                                                      child: Text(
+                                                      child: GradientText(
                                                         '${(index + 1) < 10 ? '0${index + 1}' : index + 1}',
                                                         textAlign:
                                                             TextAlign.left,
                                                         style: const TextStyle(
-                                                            color:
-                                                                Color.fromRGBO(
-                                                                    0,
-                                                                    57,
-                                                                    255,
-                                                                    1),
                                                             fontFamily:
                                                                 'ArchivoBlack',
                                                             fontSize: 35,
@@ -211,26 +219,15 @@ class _QuizPageState extends State<QuizPage> {
                                                                 FontWeight
                                                                     .normal,
                                                             height: 1),
+                                                        colors: const [
+                                                          Color(0xff2a58e5),
+                                                          Color.fromARGB(255,
+                                                              47, 153, 219),
+                                                          Color(0xff2a58e5),
+                                                        ],
                                                       )),
                                                 ])),
                                           ),
-
-                                          //Displaying the quit button
-                                          MaterialButton(
-                                              shape: const CircleBorder(),
-                                              color: const Color(0xFF0039FF),
-                                              onPressed: () {
-                                                //Disaplying the dialog to confirm the quiting and to redirect to home screen
-                                                quitOptionDialog();
-                                              },
-                                              child: Transform.rotate(
-                                                angle: pi,
-                                                child: const Icon(
-                                                  Icons.exit_to_app_rounded,
-                                                  color: Colors.white,
-                                                  size: 40,
-                                                ),
-                                              )),
                                         ],
                                       ),
 
@@ -240,8 +237,15 @@ class _QuizPageState extends State<QuizPage> {
                                           Expanded(
                                             child: Container(
                                               decoration: const BoxDecoration(
-                                                  color: Color.fromRGBO(
-                                                      0, 57, 255, 0.898),
+                                                  gradient: LinearGradient(
+                                                    colors: [
+                                                      Color(0xff66bef4),
+                                                      Color(0xff2a58e5),
+                                                    ],
+                                                    stops: [0.05, 0.45],
+                                                    begin: Alignment.centerLeft,
+                                                    end: Alignment.centerRight,
+                                                  ),
                                                   borderRadius:
                                                       BorderRadius.only(
                                                     topLeft:
@@ -300,7 +304,7 @@ class _QuizPageState extends State<QuizPage> {
                                       ),
 
                                       const SizedBox(
-                                        height: 20.0,
+                                        height: 25.0,
                                       ),
 
                                       //Displaying answer buttons or the text form field
@@ -317,95 +321,165 @@ class _QuizPageState extends State<QuizPage> {
                                                   (i) => Padding(
                                                     padding: const EdgeInsets
                                                         .fromLTRB(0, 10, 0, 10),
-                                                    child: MaterialButton(
-                                                      height: 45,
-                                                      shape:
-                                                          RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(75),
-                                                      ),
-                                                      onPressed: () {
-                                                        //When setState function is executed the build widget will run again. This time it will run with selectedAnswerIndex = i
-                                                        setState(() {
-                                                          selectedAnswerIndex =
-                                                              i;
-                                                        });
-                                                      },
-                                                      color:
+                                                    child: Container(
+                                                      decoration:
                                                           selectedAnswerIndex ==
                                                                   i
-                                                              ? const Color
-                                                                  .fromRGBO(
-                                                                  0,
-                                                                  57,
-                                                                  255,
-                                                                  0.898)
-                                                              : Colors.white,
-                                                      child: Row(
-                                                        children: [
-                                                          //Displaying the circle shape in front of the answer in the button
-                                                          Container(
-                                                              width: 15,
-                                                              height: 15,
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                color: selectedAnswerIndex == i
-                                                                    ? Colors
-                                                                        .white
-                                                                    : const Color
-                                                                        .fromRGBO(
-                                                                        19,
-                                                                        54,
-                                                                        182,
-                                                                        1),
-                                                                borderRadius:
-                                                                    const BorderRadius
-                                                                        .all(
-                                                                        Radius.elliptical(
-                                                                            15,
-                                                                            15)),
-                                                              )),
-                                                          const SizedBox(
-                                                            width: 10.0,
-                                                          ),
-                                                          //Displaying the answer inside the button
-                                                          Expanded(
-                                                            child: Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .all(
-                                                                      15.0),
-                                                              child: Text(
-                                                                //The answers of the related question is stored in a map, this will get all the keys of the map and will put them into a list. Then get the related indexed one.
-                                                                receivedQuiz[
-                                                                        index]
-                                                                    .answers[i]
-                                                                    .answer,
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .left,
-                                                                style: TextStyle(
-                                                                    color: selectedAnswerIndex ==
+                                                              ? BoxDecoration(
+                                                                  boxShadow: const [
+                                                                    BoxShadow(
+                                                                        color: Color.fromRGBO(
+                                                                            128,
+                                                                            128,
+                                                                            129,
+                                                                            0.71),
+                                                                        offset: Offset(
+                                                                            5,
+                                                                            2),
+                                                                        blurRadius:
+                                                                            4)
+                                                                  ],
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              75),
+                                                                  gradient:
+                                                                      const LinearGradient(
+                                                                    colors: [
+                                                                      Color(
+                                                                          0xff2a58e5),
+                                                                      Color(
+                                                                          0xff66bef4),
+                                                                    ],
+                                                                    stops: [
+                                                                      0.25,
+                                                                      0.9
+                                                                    ],
+                                                                    begin: Alignment
+                                                                        .centerLeft,
+                                                                    end: Alignment
+                                                                        .centerRight,
+                                                                  ),
+                                                                )
+                                                              : BoxDecoration(
+                                                                  boxShadow: const [
+                                                                    BoxShadow(
+                                                                        color: Color.fromRGBO(
+                                                                            128,
+                                                                            128,
+                                                                            129,
+                                                                            0.71),
+                                                                        offset: Offset(
+                                                                            5,
+                                                                            2),
+                                                                        blurRadius:
+                                                                            4)
+                                                                  ],
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              75),
+                                                                  color: const Color
+                                                                      .fromARGB(
+                                                                      255,
+                                                                      232,
+                                                                      230,
+                                                                      230),
+                                                                ),
+                                                      child: MaterialButton(
+                                                        height: 45,
+                                                        shape:
+                                                            RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(75),
+                                                        ),
+                                                        onPressed: () {
+                                                          //When setState function is executed the build widget will run again. This time it will run with selectedAnswerIndex = i
+                                                          setState(() {
+                                                            selectedAnswerIndex =
+                                                                i;
+                                                          });
+                                                        },
+                                                        child: Row(
+                                                          children: [
+                                                            //Displaying the circle shape in front of the answer in the button
+                                                            Container(
+                                                                width: 15,
+                                                                height: 15,
+                                                                decoration:
+                                                                    selectedAnswerIndex ==
                                                                             i
-                                                                        ? Colors
-                                                                            .white
-                                                                        : Colors
-                                                                            .black,
-                                                                    fontFamily:
-                                                                        'Archivo',
-                                                                    fontSize:
-                                                                        20,
-                                                                    letterSpacing:
-                                                                        0,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w400,
-                                                                    height: 1),
+                                                                        ? const BoxDecoration(
+                                                                            color: Color.fromARGB(
+                                                                                255,
+                                                                                232,
+                                                                                230,
+                                                                                230),
+                                                                            borderRadius:
+                                                                                BorderRadius.all(Radius.elliptical(15, 15)),
+                                                                          )
+                                                                        : const BoxDecoration(
+                                                                            borderRadius:
+                                                                                BorderRadius.all(Radius.elliptical(15, 15)),
+                                                                            gradient:
+                                                                                LinearGradient(
+                                                                              colors: [
+                                                                                Color(0xff66bef4),
+                                                                                Color(0xff2a58e5),
+                                                                              ],
+                                                                              stops: [
+                                                                                0.05,
+                                                                                0.45
+                                                                              ],
+                                                                              begin: Alignment.centerLeft,
+                                                                              end: Alignment.centerRight,
+                                                                            ),
+                                                                          )),
+                                                            const SizedBox(
+                                                              width: 10.0,
+                                                            ),
+                                                            //Displaying the answer inside the button
+                                                            Expanded(
+                                                              child: Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                        .all(
+                                                                        15.0),
+                                                                child: Text(
+                                                                  //The answers of the related question is stored in a map, this will get all the keys of the map and will put them into a list. Then get the related indexed one.
+                                                                  receivedQuiz[
+                                                                          index]
+                                                                      .answers[
+                                                                          i]
+                                                                      .answer,
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .left,
+                                                                  style: TextStyle(
+                                                                      color: selectedAnswerIndex == i
+                                                                          ? Colors
+                                                                              .white
+                                                                          : const Color
+                                                                              .fromRGBO(
+                                                                              3,
+                                                                              71,
+                                                                              120,
+                                                                              1),
+                                                                      fontSize:
+                                                                          20,
+                                                                      letterSpacing:
+                                                                          0,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w500,
+                                                                      height:
+                                                                          1),
+                                                                ),
                                                               ),
                                                             ),
-                                                          ),
-                                                        ],
+                                                          ],
+                                                        ),
                                                       ),
                                                     ),
                                                   ),
@@ -433,7 +507,9 @@ class _QuizPageState extends State<QuizPage> {
                                                         prefixIcon: const Icon(
                                                             Icons.date_range),
                                                         filled: true,
-                                                        fillColor: Colors.white,
+                                                        fillColor: const Color
+                                                            .fromARGB(
+                                                            255, 232, 230, 230),
                                                         enabledBorder:
                                                             OutlineInputBorder(
                                                           borderRadius:
@@ -442,8 +518,12 @@ class _QuizPageState extends State<QuizPage> {
                                                                       30.0),
                                                           borderSide:
                                                               const BorderSide(
-                                                                  color: Colors
-                                                                      .white),
+                                                                  color: Color
+                                                                      .fromARGB(
+                                                                          255,
+                                                                          232,
+                                                                          230,
+                                                                          230)),
                                                         ),
                                                         focusedBorder:
                                                             OutlineInputBorder(
@@ -453,8 +533,12 @@ class _QuizPageState extends State<QuizPage> {
                                                                       30.0),
                                                           borderSide:
                                                               const BorderSide(
-                                                                  color: Colors
-                                                                      .white),
+                                                                  color: Color
+                                                                      .fromARGB(
+                                                                          255,
+                                                                          232,
+                                                                          230,
+                                                                          230)),
                                                         ),
                                                         errorBorder:
                                                             OutlineInputBorder(
@@ -507,114 +591,173 @@ class _QuizPageState extends State<QuizPage> {
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
                                               //Creating the Previous button
-                                              MaterialButton(
-                                                  shape: const CircleBorder(),
-                                                  color:
-                                                      const Color(0xFF0039FF),
-                                                  onPressed: () {
-                                                    //First the selected index will be assigned to null, because then it will not display any selected options
-                                                    selectedAnswerIndex = null;
+                                              Container(
+                                                decoration: const BoxDecoration(
+                                                    gradient: LinearGradient(
+                                                      colors: [
+                                                        Color(0xff66bef4),
+                                                        Color(0xff2a58e5)
+                                                      ],
+                                                      stops: [0.1, 0.6],
+                                                      begin: Alignment.topLeft,
+                                                      end:
+                                                          Alignment.bottomRight,
+                                                    ),
+                                                    shape: BoxShape.circle),
+                                                child: MaterialButton(
+                                                    shape: const CircleBorder(),
+                                                    onPressed: () {
+                                                      if (index == 0) {
+                                                        quitOptionDialog();
+                                                      } else {
+                                                        //First the selected index will be assigned to null, because then it will not display any selected options
+                                                        selectedAnswerIndex =
+                                                            null;
 
-                                                    if (qandAData.isNotEmpty) {
-                                                      qandAData.removeLast();
-                                                    }
+                                                        if (qandAData
+                                                            .isNotEmpty) {
+                                                          qandAData
+                                                              .removeLast();
+                                                        }
 
-                                                    questionPageController
-                                                        .previousPage(
-                                                            duration:
-                                                                const Duration(
-                                                                    milliseconds:
-                                                                        30),
-                                                            curve: Curves
-                                                                .bounceOut);
-                                                  },
-                                                  child: const Icon(
-                                                    Icons.arrow_back,
-                                                    color: Colors.white,
-                                                    size: 40,
-                                                  )),
+                                                        questionPageController
+                                                            .previousPage(
+                                                                duration:
+                                                                    const Duration(
+                                                                        milliseconds:
+                                                                            30),
+                                                                curve: Curves
+                                                                    .bounceOut);
+                                                      }
+                                                    },
+                                                    child: const Icon(
+                                                      Icons.arrow_back,
+                                                      color: Colors.white,
+                                                      size: 40,
+                                                    )),
+                                              ),
 
                                               //If it is not the last page, then display next button. Otherwise, display submit button
                                               index != receivedQuiz.length
-                                                  ? MaterialButton(
-                                                      shape:
-                                                          const CircleBorder(),
-                                                      color: const Color(
-                                                          0xFF0039FF),
-                                                      onPressed: () {
-                                                        if (selectedAnswerIndex !=
-                                                            null) {
-                                                          //Calculating and replacing the points in the answer points map
-                                                          double point = double
-                                                              .parse(receivedQuiz[
-                                                                      index]
-                                                                  .answers[
-                                                                      selectedAnswerIndex!]
-                                                                  .mark);
-                                                          qandAData.add(QuizResultModel(
-                                                              questionId:
-                                                                  receivedQuiz[
-                                                                          index]
-                                                                      .questionId,
-                                                              mark: point,
-                                                              answerId: receivedQuiz[
-                                                                      index]
-                                                                  .answers[
-                                                                      selectedAnswerIndex!]
-                                                                  .answerId));
-                                                          //First the selected index will be assigned to null, because then it will not display any selected options
-                                                          selectedAnswerIndex =
-                                                              null;
-                                                          questionPageController.nextPage(
-                                                              duration:
-                                                                  const Duration(
-                                                                      milliseconds:
-                                                                          30),
-                                                              curve: Curves
-                                                                  .bounceIn);
-                                                        } else {
-                                                          noSelectedOptionDialog();
-                                                        }
-                                                      },
-                                                      child: const Icon(
-                                                        Icons.arrow_forward,
-                                                        color: Colors.white,
-                                                        size: 40,
-                                                      ))
-                                                  : Form(
+                                                  ? Container(
+                                                      decoration:
+                                                          const BoxDecoration(
+                                                              gradient:
+                                                                  LinearGradient(
+                                                                colors: [
+                                                                  Color(
+                                                                      0xff66bef4),
+                                                                  Color(
+                                                                      0xff2a58e5)
+                                                                ],
+                                                                stops: [
+                                                                  0.1,
+                                                                  0.6
+                                                                ],
+                                                                begin: Alignment
+                                                                    .topLeft,
+                                                                end: Alignment
+                                                                    .bottomRight,
+                                                              ),
+                                                              shape: BoxShape
+                                                                  .circle),
                                                       child: MaterialButton(
                                                           shape:
                                                               const CircleBorder(),
-                                                          color: const Color(
-                                                              0xFF0039FF),
                                                           onPressed: () {
-                                                            if (_dayformKey
-                                                                .currentState!
-                                                                .validate()) {
-                                                              //The test_score and no_of_days will be send to a function and the result map will be generated
-                                                              //the result map will be send as a parameter of the confirmSubmitDialog() function
-
-                                                              ResultCalculation
-                                                                  resultCalc =
-                                                                  ResultCalculation(
-                                                                      qandAData,
-                                                                      int.parse(
-                                                                          dayController
-                                                                              .text),
-                                                                      receivedQuiz
-                                                                          .length);
-
-                                                              confirmSubmitDialog(
-                                                                  resultCalc
-                                                                      .resultMapGenerator());
+                                                            if (selectedAnswerIndex !=
+                                                                null) {
+                                                              //Calculating and replacing the points in the answer points map
+                                                              double point = double
+                                                                  .parse(receivedQuiz[
+                                                                          index]
+                                                                      .answers[
+                                                                          selectedAnswerIndex!]
+                                                                      .mark);
+                                                              qandAData.add(QuizResultModel(
+                                                                  questionId: receivedQuiz[
+                                                                          index]
+                                                                      .questionId,
+                                                                  mark: point,
+                                                                  answerId: receivedQuiz[
+                                                                          index]
+                                                                      .answers[
+                                                                          selectedAnswerIndex!]
+                                                                      .answerId));
+                                                              //First the selected index will be assigned to null, because then it will not display any selected options
+                                                              selectedAnswerIndex =
+                                                                  null;
+                                                              questionPageController.nextPage(
+                                                                  duration: const Duration(
+                                                                      milliseconds:
+                                                                          30),
+                                                                  curve: Curves
+                                                                      .bounceIn);
+                                                            } else {
+                                                              noSelectedOptionDialog();
                                                             }
                                                           },
                                                           child: const Icon(
-                                                            Icons
-                                                                .check_outlined,
+                                                            Icons.arrow_forward,
                                                             color: Colors.white,
                                                             size: 40,
                                                           )),
+                                                    )
+                                                  : Form(
+                                                      child: Container(
+                                                        decoration:
+                                                            const BoxDecoration(
+                                                                gradient:
+                                                                    LinearGradient(
+                                                                  colors: [
+                                                                    Color(
+                                                                        0xff66bef4),
+                                                                    Color(
+                                                                        0xff2a58e5)
+                                                                  ],
+                                                                  stops: [
+                                                                    0.1,
+                                                                    0.6
+                                                                  ],
+                                                                  begin: Alignment
+                                                                      .topLeft,
+                                                                  end: Alignment
+                                                                      .bottomRight,
+                                                                ),
+                                                                shape: BoxShape
+                                                                    .circle),
+                                                        child: MaterialButton(
+                                                            shape:
+                                                                const CircleBorder(),
+                                                            onPressed: () {
+                                                              if (_dayformKey
+                                                                  .currentState!
+                                                                  .validate()) {
+                                                                //The test_score and no_of_days will be send to a function and the result map will be generated
+                                                                //the result map will be send as a parameter of the confirmSubmitDialog() function
+
+                                                                ResultCalculation
+                                                                    resultCalc =
+                                                                    ResultCalculation(
+                                                                        qandAData,
+                                                                        int.parse(dayController
+                                                                            .text),
+                                                                        receivedQuiz
+                                                                            .length);
+
+                                                                confirmSubmitDialog(
+                                                                    resultCalc
+                                                                        .resultMapGenerator());
+                                                              }
+                                                            },
+                                                            child: const Icon(
+                                                              Icons
+                                                                  .check_outlined,
+                                                              color:
+                                                                  Colors.white,
+                                                              size: 40,
+                                                            )),
+                                                      ),
                                                     )
                                             ],
                                           ),
@@ -635,65 +778,24 @@ class _QuizPageState extends State<QuizPage> {
 
   //Creating the alert dialog box to display if user didnt select any option
   void noSelectedOptionDialog() {
-    showDialog(
+    QuickAlert.show(
         context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-                side: const BorderSide(color: Color(0xFF0039FF), width: 5)),
-            title: const Text('No Answer Selected'),
-            content: const Text('Please select an answer before continuing'),
-            actions: [
-              TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text(
-                    'OK',
-                    style: TextStyle(
-                      color: Color(0xFF0039FF),
-                    ),
-                  ))
-            ],
-          );
-        });
+        type: QuickAlertType.warning,
+        title: 'No Answer Selected',
+        text: 'Please select an answer');
   }
 
   //Creating the dialog box to confirm that the user wants to quit
   void quitOptionDialog() {
-    showDialog(
+    QuickAlert.show(
         context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-                side: const BorderSide(color: Color(0xFF0039FF), width: 5)),
-            title: const Text('Do You Want To Exit ?'),
-            content:
-                const Text('Any of the selected answers will not be saved !'),
-            actions: [
-              TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const HomeScreen()));
-                  },
-                  child: const Text(
-                    'Yes',
-                    style: TextStyle(color: Color(0xFF0039FF)),
-                  )),
-              TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text(
-                    'No',
-                    style: TextStyle(color: Color(0xFF0039FF)),
-                  ))
-            ],
-          );
+        type: QuickAlertType.confirm,
+        title: 'Do You Want To Quit ?',
+        text: 'Any of the selected answers will not be saved !',
+        confirmBtnText: 'Quit',
+        onConfirmBtnTap: () {
+          Navigator.of(context).pop();
+          Navigator.of(context).pop();
         });
   }
 
@@ -703,161 +805,155 @@ class _QuizPageState extends State<QuizPage> {
       print('${i.questionId}, ${i.answerId}, ${i.mark}');
     }
     print(quizResultMap);
-    showDialog(
+
+    QuickAlert.show(
         context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-                side: const BorderSide(color: Color(0xFF0039FF), width: 5)),
-            title: const Text('Do You Want To See The Results?'),
-            content:
-                const Text('Please proceed if you want to see the results.'),
-            actions: [
-              TextButton(
-                  onPressed: () {
-                    //the reult map will be send as a parameter of the submitResultData() function
-                    submitResultData(quizResultMap);
-                  },
-                  child: const Text(
-                    'Proceed',
-                    style: TextStyle(color: Color(0xFF0039FF)),
-                  )),
-              TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text(
-                    'No',
-                    style: TextStyle(
-                      color: Color(0xFF0039FF),
-                    ),
-                  ))
-            ],
-          );
+        type: QuickAlertType.confirm,
+        title: 'Submit The Answers ?',
+        text: 'Proceed to submit the answers and see the results',
+        confirmBtnText: 'Proceed',
+        onConfirmBtnTap: () {
+          //the reult map will be send as a parameter of the submitResultData() function
+          submitResultData(quizResultMap, context);
         });
   }
 
   //Creating the function to request the quiz
-  Future<void> requestQuiz() async {
-    await Future.delayed(const Duration(seconds: 2));
+  Future<void> requestQuiz(BuildContext context) async {
+    if (context.mounted) {
+      String? token = await secureStorage.read(key: 'token');
 
-    String? token = await secureStorage.read(key: 'token');
+      //If the token is not null continue with the process
+      if (token != null && Jwt.isExpired(token) == false) {
+        // Obtaining the URL to a variable
+        const String apiUrl = requestQuizEndpoint;
 
-    //If the token is not null continue with the process
-    if (token != null) {
-      // Obtaining the URL to a variable
-      final String apiUrl = 'http://10.0.2.2:8000/quiz_send/';
+        //Converting the url to uri
+        Uri uri = Uri.parse(apiUrl);
 
-      //Converting the url to uri
-      Uri uri = Uri.parse(apiUrl);
+        //Requesting the quiz
+        final response = await http.get(
+          uri,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token'
+          },
+        );
 
-      //Requesting the quiz
-      final response = await http.get(
-        uri,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token'
-        },
-      );
+        //Returning an output according to the status code
+        if (response.statusCode == 200) {
+          try {
+            //Decode the received quiz and store in the quiz model
+            final data = json.decode(response.body);
 
-      //Returning an output according to the status code
-      if (response.statusCode == 200) {
-        try {
-          //Decode the received quiz and store in the quiz model
-          final data = json.decode(response.body);
+            if (context.mounted) {
+              setState(() {
+                //Storing the decode data in the model instance we created at the beginning
+                receivedQuiz = List.from(data['questions_and_answers'])
+                    .map<QuizModel>((item) {
+                  return QuizModel(
+                    questionId: item['id'],
+                    question: item['question'],
+                    answers:
+                        List.from(item['answers']).map<AnswerModel>((answer) {
+                      return AnswerModel(
+                          answerId: answer['id'],
+                          answer: answer['answer'],
+                          mark: answer['mark']);
+                    }).toList(),
+                  );
+                }).toList();
 
-          setState(() {
-            //Storing the decode data in the model instance we created at the beginning
-            receivedQuiz =
-                List.from(data['questions_and_answers']).map<QuizModel>((item) {
-              return QuizModel(
-                questionId: item['id'],
-                question: item['question'],
-                answers: List.from(item['answers']).map<AnswerModel>((answer) {
-                  return AnswerModel(
-                      answerId: answer['id'],
-                      answer: answer['answer'],
-                      mark: answer['mark']);
-                }).toList(),
-              );
-            }).toList();
-
-            //Considering the page as loaded
-            isLoading = false;
-          });
-        } catch (e) {
-          print('Error converting to JSON : $e');
+                //Considering the page as loaded
+                isLoading = false;
+              });
+            }
+          } catch (e) {
+            print('Error converting to JSON : $e');
+          }
+        } else {
+          print('unable to receive data: ${response.body}');
         }
       } else {
-        print('unable to receive data: ${response.body}');
+        if (context.mounted) {
+          Navigator.push(
+              context, (MaterialPageRoute(builder: (context) => login_user())));
+        }
       }
-    } else {
-      print("The token is null");
     }
   }
 
   //Creating the function to submit the result data
   //This function will get the result map as the parameter and directly send it to the backend
-  Future<void> submitResultData(Map<String, dynamic> quizResultMap) async {
-    //Collecting the token from the secure storage
-    String? token = await secureStorage.read(key: 'token');
+  Future<void> submitResultData(
+      Map<String, dynamic> quizResultMap, BuildContext context) async {
+    if (context.mounted) {
+      //Collecting the token from the secure storage
+      String? token = await secureStorage.read(key: 'token');
 
-    //If the token is not null continue with the process
-    if (token != null) {
-      // Obtaining the URL to a variable
-      final String apiUrl = 'http://10.0.2.2:8000/quiz_data_store/';
+      //If the token is not null continue with the process
+      if (token != null && Jwt.isExpired(token) == false) {
+        // Obtaining the URL to a variable
+        const String apiUrl = quizResultStoreEndpoint;
 
-      //Converting the url to uri
-      Uri uri = Uri.parse(apiUrl);
+        //Converting the url to uri
+        Uri uri = Uri.parse(apiUrl);
 
-      //Creating the relavant data map to send
-      final List<Map<String, dynamic>> quizQandAList = [];
+        //Creating the relavant data map to send
+        final List<Map<String, dynamic>> quizQandAList = [];
 
-      for (int i = 0; i < qandAData.length; i++) {
-        quizQandAList.add({
-          'question': qandAData[i].questionId,
-          'answer_id': qandAData[i].answerId
-        });
-      }
+        for (int i = 0; i < qandAData.length; i++) {
+          quizQandAList.add({
+            'question': qandAData[i].questionId,
+            'answer_id': qandAData[i].answerId
+          });
+        }
 
-      Map<String, dynamic> formData = {
-        'quiz_result_data': quizResultMap,
-        'quiz_q_and_a_data': quizQandAList,
-      };
+        Map<String, dynamic> formData = {
+          'quiz_result_data': quizResultMap,
+          'quiz_q_and_a_data': quizQandAList,
+        };
 
-      //Sending the result map to the backend with the token
-      final response = await http.post(
-        uri,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token'
-        },
-        body: json.encode(formData),
-      );
+        //Sending the result map to the backend with the token
+        final response = await http.post(
+          uri,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token'
+          },
+          body: json.encode(formData),
+        );
 
-      //Returning an output according to the status code
-      if (response.statusCode == 201) {
-        print('Data submitted successfully');
+        //Returning an output according to the status code
+        if (response.statusCode == 201) {
+          print('Data submitted successfully');
 
-        try {
-          // Decode the response data
-          final Map<String, dynamic> responseData = json.decode(response.body);
+          try {
+            // Decode the response data
+            final Map<String, dynamic> responseData =
+                json.decode(response.body);
 
-          //If the result data are submitted suceesfully, navigate to a loading screen by sending the quiz result id with it
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => QuizResultPage(
-                      quizResultId: responseData['quiz_result_id'])));
-        } catch (e) {
-          print('unable to convert to json : $e');
+            if (context.mounted) {
+              Navigator.of(context).pop();
+              //If the result data are submitted suceesfully, navigate to a loading screen by sending the quiz result id with it
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => QuizResultPage(
+                          quizResultId: responseData['quiz_result_id'])));
+            }
+          } catch (e) {
+            print('unable to convert to json : $e');
+          }
+        } else {
+          print('unable to submit data: ${response.body}');
         }
       } else {
-        print('unable to submit data: ${response.body}');
+        if (context.mounted) {
+          Navigator.push(
+              context, (MaterialPageRoute(builder: (context) => login_user())));
+        }
       }
-    } else {
-      print("The token is null");
     }
   }
 }
