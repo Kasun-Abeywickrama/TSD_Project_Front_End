@@ -312,40 +312,40 @@ class _RegisterUserState extends State<RegisterUser> {
   //Function of submitting the data
   void submitForm(BuildContext context) async {
     if (context.mounted) {
-      //Obtaining the URL to a variable
-      const String apiUrl = registerEndpoint;
+      try {
+        //Obtaining the URL to a variable
+        const String apiUrl = registerEndpoint;
 
-      //Mapping the relavant data
-      Map<String, dynamic> auth_user = {
-        'username': usernameController.text,
-        'password': passwordController.text,
-      };
+        //Mapping the relavant data
+        Map<String, dynamic> auth_user = {
+          'username': usernameController.text,
+          'password': passwordController.text,
+        };
 
-      Map<String, dynamic> user = {};
+        Map<String, dynamic> user = {};
 
-      Map<String, dynamic> formData = {
-        'auth_user': auth_user,
-        'user': user,
-      };
+        Map<String, dynamic> formData = {
+          'auth_user': auth_user,
+          'user': user,
+        };
 
-      //Converting the url to uri
-      Uri uri = Uri.parse(apiUrl);
+        //Converting the url to uri
+        Uri uri = Uri.parse(apiUrl);
 
-      //Sending the data to the backend
-      final response = await http.post(
-        uri,
-        headers: {'Content-Type': 'application/json'},
-        body: json.encode(formData),
-      );
+        //Sending the data to the backend
+        final response = await http.post(
+          uri,
+          headers: {'Content-Type': 'application/json'},
+          body: json.encode(formData),
+        );
 
-      //Returning an output according to the status code
-      if (response.statusCode == 201) {
-        print('Data submitted successfully');
-        //Displaying a successfull login dialog box and navigating to login screen through it
-        loginSuccessDialog();
-        //If status code is not 201
-      } else {
-        try {
+        //Returning an output according to the status code
+        if (response.statusCode == 201) {
+          print('Data submitted successfully');
+          //Displaying a successfull login dialog box and navigating to login screen through it
+          loginSuccessDialog();
+          //If status code is not 201
+        } else {
           //Decode the response received from the server
           final Map<String, dynamic> errorData = json.decode(response.body);
           //If the error is username uniqueness
@@ -362,9 +362,9 @@ class _RegisterUserState extends State<RegisterUser> {
           else {
             print('$errorData');
           }
-        } catch (e) {
-          print('Error converting to JSON : $e');
         }
+      } catch (e) {
+        print("Exception Occured: $e");
       }
     }
   }

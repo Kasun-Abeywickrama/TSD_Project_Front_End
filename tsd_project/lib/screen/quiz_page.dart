@@ -822,24 +822,24 @@ class _QuizPageState extends State<QuizPage> {
 
     if (context.mounted) {
       if (await checkLoginStatus(context)) {
-        // Obtaining the URL to a variable
-        const String apiUrl = requestQuizEndpoint;
+        try {
+          // Obtaining the URL to a variable
+          const String apiUrl = requestQuizEndpoint;
 
-        //Converting the url to uri
-        Uri uri = Uri.parse(apiUrl);
+          //Converting the url to uri
+          Uri uri = Uri.parse(apiUrl);
 
-        //Requesting the quiz
-        final response = await http.get(
-          uri,
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer $accessToken'
-          },
-        );
+          //Requesting the quiz
+          final response = await http.get(
+            uri,
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer $accessToken'
+            },
+          );
 
-        //Returning an output according to the status code
-        if (response.statusCode == 200) {
-          try {
+          //Returning an output according to the status code
+          if (response.statusCode == 200) {
             //Decode the received quiz and store in the quiz model
             final data = json.decode(response.body);
 
@@ -865,11 +865,11 @@ class _QuizPageState extends State<QuizPage> {
                 isLoading = false;
               });
             }
-          } catch (e) {
-            print('Error converting to JSON : $e');
+          } else {
+            print('unable to receive data: ${response.body}');
           }
-        } else {
-          print('unable to receive data: ${response.body}');
+        } catch (e) {
+          print("Exception Occured: $e");
         }
       }
     }
@@ -886,42 +886,42 @@ class _QuizPageState extends State<QuizPage> {
 
     if (context.mounted) {
       if (await checkLoginStatus(context)) {
-        // Obtaining the URL to a variable
-        const String apiUrl = quizResultStoreEndpoint;
+        try {
+          // Obtaining the URL to a variable
+          const String apiUrl = quizResultStoreEndpoint;
 
-        //Converting the url to uri
-        Uri uri = Uri.parse(apiUrl);
+          //Converting the url to uri
+          Uri uri = Uri.parse(apiUrl);
 
-        //Creating the relavant data map to send
-        final List<Map<String, dynamic>> quizQandAList = [];
+          //Creating the relavant data map to send
+          final List<Map<String, dynamic>> quizQandAList = [];
 
-        for (int i = 0; i < qandAData.length; i++) {
-          quizQandAList.add({
-            'question': qandAData[i].questionId,
-            'answer_id': qandAData[i].answerId
-          });
-        }
+          for (int i = 0; i < qandAData.length; i++) {
+            quizQandAList.add({
+              'question': qandAData[i].questionId,
+              'answer_id': qandAData[i].answerId
+            });
+          }
 
-        Map<String, dynamic> formData = {
-          'quiz_result_data': quizResultMap,
-          'quiz_q_and_a_data': quizQandAList,
-        };
+          Map<String, dynamic> formData = {
+            'quiz_result_data': quizResultMap,
+            'quiz_q_and_a_data': quizQandAList,
+          };
 
-        //Sending the result map to the backend with the token
-        final response = await http.post(
-          uri,
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer $accessToken'
-          },
-          body: json.encode(formData),
-        );
+          //Sending the result map to the backend with the token
+          final response = await http.post(
+            uri,
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer $accessToken'
+            },
+            body: json.encode(formData),
+          );
 
-        //Returning an output according to the status code
-        if (response.statusCode == 201) {
-          print('Data submitted successfully');
+          //Returning an output according to the status code
+          if (response.statusCode == 201) {
+            print('Data submitted successfully');
 
-          try {
             // Decode the response data
             final Map<String, dynamic> responseData =
                 json.decode(response.body);
@@ -935,11 +935,11 @@ class _QuizPageState extends State<QuizPage> {
                       builder: (context) => QuizResultPage(
                           quizResultId: responseData['quiz_result_id'])));
             }
-          } catch (e) {
-            print('unable to convert to json : $e');
+          } else {
+            print('unable to submit data: ${response.body}');
           }
-        } else {
-          print('unable to submit data: ${response.body}');
+        } catch (e) {
+          print("Exception Occured: $e");
         }
       }
     }

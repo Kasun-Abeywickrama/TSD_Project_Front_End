@@ -260,28 +260,28 @@ class _login_userState extends State<login_user> {
   //Creating the function to send data and receive response
   Future<void> submitForm(BuildContext context) async {
     if (context.mounted) {
-      //Getting the url to a variable
-      const String apiUrl = loginEndpoint;
+      try {
+        //Getting the url to a variable
+        const String apiUrl = loginEndpoint;
 
-      //Map the data into a dictionary
-      Map<String, dynamic> formData = {
-        'username': usernameController.text,
-        'password': passwordController.text,
-      };
+        //Map the data into a dictionary
+        Map<String, dynamic> formData = {
+          'username': usernameController.text,
+          'password': passwordController.text,
+        };
 
-      //Converting url to uri
-      Uri uri = Uri.parse(apiUrl);
+        //Converting url to uri
+        Uri uri = Uri.parse(apiUrl);
 
-      //Sending the data to the backend as json and getting the response
-      final response = await http.post(
-        uri,
-        headers: {'Content-Type': 'application/json'},
-        body: json.encode(formData),
-      );
+        //Sending the data to the backend as json and getting the response
+        final response = await http.post(
+          uri,
+          headers: {'Content-Type': 'application/json'},
+          body: json.encode(formData),
+        );
 
-      //Displaying a return statement according to the response
-      if (response.statusCode == 200) {
-        try {
+        //Displaying a return statement according to the response
+        if (response.statusCode == 200) {
           final Map<String, dynamic> responseData = json.decode(response.body);
 
           final String? accessToken = responseData['token'];
@@ -313,25 +313,21 @@ class _login_userState extends State<login_user> {
           } else {
             print('Access Token is null');
           }
-        } catch (e) {
-          print('Unable to convert from JSON: $e');
         }
-      }
-      //If the authentication fails
-      else if (response.statusCode == 401) {
-        print('Invalid credentials');
-        invalidCredentialsDialog();
-      }
-      //If there is an other type of error
-      else {
-        try {
+        //If the authentication fails
+        else if (response.statusCode == 401) {
+          print('Invalid credentials');
+          invalidCredentialsDialog();
+        }
+        //If there is an other type of error
+        else {
           //Mapping the response data
           final Map<String, dynamic> responseData = json.decode(response.body);
           //Printing the response data
           print('$responseData');
-        } catch (e) {
-          print('Error converting to JSON : $e');
         }
+      } catch (e) {
+        print("Exception Occurred: $e");
       }
     }
   }
