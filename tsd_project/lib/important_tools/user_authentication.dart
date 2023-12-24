@@ -14,28 +14,9 @@ Future<bool> checkLoginStatus(BuildContext context) async {
     //Checking if the access token is expired
     bool isTokenExpired = Jwt.isExpired(accessToken);
     if (isTokenExpired == false) {
-      //Decoding the access token data to check auth user type
-      try {
-        final Map<String, dynamic> decodedAccessToken =
-            Jwt.parseJwt(accessToken);
-
-        final String authUserType = decodedAccessToken['auth_user_type'];
-
-        if (authUserType == 'user') {
-          print('User Access Token is Valid');
-          return true;
-        } else {
-          //If the user is not a user return false and navigate to login screen
-          print('You does not have access to this content');
-          if (context.mounted) {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => login_user()));
-          }
-          return false;
-        }
-      } catch (e) {
-        print("Error converting the access token : $e");
-      }
+      //The access token is valid, the user can access the content
+      print('User Access Token is Valid');
+      return true;
     } else {
       //If the access token is expired return false and navigate to login screen
       print('Access Token is expired');
@@ -54,7 +35,6 @@ Future<bool> checkLoginStatus(BuildContext context) async {
     }
     return false;
   }
-  return false;
 }
 
 Future<void> signOut(BuildContext context) async {

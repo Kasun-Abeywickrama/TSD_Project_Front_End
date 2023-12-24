@@ -284,7 +284,7 @@ class _login_userState extends State<login_user> {
         if (response.statusCode == 200) {
           final Map<String, dynamic> responseData = json.decode(response.body);
 
-          final String? accessToken = responseData['token'];
+          final String? accessToken = responseData['access_token'];
 
           if (accessToken != null) {
             //Setting the access token in secure storage
@@ -295,13 +295,10 @@ class _login_userState extends State<login_user> {
                 Jwt.parseJwt(accessToken);
 
             //Storing auth_user_id in a variable
-            final int authUserId = decodedAccessToken['auth_user_id'];
+            final int authUserId = decodedAccessToken['user_id'];
 
+            //Print auth_user_id
             print('Auth_user_id: $authUserId');
-
-            //Setting the auth_user_id in secure storage
-            secureStorage.write(
-                key: 'auth_user_id', value: authUserId.toString());
 
             if (context.mounted) {
               //Navigate to the Home page
