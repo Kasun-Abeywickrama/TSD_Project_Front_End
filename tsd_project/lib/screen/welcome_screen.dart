@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:tsd_project/important_tools/user_authentication.dart';
-import 'package:tsd_project/screen/home_screen.dart';
+import 'package:tsd_project/screen/main_screen.dart';
 
 class Welcome extends StatefulWidget {
   const Welcome({super.key});
@@ -24,7 +24,7 @@ class _WelcomeState extends State<Welcome> {
         if (await checkLoginStatus(context)) {
           if (context.mounted) {
             Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (context) => const HomeScreen()));
+                MaterialPageRoute(builder: (context) => MainScreen()));
           }
         }
       }

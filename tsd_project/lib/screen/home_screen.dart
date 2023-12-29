@@ -3,11 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:quickalert/quickalert.dart';
-import 'package:tsd_project/decoration_tools/bottom_navigation_bar.dart';
 import 'package:tsd_project/decoration_tools/custom_loading_indicator.dart';
 import 'package:tsd_project/screen/previous_quiz_results.dart';
 import 'package:tsd_project/screen/quiz_page.dart';
-import 'package:tsd_project/decoration_tools/top_app_bar.dart';
 import 'package:tsd_project/important_tools/user_authentication.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -101,380 +99,352 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      canPop: false,
-      onPopInvoked: (bool didPop) {
-        if (didPop) {
-          return;
-        }
-        closeAppDialog();
-      },
-      child: Scaffold(
-          bottomNavigationBar: CustomBottomNavigationBar(),
-          appBar: CustomTopAppBar(
-            pageName: "Home",
-            pageIndex: 0,
-          ),
-          body: isLoading
-              ? CustomLoadingIndicator()
-              : RefreshIndicator(
-                  onRefresh: () => initialProcess(context),
-                  child: ListView(
-                    children: [
-                      SizedBox(
-                        width: double.infinity,
-                        // color: Colors.blueAccent,
-                        child: Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                height: 60,
-                                margin: const EdgeInsets.only(
-                                    top: 10.0, right: 25.0, left: 25.0),
-                                child: ListView(
-                                    scrollDirection: Axis.horizontal,
-                                    children: [
-                                      Center(
-                                        child: RichText(
-                                          text: TextSpan(
-                                            style: GoogleFonts.lato(
-                                                fontSize: 30.0,
-                                                color: Colors.black),
-                                            children: <TextSpan>[
-                                              TextSpan(
-                                                text: '$greeting, ',
-                                              ),
-                                              TextSpan(
-                                                text: firstName ?? 'Friend',
-                                                style: GoogleFonts.pacifico(
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                              const TextSpan(
-                                                text: '!',
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ]),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: double.infinity,
-                        // color: Colors.grey,
+    return isLoading
+            ? CustomLoadingIndicator()
+            : RefreshIndicator(
+                onRefresh: () => initialProcess(context),
+                child: ListView(
+                  children: [
+                    SizedBox(
+                      width: double.infinity,
+                      // color: Colors.blueAccent,
+                      child: Center(
                         child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Container(
-                              width: double.infinity,
+                              height: 60,
                               margin: const EdgeInsets.only(
                                   top: 10.0, right: 25.0, left: 25.0),
-                              // color: Colors.teal,
-                              child: const Text(
-                                "How are you feeling today ?",
-                                style: TextStyle(fontSize: 20.0),
-                              ),
-                            ),
-                            Container(
-                              height: 120.0,
-                              margin:
-                                  const EdgeInsets.only(left: 25.0, top: 15.0),
                               child: ListView(
-                                scrollDirection: Axis.horizontal,
-                                children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      feelingInfoDialog("Happy");
-                                    },
-                                    child: Container(
-                                      width: 80.0,
-                                      margin:
-                                          const EdgeInsets.only(right: 22.0),
-                                      child: Image.asset(
-                                        'assets/images/Happy.png', // Path to your image in the assets folder
-                                        fit: BoxFit
-                                            .cover, // Adjust the fit as needed (cover, contain, etc.)
+                                  scrollDirection: Axis.horizontal,
+                                  children: [
+                                    Center(
+                                      child: RichText(
+                                        text: TextSpan(
+                                          style: GoogleFonts.lato(
+                                              fontSize: 30.0,
+                                              color: Colors.black),
+                                          children: <TextSpan>[
+                                            TextSpan(
+                                              text: '$greeting, ',
+                                            ),
+                                            TextSpan(
+                                              text: firstName ?? 'Friend',
+                                              style: GoogleFonts.pacifico(
+                                                  fontWeight:
+                                                      FontWeight.bold),
+                                            ),
+                                            const TextSpan(
+                                              text: '!',
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      feelingInfoDialog("Calm");
-                                    },
-                                    child: Container(
-                                      width: 80.0,
-                                      margin:
-                                          const EdgeInsets.only(right: 22.0),
-                                      child: Image.asset(
-                                        'assets/images/Calm.png', // Path to your image in the assets folder
-                                        fit: BoxFit
-                                            .cover, // Adjust the fit as needed (cover, contain, etc.)
-                                      ),
-                                    ),
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      feelingInfoDialog("Manic");
-                                    },
-                                    child: Container(
-                                      width: 80.0,
-                                      margin:
-                                          const EdgeInsets.only(right: 22.0),
-                                      child: Image.asset(
-                                        'assets/images/Relax.png', // Path to your image in the assets folder
-                                        fit: BoxFit
-                                            .cover, // Adjust the fit as needed (cover, contain, etc.)
-                                      ),
-                                    ),
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      feelingInfoDialog("Angry");
-                                    },
-                                    child: Container(
-                                      width: 80.0,
-                                      margin:
-                                          const EdgeInsets.only(right: 22.0),
-                                      child: Image.asset(
-                                        'assets/images/Angry.png', // Path to your image in the assets folder
-                                        fit: BoxFit
-                                            .cover, // Adjust the fit as needed (cover, contain, etc.)
-                                      ),
-                                    ),
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      feelingInfoDialog("Sad");
-                                    },
-                                    child: Container(
-                                      width: 80.0,
-                                      margin:
-                                          const EdgeInsets.only(right: 22.0),
-                                      child: Image.asset(
-                                        'assets/images/Sad.png', // Path to your image in the assets folder
-                                        fit: BoxFit
-                                            .cover, // Adjust the fit as needed (cover, contain, etc.)
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                                  ]),
                             )
                           ],
                         ),
                       ),
-                      Container(
-                        width: double.infinity,
-                        margin: const EdgeInsets.only(top: 20.0),
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(20.0),
-                              child: Container(
-                                width: double.infinity,
-                                decoration: BoxDecoration(
-                                  color: const Color.fromRGBO(
-                                      153, 212, 255, 0.5600000023841858),
-                                  borderRadius: BorderRadius.circular(
-                                      20.0), // Set the border radius
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(5.0),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        flex: 7, // 70% width
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(10.0),
-                                              child: Text(
-                                                'Take The Quiz',
-                                                style: GoogleFonts.lato(
-                                                    fontSize: 22.0,
-                                                    color:
-                                                        const Color(0xFF573926),
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 10.0),
-                                              child: Text(
-                                                'Let’s open up to the things that matter the most ',
-                                                style: GoogleFonts.lato(
-                                                    fontSize: 17.0,
-                                                    color: const Color(
-                                                        0xFF573926)),
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 10.0,
-                                                      vertical: 20.0),
-                                              child: GestureDetector(
-                                                onTap: () {
-                                                  Navigator.push(
-                                                      context,
-                                                      (MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              QuizPage())));
-                                                },
-                                                child: Text(
-                                                  'Start the quiz',
-                                                  style: GoogleFonts.lato(
-                                                      fontSize: 22.0,
-                                                      color: const Color(
-                                                          0xFF0289EB),
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                      Expanded(
-                                        flex: 3, // 30% width
-                                        child: Center(
-                                          child: Container(
-                                            width: double.infinity,
-                                            margin: const EdgeInsets.only(
-                                                right: 22.0),
-                                            child: Image.asset(
-                                              'assets/images/Quiz.png', // Path to your image in the assets folder
-                                              fit: BoxFit
-                                                  .cover, // Adjust the fit as needed (cover, contain, etc.)
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
+                    ),
+                    SizedBox(
+                      width: double.infinity,
+                      // color: Colors.grey,
+                      child: Column(
+                        children: [
+                          Container(
+                            width: double.infinity,
+                            margin: const EdgeInsets.only(
+                                top: 10.0, right: 25.0, left: 25.0),
+                            // color: Colors.teal,
+                            child: const Text(
+                              "How are you feeling today ?",
+                              style: TextStyle(fontSize: 20.0),
+                            ),
+                          ),
+                          Container(
+                            height: 120.0,
+                            margin:
+                                const EdgeInsets.only(left: 25.0, top: 15.0),
+                            child: ListView(
+                              scrollDirection: Axis.horizontal,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    feelingInfoDialog("Happy");
+                                  },
+                                  child: Container(
+                                    width: 80.0,
+                                    margin:
+                                        const EdgeInsets.only(right: 22.0),
+                                    child: Image.asset(
+                                      'assets/images/Happy.png', // Path to your image in the assets folder
+                                      fit: BoxFit
+                                          .cover, // Adjust the fit as needed (cover, contain, etc.)
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(20.0),
-                              child: Container(
-                                width: double.infinity,
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFFFCDDEC),
-                                  borderRadius: BorderRadius.circular(
-                                      20.0), // Set the border radius
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(5.0),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        flex: 7, // 70% width
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(10.0),
-                                              child: Text(
-                                                'Previous Quiz Results',
-                                                style: GoogleFonts.lato(
-                                                    fontSize: 22.0,
-                                                    color:
-                                                        const Color(0xFF86593D),
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 10.0),
-                                              child: Text(
-                                                'Let’s see how you scored for your previous quizes',
-                                                style: GoogleFonts.lato(
-                                                    fontSize: 17.0,
-                                                    color: const Color(
-                                                        0xFF86593D)),
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 10.0,
-                                                      vertical: 20.0),
-                                              child: GestureDetector(
-                                                onTap: () {
-                                                  Navigator.push(
-                                                      context,
-                                                      (MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              PreviousQuizResults())));
-                                                },
-                                                child: Text(
-                                                  'View results',
-                                                  style: GoogleFonts.lato(
-                                                      fontSize: 22.0,
-                                                      color: const Color(
-                                                          0xFF86593D),
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                      Expanded(
-                                        flex: 3, // 30% width
-                                        child: Center(
-                                          child: Container(
-                                            width: double.infinity,
-                                            margin: const EdgeInsets.only(
-                                                right: 22.0),
-                                            child: Image.asset(
-                                              'assets/images/sample.png', // Path to your image in the assets folder
-                                              fit: BoxFit
-                                                  .cover, // Adjust the fit as needed (cover, contain, etc.)
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
+                                GestureDetector(
+                                  onTap: () {
+                                    feelingInfoDialog("Calm");
+                                  },
+                                  child: Container(
+                                    width: 80.0,
+                                    margin:
+                                        const EdgeInsets.only(right: 22.0),
+                                    child: Image.asset(
+                                      'assets/images/Calm.png', // Path to your image in the assets folder
+                                      fit: BoxFit
+                                          .cover, // Adjust the fit as needed (cover, contain, etc.)
+                                    ),
                                   ),
                                 ),
-                              ),
+                                GestureDetector(
+                                  onTap: () {
+                                    feelingInfoDialog("Manic");
+                                  },
+                                  child: Container(
+                                    width: 80.0,
+                                    margin:
+                                        const EdgeInsets.only(right: 22.0),
+                                    child: Image.asset(
+                                      'assets/images/Relax.png', // Path to your image in the assets folder
+                                      fit: BoxFit
+                                          .cover, // Adjust the fit as needed (cover, contain, etc.)
+                                    ),
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    feelingInfoDialog("Angry");
+                                  },
+                                  child: Container(
+                                    width: 80.0,
+                                    margin:
+                                        const EdgeInsets.only(right: 22.0),
+                                    child: Image.asset(
+                                      'assets/images/Angry.png', // Path to your image in the assets folder
+                                      fit: BoxFit
+                                          .cover, // Adjust the fit as needed (cover, contain, etc.)
+                                    ),
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    feelingInfoDialog("Sad");
+                                  },
+                                  child: Container(
+                                    width: 80.0,
+                                    margin:
+                                        const EdgeInsets.only(right: 22.0),
+                                    child: Image.asset(
+                                      'assets/images/Sad.png', // Path to your image in the assets folder
+                                      fit: BoxFit
+                                          .cover, // Adjust the fit as needed (cover, contain, etc.)
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          )
+                        ],
                       ),
-                    ],
-                  ),
-                )),
-    );
-  }
-
-  //Creating the dialog box to confirm that the user wants to quit the app
-  void closeAppDialog() {
-    QuickAlert.show(
-        context: context,
-        type: QuickAlertType.confirm,
-        title: 'Are You Sure ?',
-        text: 'Do you want to quit the application ?',
-        confirmBtnText: 'Quit',
-        onConfirmBtnTap: () {
-          SystemNavigator.pop();
-        });
+                    ),
+                    Container(
+                      width: double.infinity,
+                      margin: const EdgeInsets.only(top: 20.0),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: Container(
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: const Color.fromRGBO(
+                                    153, 212, 255, 0.5600000023841858),
+                                borderRadius: BorderRadius.circular(
+                                    20.0), // Set the border radius
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(5.0),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 7, // 70% width
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.all(10.0),
+                                            child: Text(
+                                              'Take The Quiz',
+                                              style: GoogleFonts.lato(
+                                                  fontSize: 22.0,
+                                                  color:
+                                                      const Color(0xFF573926),
+                                                  fontWeight:
+                                                      FontWeight.bold),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.symmetric(
+                                                    horizontal: 10.0),
+                                            child: Text(
+                                              'Let’s open up to the things that matter the most ',
+                                              style: GoogleFonts.lato(
+                                                  fontSize: 17.0,
+                                                  color: const Color(
+                                                      0xFF573926)),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.symmetric(
+                                                    horizontal: 10.0,
+                                                    vertical: 20.0),
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                Navigator.push(
+                                                    context,
+                                                    (MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            QuizPage())));
+                                              },
+                                              child: Text(
+                                                'Start the quiz',
+                                                style: GoogleFonts.lato(
+                                                    fontSize: 22.0,
+                                                    color: const Color(
+                                                        0xFF0289EB),
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 3, // 30% width
+                                      child: Center(
+                                        child: Container(
+                                          width: double.infinity,
+                                          margin: const EdgeInsets.only(
+                                              right: 22.0),
+                                          child: Image.asset(
+                                            'assets/images/Quiz.png', // Path to your image in the assets folder
+                                            fit: BoxFit
+                                                .cover, // Adjust the fit as needed (cover, contain, etc.)
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: Container(
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFFCDDEC),
+                                borderRadius: BorderRadius.circular(
+                                    20.0), // Set the border radius
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(5.0),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 7, // 70% width
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.all(10.0),
+                                            child: Text(
+                                              'Previous Quiz Results',
+                                              style: GoogleFonts.lato(
+                                                  fontSize: 22.0,
+                                                  color:
+                                                      const Color(0xFF86593D),
+                                                  fontWeight:
+                                                      FontWeight.bold),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.symmetric(
+                                                    horizontal: 10.0),
+                                            child: Text(
+                                              'Let’s see how you scored for your previous quizes',
+                                              style: GoogleFonts.lato(
+                                                  fontSize: 17.0,
+                                                  color: const Color(
+                                                      0xFF86593D)),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.symmetric(
+                                                    horizontal: 10.0,
+                                                    vertical: 20.0),
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                Navigator.push(
+                                                    context,
+                                                    (MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            PreviousQuizResults())));
+                                              },
+                                              child: Text(
+                                                'View results',
+                                                style: GoogleFonts.lato(
+                                                    fontSize: 22.0,
+                                                    color: const Color(
+                                                        0xFF86593D),
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 3, // 30% width
+                                      child: Center(
+                                        child: Container(
+                                          width: double.infinity,
+                                          margin: const EdgeInsets.only(
+                                              right: 22.0),
+                                          child: Image.asset(
+                                            'assets/images/sample.png', // Path to your image in the assets folder
+                                            fit: BoxFit
+                                                .cover, // Adjust the fit as needed (cover, contain, etc.)
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
   }
 
   //The function that returns greeting
