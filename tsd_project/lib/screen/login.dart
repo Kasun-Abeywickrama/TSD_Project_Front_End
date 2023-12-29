@@ -7,7 +7,7 @@ import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 import 'package:tsd_project/important_tools/api_endpoints.dart';
-import 'package:tsd_project/screen/home_screen.dart';
+import 'package:tsd_project/screen/main_screen.dart';
 
 import 'package:tsd_project/screen/register.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -305,7 +305,7 @@ class _login_userState extends State<login_user> {
               Navigator.pushReplacement(
                   context,
                   (MaterialPageRoute(
-                      builder: (context) => const HomeScreen())));
+                      builder: (context) => MainScreen())));
             }
           } else {
             print('Access Token is null');
