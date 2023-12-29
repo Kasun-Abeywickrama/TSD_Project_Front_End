@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:quickalert/quickalert.dart';
 import 'package:tsd_project/decoration_tools/custom_loading_indicator.dart';
 import 'package:tsd_project/important_tools/api_endpoints.dart';
 import 'package:tsd_project/decoration_tools/top_app_bar.dart';
 import 'package:tsd_project/important_tools/user_authentication.dart';
+import 'package:tsd_project/screen/contact_counselor/contact_counselor_list_page.dart';
+import 'package:tsd_project/screen/my_account/edit_personal_details.dart';
 
 class QuizResultPage extends StatefulWidget {
   //Declaring the quiz result id that must be received when navigating
@@ -437,7 +440,9 @@ class _QuizResultPageState extends State<QuizResultPage> {
                                                       BorderRadius.circular(
                                                           10.0),
                                                 ),
-                                                onPressed: () {},
+                                                onPressed: () {
+                                                  redirectToContactCounselorList(context);
+                                                },
                                                 child: const Text(
                                                   'Request Professional Help',
                                                   style: TextStyle(
@@ -462,5 +467,81 @@ class _QuizResultPageState extends State<QuizResultPage> {
               ]),
             ),
     );
+  }
+
+  Future<void> redirectToContactCounselorList(BuildContext context) async {
+    if(await allUserPersonalDetailsFilled(context)){
+      if(context.mounted){
+      Navigator.push(
+          context,
+          (MaterialPageRoute(
+              builder: (context) => ContactCounselorList(quizResultId: widget.quizResultId))));
+      }
+    }
+    else{
+      fillUserPersonalDetailsDialog();
+    }
+  }
+
+  //Info dialog box to tell the user to fill the personal details
+  void fillUserPersonalDetailsDialog(){
+    QuickAlert.show(
+        context: context,
+        type: QuickAlertType.warning,
+        title: 'The Personal Details are Required',
+        text: 'Please fill your personal details before requesting professional help.',
+        onConfirmBtnTap: (){
+      Navigator.pushReplacement(
+          context,
+          (MaterialPageRoute(
+              builder: (context) => EditPersonalDetails())));
+      }
+    );
+  }
+
+  //Function that gets the user personal details from the database and check all of them are filled
+  Future<bool> allUserPersonalDetailsFilled(BuildContext context) async {
+    //This process Fetches the data from the backend
+    String? accessToken = await secureStorage.read(key: 'accessToken');
+
+    if (context.mounted) {
+      if (await checkLoginStatus(context)) {
+        try {
+          // Obtaining the URL to a variable
+          const String apiUrl = requestUserPersonalDetailsEndpoint;
+
+          //Converting the url to uri
+          Uri uri = Uri.parse(apiUrl);
+
+          //Requesting the data from the backend
+          final response = await http.get(
+            uri,
+            headers: {
+              'Authorization': 'Bearer $accessToken',
+              'Content-Type': 'application/json',
+            },
+          );
+
+          if (response.statusCode == 200) {
+            //Decode the response
+            final Map<String, dynamic> backendUserDetails =
+            json.decode(response.body);
+
+            if ((backendUserDetails['user_personal_details']['first_name'] != null) &&
+                (backendUserDetails['user_personal_details']['last_name'] != null) &&
+                (backendUserDetails['user_personal_details']['email'] != null) &&
+                (backendUserDetails['user_personal_details']['mobile_number'] != null) &&
+                (backendUserDetails['user_personal_details']['date_of_birth'] != null) ) {
+                  return true;
+                }
+          } else {
+            print('Failed to receive data ${response.body}');
+          }
+        } catch (e) {
+          print('Exception occured: $e');
+        }
+      }
+    }
+    return false;
   }
 }

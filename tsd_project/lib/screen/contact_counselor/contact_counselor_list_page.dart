@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:tsd_project/decoration_tools/top_app_bar.dart';
+import 'package:tsd_project/screen/contact_counselor/contact_counselor_page.dart';
 
 class ContactCounselorList extends StatefulWidget {
+  final int quizResultId;
+
+  //This received quizResultId must be passed to the contact counselor page with the admin details id of the counselor
+  ContactCounselorList({required this.quizResultId});
+
   @override
   State<ContactCounselorList> createState() => _ContactCounselorListState();
 }
@@ -87,7 +93,12 @@ class _ContactCounselorListState extends State<ContactCounselorList> {
                           //The material button inside the first main container
                           child: MaterialButton(
                             onPressed: () {
-                              //Navigate to the contact counselor page with the quiz result id and the admin id
+                              //Navigate to the contact counselor page with the quiz result id and the admin details id
+                              Navigator.push(
+                                  context,
+                                  (MaterialPageRoute(
+                                      builder: (context) =>
+                                          const ContactCounselor())));
                             },
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(15)),
