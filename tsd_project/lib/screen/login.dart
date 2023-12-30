@@ -21,7 +21,7 @@ class _login_userState extends State<login_user> {
   //Declaring the form key to validate the fields
   final GlobalKey<FormState> _logformKey = GlobalKey<FormState>();
 
-  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
   //Creating a Flutter secure storage
@@ -70,21 +70,21 @@ class _login_userState extends State<login_user> {
                       child: Form(
                           key: _logformKey,
                           child: Column(children: [
-                            //username
+                            //Email
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Container(
                                 constraints:
                                     const BoxConstraints(maxWidth: 450.0),
                                 child: TextFormField(
-                                  controller: usernameController,
-                                  keyboardType: TextInputType.name,
+                                  controller: emailController,
+                                  keyboardType: TextInputType.emailAddress,
                                   decoration: InputDecoration(
                                     labelStyle: const TextStyle(
                                       color: Colors.black,
                                     ),
-                                    hintText: 'Username',
-                                    prefixIcon: const Icon(Icons.person),
+                                    hintText: 'Email Address',
+                                    prefixIcon: const Icon(Icons.email),
                                     filled: true,
                                     fillColor: const Color.fromARGB(
                                         255, 197, 218, 240),
@@ -112,7 +112,7 @@ class _login_userState extends State<login_user> {
                                   onChanged: (String value) {},
                                   validator: (value) {
                                     if (value!.isEmpty) {
-                                      return 'Please enter a valid username';
+                                      return 'Please enter a valid email address';
                                     } else {
                                       return null;
                                     }
@@ -266,7 +266,7 @@ class _login_userState extends State<login_user> {
 
         //Map the data into a dictionary
         Map<String, dynamic> formData = {
-          'username': usernameController.text,
+          'username': emailController.text,
           'password': passwordController.text,
         };
 

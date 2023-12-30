@@ -221,7 +221,10 @@ class _ChangeUserPasswordState extends State<ChangeUserPassword> {
                                   validator: (value) {
                                     if (value!.isEmpty) {
                                       return "Please enter a new password";
-                                    } else {
+                                    } else if(_currentPasswordController.text == _newPasswordController.text){
+                                      return "Please enter a new password";
+                                    }
+                                    else {
                                       return null;
                                     }
                                   },
