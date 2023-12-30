@@ -25,7 +25,6 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
   //Text editing controllers
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _mobilePhoneController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
 
@@ -72,11 +71,6 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                     null) {
                   _lastNameController.text =
                       backendUserDetails['user_personal_details']['last_name'];
-                }
-                if (backendUserDetails['user_personal_details']['email'] !=
-                    null) {
-                  _emailController.text =
-                      backendUserDetails['user_personal_details']['email'];
                 }
                 if (backendUserDetails['user_personal_details']
                         ['mobile_number'] !=
@@ -341,85 +335,7 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                                       ),
                                     ),
                                   ),
-                                  //Displaying the email text
-                                  const Padding(
-                                    padding: EdgeInsets.all(8.0),
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          child: Text(
-                                            "Email Address : ",
-                                            textAlign: TextAlign.left,
-                                            style: TextStyle(
-                                                color: Color.fromRGBO(
-                                                    3, 71, 120, 1),
-                                                fontSize: 18,
-                                                letterSpacing: 0,
-                                                fontWeight: FontWeight.bold,
-                                                height: 1),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  //Displaying the email form field
-                                  Padding(
-                                    padding: const EdgeInsets.fromLTRB(
-                                        8.0, 0, 8, 15),
-                                    child: Container(
-                                      constraints: const BoxConstraints(
-                                        maxWidth: 450.0,
-                                      ),
-                                      child: TextFormField(
-                                        controller: _emailController,
-                                        keyboardType:
-                                            TextInputType.emailAddress,
-                                        decoration: InputDecoration(
-                                          hintText: 'Enter Email Address',
-                                          prefixIcon:
-                                              const Icon(Icons.email_sharp),
-                                          filled: true,
-                                          fillColor: const Color.fromARGB(
-                                              255, 232, 230, 230),
-                                          enabledBorder: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10.0),
-                                            borderSide: const BorderSide(
-                                                color: Color.fromARGB(
-                                                    255, 232, 230, 230)),
-                                          ),
-                                          focusedBorder: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(30.0),
-                                            borderSide: const BorderSide(
-                                                color: Color.fromARGB(
-                                                    255, 232, 230, 230)),
-                                          ),
-                                          errorBorder: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(30.0),
-                                            borderSide: const BorderSide(
-                                                color: Colors.red, width: 2),
-                                          ),
-                                          focusedErrorBorder:
-                                              OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(30.0),
-                                            borderSide: const BorderSide(
-                                                color: Colors.red, width: 2),
-                                          ),
-                                        ),
-                                        onChanged: (String value) {},
-                                        validator: (value) {
-                                          if (value!.isEmpty) {
-                                            return "Please enter the email address";
-                                          } else {
-                                            return null;
-                                          }
-                                        },
-                                      ),
-                                    ),
-                                  ),
+
                                   //Displaying the mobile phone number text
                                   const Padding(
                                     padding: EdgeInsets.all(8.0),
@@ -710,7 +626,6 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
           Map<String, dynamic> formData = {
             'first_name': _firstNameController.text,
             'last_name': _lastNameController.text,
-            'email': _emailController.text,
             'mobile_number': _mobilePhoneController.text,
             'date_of_birth': _dateController.text,
           };
@@ -759,7 +674,6 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
     _dateController.dispose();
     _firstNameController.dispose();
     _lastNameController.dispose();
-    _emailController.dispose();
     _mobilePhoneController.dispose();
     super.dispose();
   }

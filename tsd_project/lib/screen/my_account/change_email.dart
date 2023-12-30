@@ -1,3 +1,4 @@
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'dart:convert';
@@ -9,29 +10,29 @@ import 'package:tsd_project/important_tools/api_endpoints.dart';
 import 'package:tsd_project/decoration_tools/top_app_bar.dart';
 import 'package:tsd_project/important_tools/user_authentication.dart';
 
-class ChangeUserUsername extends StatefulWidget {
+class ChangeUserEmail extends StatefulWidget {
   @override
-  State<ChangeUserUsername> createState() => _ChangeUserUsernameState();
+  State<ChangeUserEmail> createState() => _ChangeUserEmailState();
 }
 
-class _ChangeUserUsernameState extends State<ChangeUserUsername> {
+class _ChangeUserEmailState extends State<ChangeUserEmail> {
   //Declaring the variable to check if the page is loading
   bool isLoading = true;
 
   //Form key
-  final GlobalKey<FormState> _changeUsernameformKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _changeEmailformKey = GlobalKey<FormState>();
 
   //Text editing controllers
-  final TextEditingController _currentUsernameController =
+  final TextEditingController _currentEmailController =
       TextEditingController();
-  final TextEditingController _newUsernameController = TextEditingController();
+  final TextEditingController _newEmailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   //Initializing the flutter secure storage
   final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
 
-  //Function that gets the current username from the database
-  Future<void> setCurrentUsername(BuildContext context) async {
+  //Function that gets the current email from the database
+  Future<void> setCurrentEmail(BuildContext context) async {
     //This process Fetches the data from the backend
     String? accessToken = await secureStorage.read(key: 'accessToken');
 
@@ -61,7 +62,7 @@ class _ChangeUserUsernameState extends State<ChangeUserUsername> {
             if (context.mounted) {
               //Intializing these variables and rebuild the build method
               setState(() {
-                _currentUsernameController.text =
+                _currentEmailController.text =
                     backendUserAuthUserDetails['user_auth_user_details']
                         ['username'];
                 //Considering the page is loaded
@@ -87,7 +88,7 @@ class _ChangeUserUsernameState extends State<ChangeUserUsername> {
   Future<void> initialProcess(BuildContext context) async {
     if (await checkLoginStatus(context)) {
       if (context.mounted) {
-        setCurrentUsername(context);
+        setCurrentEmail(context);
       }
     }
   }
@@ -97,7 +98,7 @@ class _ChangeUserUsernameState extends State<ChangeUserUsername> {
     return Scaffold(
         appBar: CustomTopAppBar(
           pageIndex: 1,
-          pageName: "Change Username",
+          pageName: "Change Email Address",
         ),
         body: isLoading
             ? CustomLoadingIndicator()
@@ -129,15 +130,15 @@ class _ChangeUserUsernameState extends State<ChangeUserUsername> {
                           child: Padding(
                             padding: EdgeInsets.all(15.0),
                             child: Form(
-                              key: _changeUsernameformKey,
+                              key: _changeEmailformKey,
                               child: Column(
                                 children: [
-                                  //Change Username text
+                                  //Change Email text
                                   const Row(
                                     children: [
                                       Expanded(
                                         child: Text(
-                                          'Change The Username',
+                                          'Change Email Address',
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                               color:
@@ -153,14 +154,14 @@ class _ChangeUserUsernameState extends State<ChangeUserUsername> {
                                   const SizedBox(
                                     height: 30,
                                   ),
-                                  //Displaying the current username text
+                                  //Displaying the current email text
                                   const Padding(
                                     padding: EdgeInsets.all(8.0),
                                     child: Row(
                                       children: [
                                         Expanded(
                                           child: Text(
-                                            "Current Username : ",
+                                            "Current Email Address : ",
                                             textAlign: TextAlign.left,
                                             style: TextStyle(
                                                 color: Color.fromRGBO(
@@ -174,7 +175,7 @@ class _ChangeUserUsernameState extends State<ChangeUserUsername> {
                                       ],
                                     ),
                                   ),
-                                  //Displaying the current username form field (uneditable field)
+                                  //Displaying the current email form field (uneditable field)
                                   Padding(
                                     padding: const EdgeInsets.fromLTRB(
                                         8.0, 0, 8, 15),
@@ -183,11 +184,11 @@ class _ChangeUserUsernameState extends State<ChangeUserUsername> {
                                         maxWidth: 450.0,
                                       ),
                                       child: TextFormField(
-                                        controller: _currentUsernameController,
+                                        controller: _currentEmailController,
                                         readOnly: true,
-                                        keyboardType: TextInputType.name,
+                                        keyboardType: TextInputType.emailAddress,
                                         decoration: InputDecoration(
-                                          prefixIcon: const Icon(Icons.person),
+                                          prefixIcon: const Icon(Icons.email),
                                           filled: true,
                                           fillColor: const Color.fromARGB(
                                               255, 232, 230, 230),
@@ -223,14 +224,14 @@ class _ChangeUserUsernameState extends State<ChangeUserUsername> {
                                       ),
                                     ),
                                   ),
-                                  //Displaying the new username text
+                                  //Displaying the new email text
                                   const Padding(
                                     padding: EdgeInsets.all(8.0),
                                     child: Row(
                                       children: [
                                         Expanded(
                                           child: Text(
-                                            "New Username : ",
+                                            "New Email Address : ",
                                             textAlign: TextAlign.left,
                                             style: TextStyle(
                                                 color: Color.fromRGBO(
@@ -244,7 +245,7 @@ class _ChangeUserUsernameState extends State<ChangeUserUsername> {
                                       ],
                                     ),
                                   ),
-                                  //Displaying the new username form field
+                                  //Displaying the new email form field
                                   Padding(
                                     padding: const EdgeInsets.fromLTRB(
                                         8.0, 0, 8, 15),
@@ -253,11 +254,11 @@ class _ChangeUserUsernameState extends State<ChangeUserUsername> {
                                         maxWidth: 450.0,
                                       ),
                                       child: TextFormField(
-                                        controller: _newUsernameController,
-                                        keyboardType: TextInputType.name,
+                                        controller: _newEmailController,
+                                        keyboardType: TextInputType.emailAddress,
                                         decoration: InputDecoration(
-                                          hintText: 'Enter The New Username',
-                                          prefixIcon: const Icon(Icons.person),
+                                          hintText: 'Enter New Email Address',
+                                          prefixIcon: const Icon(Icons.email),
                                           filled: true,
                                           fillColor: const Color.fromARGB(
                                               255, 232, 230, 230),
@@ -292,11 +293,13 @@ class _ChangeUserUsernameState extends State<ChangeUserUsername> {
                                         onChanged: (String value) {},
                                         validator: (value) {
                                           if (value!.isEmpty) {
-                                            return "Please enter the new username";
-                                          } else if (RegExp(r'\d')
-                                              .hasMatch(value)) {
-                                            return 'username cannot contain numbers';
-                                          } else {
+                                            return "Please enter a email address";
+                                          } else if (!EmailValidator.validate(value)) {
+                                            return "Please enter a valid email address";
+                                          } else if(_currentEmailController.text == _newEmailController.text){
+                                            return "Please enter a new email address";
+                                          }
+                                          else {
                                             return null;
                                           }
                                         },
@@ -454,10 +457,10 @@ class _ChangeUserUsernameState extends State<ChangeUserUsername> {
                                                       BorderRadius.circular(
                                                           35)),
                                               onPressed: () {
-                                                if (_changeUsernameformKey
+                                                if (_changeEmailformKey
                                                     .currentState!
                                                     .validate()) {
-                                                  updateUsername(context);
+                                                  updateEmail(context);
                                                 }
                                               },
                                               textColor: Colors.white,
@@ -483,7 +486,7 @@ class _ChangeUserUsernameState extends State<ChangeUserUsername> {
               ));
   }
 
-  Future<void> updateUsername(BuildContext context) async {
+  Future<void> updateEmail(BuildContext context) async {
     //This process sends the data to the backend and update them
     String? accessToken = await secureStorage.read(key: 'accessToken');
 
@@ -496,14 +499,14 @@ class _ChangeUserUsernameState extends State<ChangeUserUsername> {
           //Converting the url to uri
           Uri uri = Uri.parse(apiUrl);
 
-          Map<String, dynamic> newUsername = {
-            'username': _newUsernameController.text,
+          Map<String, dynamic> newEmail = {
+            'username': _newEmailController.text.toLowerCase(),
           };
 
           //The data map that must be send to the backend
           Map<String, dynamic> formData = {
             'current_password': _passwordController.text,
-            'user_auth_user_details': newUsername,
+            'user_auth_user_details': newEmail,
           };
 
           //Requesting the data from the backend
@@ -524,12 +527,12 @@ class _ChangeUserUsernameState extends State<ChangeUserUsername> {
           } else {
             //Decode the response received from the server
             final Map<String, dynamic> errorData = json.decode(response.body);
-            //If the error is username uniqueness
+            //If the error is email uniqueness
             if (errorData['errors'].containsKey('username')) {
               if (errorData['errors']['username']
                   .contains('A user with that username already exists.')) {
-                print('Username already exists');
-                usernameExistsDialog();
+                print('Email already exists');
+                emailExistsDialog();
               }
               //If it is not
               else {
@@ -548,8 +551,8 @@ class _ChangeUserUsernameState extends State<ChangeUserUsername> {
     QuickAlert.show(
         context: context,
         type: QuickAlertType.success,
-        title: 'Username Changed',
-        text: 'Successfully changed the username',
+        title: 'Email Address Changed',
+        text: 'Successfully changed the email address',
         onConfirmBtnTap: () {
           Navigator.of(context).pop();
           Navigator.of(context).pop();
@@ -568,11 +571,11 @@ class _ChangeUserUsernameState extends State<ChangeUserUsername> {
   }
 
   //Creating the alert dialog box to display username already exists
-  void usernameExistsDialog() {
+  void emailExistsDialog() {
     QuickAlert.show(
         context: context,
         type: QuickAlertType.warning,
-        title: 'Username Already Exists',
-        text: 'Please enter another username');
+        title: 'Email Address Already Exists',
+        text: 'Please enter another email address');
   }
 }

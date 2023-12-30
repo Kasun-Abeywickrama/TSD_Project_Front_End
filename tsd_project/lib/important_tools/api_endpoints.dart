@@ -24,3 +24,9 @@ const String requestUserPersonalDetailsEndpoint =
 
 const String updateUserPersonalDetailsEndpoint =
     '$baseApiUrl/update_user_personal_details/';
+
+const String requestCounselorDetailsEndpoint = '$baseApiUrl/send_counselor_details/';
+
+const String makeAppointmentEndpoint = '$baseApiUrl/make_appointment/';
+
+const String checkOngoingAppointmentEndpoint = '$baseApiUrl/check_ongoing_appointment/';

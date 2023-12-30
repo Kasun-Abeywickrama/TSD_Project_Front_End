@@ -1,3 +1,4 @@
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:convert';
@@ -20,7 +21,7 @@ class _RegisterUserState extends State<RegisterUser> {
   final GlobalKey<FormState> _regformKey = GlobalKey<FormState>();
 
   //Creating text editing controllers for the form fields
-  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController retypePasswordController =
       TextEditingController();
@@ -68,7 +69,7 @@ class _RegisterUserState extends State<RegisterUser> {
                       child: Form(
                           key: _regformKey,
                           child: Column(children: [
-                            //Username
+                            //Email
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Container(
@@ -76,14 +77,14 @@ class _RegisterUserState extends State<RegisterUser> {
                                   maxWidth: 450.0,
                                 ),
                                 child: TextFormField(
-                                  controller: usernameController,
-                                  keyboardType: TextInputType.name,
+                                  controller: emailController,
+                                  keyboardType: TextInputType.emailAddress,
                                   decoration: InputDecoration(
-                                    hintText: 'Username',
-                                    prefixIcon: const Icon(Icons.person),
+                                    hintText: 'Email Address',
+                                    prefixIcon: const Icon(Icons.email),
                                     filled: true,
                                     fillColor:
-                                        Color.fromARGB(255, 197, 218, 240),
+                                        const Color.fromARGB(255, 197, 218, 240),
                                     enabledBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(30.0),
                                       borderSide:
@@ -108,9 +109,9 @@ class _RegisterUserState extends State<RegisterUser> {
                                   onChanged: (String value) {},
                                   validator: (value) {
                                     if (value!.isEmpty) {
-                                      return "Please enter a username";
-                                    } else if (RegExp(r'\d').hasMatch(value)) {
-                                      return 'Username cannot contain numbers';
+                                      return "Please enter a email address";
+                                    } else if (!EmailValidator.validate(value)) {
+                                      return "Please enter a valid email address";
                                     } else {
                                       return null;
                                     }
@@ -318,7 +319,7 @@ class _RegisterUserState extends State<RegisterUser> {
 
         //Mapping the relavant data
         Map<String, dynamic> auth_user = {
-          'username': usernameController.text,
+          'username': emailController.text.toLowerCase(),
           'password': passwordController.text,
         };
 
@@ -348,12 +349,12 @@ class _RegisterUserState extends State<RegisterUser> {
         } else {
           //Decode the response received from the server
           final Map<String, dynamic> errorData = json.decode(response.body);
-          //If the error is username uniqueness
+          //If the error is email uniqueness
           if (errorData['errors'].containsKey('username')) {
             if (errorData['errors']['username']
                 .contains('A user with that username already exists.')) {
-              print('Username already exists');
-              usernameExistsDialog();
+              print('Email already exists');
+              emailExistsDialog();
             } else {
               print('$errorData');
             }
@@ -370,12 +371,12 @@ class _RegisterUserState extends State<RegisterUser> {
   }
 
   //Creating the alert dialog box to display username already exists
-  void usernameExistsDialog() {
+  void emailExistsDialog() {
     QuickAlert.show(
         context: context,
         type: QuickAlertType.warning,
-        title: 'Username Already Exists',
-        text: 'Please enter another username');
+        title: 'Email Already Exists',
+        text: 'Please enter another email');
   }
 
   //Creating the dialog box to display the successfull login and navigating to login screen

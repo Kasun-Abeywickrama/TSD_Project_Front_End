@@ -529,7 +529,6 @@ class _QuizResultPageState extends State<QuizResultPage> {
 
             if ((backendUserDetails['user_personal_details']['first_name'] != null) &&
                 (backendUserDetails['user_personal_details']['last_name'] != null) &&
-                (backendUserDetails['user_personal_details']['email'] != null) &&
                 (backendUserDetails['user_personal_details']['mobile_number'] != null) &&
                 (backendUserDetails['user_personal_details']['date_of_birth'] != null) ) {
                   return true;

@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:tsd_project/decoration_tools/top_app_bar.dart';
+import 'package:tsd_project/important_tools/api_endpoints.dart';
 import 'package:tsd_project/screen/contact_counselor/contact_counselor_page.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import '../../decoration_tools/custom_loading_indicator.dart';
+import '../../important_tools/user_authentication.dart';
 
 class ContactCounselorList extends StatefulWidget {
   final int quizResultId;
@@ -14,29 +20,86 @@ class ContactCounselorList extends StatefulWidget {
 
 class _ContactCounselorListState extends State<ContactCounselorList> {
   //The list that contains the counselor ids, names, and locations
-  List<Map<String, dynamic>> counselorList = [
-    {
-      'name': 'Prasanna Gamage Kumaradasa',
-      'location': 'Moratuwa, Kadanapitiya, Homagama'
-    },
-    {'name': 'Indika Kumarathunga', 'location': 'Narahenpita, pitipana'},
-    {
-      'name': 'Boyd Dias Thotawaththa',
-      'location': 'Moratuwa, Katunayaka, Colombo 13'
-    },
-    {
-      'name': 'Boyd Dias Thotawaththa',
-      'location': 'Moratuwa, Katunayaka, Colombo 13'
-    },
-    {
-      'name': 'Boyd Dias Thotawaththa',
-      'location': 'Moratuwa, Katunayaka, Colombo 13'
-    },
-    {
-      'name': 'Boyd Dias Thotawaththa',
-      'location': 'Moratuwa, Katunayaka, Colombo 13'
-    },
-  ];
+  List<CounselordetailsModel> counselorList = [];
+
+  //Declaring the variable to check if the page is loading
+  bool isLoading = true;
+
+  //Initializing the flutter secure storage
+  final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
+
+  //Function that gets the existing data from the database
+  Future<void> setCounselorDetails(BuildContext context) async {
+    //This process Fetches the data from the backend
+    String? accessToken = await secureStorage.read(key: 'accessToken');
+
+    if (context.mounted) {
+      if (await checkLoginStatus(context)) {
+        try {
+          // Obtaining the URL to a variable
+          const String apiUrl = requestCounselorDetailsEndpoint;
+
+          //Converting the url to uri
+          Uri uri = Uri.parse(apiUrl);
+
+          //Requesting the data from the backend
+          final response = await http.get(
+            uri,
+            headers: {
+              'Authorization': 'Bearer $accessToken',
+              'Content-Type': 'application/json',
+            },
+          );
+
+          if (response.statusCode == 200) {
+            //Decode the response
+            final Map<String, dynamic> backendCounselorDetails =
+            json.decode(response.body);
+
+            if (context.mounted) {
+              //Intializing these variables and rebuild the build method
+              setState(() {
+
+                counselorList = List.from(backendCounselorDetails['counselor_details']).map<CounselordetailsModel>((item){
+                  return CounselordetailsModel(
+                      authUserId: item['auth_user_id'],
+                      adminId: item['admin_id'],
+                      email: item['email'],
+                      firstName: item['first_name'],
+                      lastName: item['last_name'],
+                      location: item['location'],
+                      mobileNumber: item['mobile_number'],
+                      website: item['website']);
+                }
+                ).toList();
+
+                //Considering the page is loaded
+                isLoading = false;
+              });
+            }
+          } else {
+            print('Failed to receive data ${response.body}');
+          }
+        } catch (e) {
+          print('Exception occured: $e');
+        }
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    initialProcess(context);
+  }
+
+  Future<void> initialProcess(BuildContext context) async {
+    if (await checkLoginStatus(context)) {
+      if (context.mounted) {
+        setCounselorDetails(context);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +108,10 @@ class _ContactCounselorListState extends State<ContactCounselorList> {
         pageIndex: 1,
         pageName: "Contact Counselors",
       ),
-      body: counselorList.isEmpty
+      body: isLoading
+          ? CustomLoadingIndicator()
+          :
+          (counselorList.isEmpty
           ? Container(
               color: Colors.white,
               child: const Padding(
@@ -93,12 +159,20 @@ class _ContactCounselorListState extends State<ContactCounselorList> {
                           //The material button inside the first main container
                           child: MaterialButton(
                             onPressed: () {
-                              //Navigate to the contact counselor page with the quiz result id and the admin details id
+                              Map<String, dynamic> counselorDetails = {
+                                'admin_id': counselorList[i].adminId,
+                                'email': counselorList[i].email,
+                                'first_name': counselorList[i].firstName,
+                                'last_name': counselorList[i].lastName,
+                                'location': counselorList[i].location,
+                                'website': counselorList[i].website,
+                                'mobile_number': counselorList[i].mobileNumber,
+                              };
                               Navigator.push(
                                   context,
                                   (MaterialPageRoute(
                                       builder: (context) =>
-                                          const ContactCounselor())));
+                                           ContactCounselor(quizResultId: widget.quizResultId, counselorDetails: counselorDetails,))));
                             },
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(15)),
@@ -135,7 +209,7 @@ class _ContactCounselorListState extends State<ContactCounselorList> {
                                             //Counselor name
                                             Expanded(
                                                 child: Text(
-                                              counselorList[i]['name'],
+                                              "${counselorList[i].firstName} ${counselorList[i].lastName}",
                                               style: const TextStyle(
                                                 fontSize: 18,
                                                 fontWeight: FontWeight.bold,
@@ -153,8 +227,8 @@ class _ContactCounselorListState extends State<ContactCounselorList> {
                                             //Counselor location
                                             Expanded(
                                                 child: Text(
-                                                    counselorList[i]
-                                                        ['location'],
+                                                    counselorList[i].location
+                                                        ,
                                                     style: const TextStyle(
                                                         fontSize: 16,
                                                         color: Color.fromRGBO(
@@ -176,7 +250,32 @@ class _ContactCounselorListState extends State<ContactCounselorList> {
                   ),
                 ),
               ]),
-            ),
-    );
+            ))
+      );
   }
 }
+
+class CounselordetailsModel {
+  int authUserId;
+  int adminId;
+  String email;
+  String firstName;
+  String lastName;
+  String location;
+  String website;
+  String mobileNumber;
+
+  CounselordetailsModel({
+    required this.authUserId,
+    required this.adminId,
+    required this.email,
+    required this.firstName,
+    required this.lastName,
+    required this.location,
+    required this.website,
+    required this.mobileNumber,
+  });
+}
+
+
+

@@ -5,7 +5,7 @@ import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:tsd_project/decoration_tools/custom_loading_indicator.dart';
 import 'package:tsd_project/important_tools/api_endpoints.dart';
 import 'package:tsd_project/screen/my_account/change_password.dart';
-import 'package:tsd_project/screen/my_account/change_username.dart';
+import 'package:tsd_project/screen/my_account/change_email.dart';
 import 'package:tsd_project/screen/my_account/edit_personal_details.dart';
 import 'package:tsd_project/important_tools/user_authentication.dart';
 import 'dart:convert';
@@ -22,13 +22,13 @@ class _MyAccountState extends State<MyAccount> {
   //Declaring the variable to check if the page is loading
   bool isLoading = true;
 
-  String username = "";
+  String email = "";
 
   //Initializing the flutter secure storage
   final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
 
-  //Function that gets the current username from the database
-  Future<void> setCurrentUsername(BuildContext context) async {
+  //Function that gets the current email from the database
+  Future<void> setCurrentEmail(BuildContext context) async {
     //This process Fetches the data from the backend
     String? accessToken = await secureStorage.read(key: 'accessToken');
 
@@ -58,7 +58,7 @@ class _MyAccountState extends State<MyAccount> {
             if (context.mounted) {
               //Intializing these variables and rebuild the build method
               setState(() {
-                username = backendUserAuthUserDetails['user_auth_user_details']
+                email = backendUserAuthUserDetails['user_auth_user_details']
                     ['username'];
                 //Considering the page is loaded
                 isLoading = false;
@@ -83,7 +83,7 @@ class _MyAccountState extends State<MyAccount> {
   Future<void> initialProcess(BuildContext context) async {
     if (await checkLoginStatus(context)) {
       if (context.mounted) {
-        setCurrentUsername(context);
+        setCurrentEmail(context);
       }
     }
   }
@@ -156,44 +156,47 @@ class _MyAccountState extends State<MyAccount> {
                                   )),
                               Expanded(
                                   flex: 7,
-                                  child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        username,
-                                        textAlign: TextAlign.left,
-                                        style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 22,
-                                            letterSpacing: 0,
-                                            fontWeight: FontWeight.bold,
-                                            height: 1),
-                                      ),
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      InkWell(
-                                        onTap: () {
-                                          signOutDialog();
-                                        },
-                                        child: const Text(
-                                          'Sign Out',
+                                  child: Padding(
+                                    padding: const EdgeInsets.fromLTRB(0,15,15,15.0),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          email,
                                           textAlign: TextAlign.left,
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                               color: Colors.white,
-                                              fontSize: 14,
+                                              fontSize: 17,
                                               letterSpacing: 0,
-                                              decoration:
-                                                  TextDecoration.underline,
-                                              decorationColor: Colors.white,
                                               fontWeight: FontWeight.bold,
                                               height: 1),
                                         ),
-                                      ),
-                                    ],
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        InkWell(
+                                          onTap: () {
+                                            signOutDialog();
+                                          },
+                                          child: const Text(
+                                            'Sign Out',
+                                            textAlign: TextAlign.left,
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 14,
+                                                letterSpacing: 0,
+                                                decoration:
+                                                    TextDecoration.underline,
+                                                decorationColor: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                                height: 1),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ))
                             ],
                           ),
@@ -314,7 +317,7 @@ class _MyAccountState extends State<MyAccount> {
                                               context,
                                               (MaterialPageRoute(
                                                   builder: (context) =>
-                                                      ChangeUserUsername())));
+                                                      ChangeUserEmail())));
                                         },
                                         child: const SizedBox(
                                             height: 60,
@@ -323,7 +326,7 @@ class _MyAccountState extends State<MyAccount> {
                                                 Expanded(
                                                   flex: 1,
                                                   child: Icon(
-                                                    Icons.person_2_sharp,
+                                                    Icons.email,
                                                     color: Color.fromRGBO(
                                                         3, 71, 120, 1),
                                                     size: 30,
@@ -335,7 +338,7 @@ class _MyAccountState extends State<MyAccount> {
                                                 Expanded(
                                                   flex: 9,
                                                   child: Text(
-                                                    'Change The Username',
+                                                    'Change Email Address',
                                                     textAlign:
                                                         TextAlign.left,
                                                     style: TextStyle(
