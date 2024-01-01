@@ -113,269 +113,289 @@ class _ContactCounselorState extends State<ContactCounselor> {
       body: isLoading
           ? CustomLoadingIndicator()
           :
-            Container(
-              color: Colors.white,
-              child: ListView(children: [
-                Column(
-                  children: [
-                    Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(20.0),
-                        child: ClipOval(
-                          child: SizedBox(
-                            height: 150,
-                            width: 150,
-                            child: Image.asset(
-                              //Replace with the actual doctors image
-                              "assets/images/doctor.png",
-                              fit: BoxFit.cover,
+            RefreshIndicator(
+              onRefresh: () => initialProcess(context),
+              child: Container(
+                color: Colors.white,
+                child: ListView(children: [
+                  Column(
+                    children: [
+                      Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: ClipOval(
+                            child: SizedBox(
+                              height: 150,
+                              width: 150,
+                              child: Image.asset(
+                                //Replace with the actual doctors image
+                                "assets/images/doctor.png",
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                 //
+                   //
 
-                const SizedBox(height: 10), // Adding space between text and image
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(30.0, 0, 30, 30),
-                  child: Container(
-                    constraints: const BoxConstraints(maxWidth: 450),
-                    decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(15),
-                        topRight: Radius.circular(15),
-                        bottomLeft: Radius.circular(15),
-                        bottomRight: Radius.circular(15),
+                  const SizedBox(height: 10), // Adding space between text and image
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(30.0, 0, 30, 30),
+                    child: Container(
+                      constraints: const BoxConstraints(maxWidth: 450),
+                      decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(15),
+                          topRight: Radius.circular(15),
+                          bottomLeft: Radius.circular(15),
+                          bottomRight: Radius.circular(15),
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                              color: Color.fromARGB(255, 5, 43, 157),
+                              offset: Offset(5, 5),
+                              blurRadius: 20)
+                        ],
+                        color: Color.fromARGB(255, 255, 255, 255),
                       ),
-                      boxShadow: [
-                        BoxShadow(
-                            color: Color.fromARGB(255, 5, 43, 157),
-                            offset: Offset(5, 5),
-                            blurRadius: 20)
-                      ],
-                      color: Color.fromARGB(255, 255, 255, 255),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(20.0, 20, 20, 30),
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    'Name : ',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Color.fromRGBO(3, 71, 120, 1),
-                                      fontSize: 20,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Padding(
-                                    padding: const EdgeInsets.fromLTRB(25.0, 0, 0, 0),
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(20.0, 20, 20, 30),
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Row(
+                                children: [
+                                  Expanded(
                                     child: Text(
-                                      '${widget.counselorDetails['first_name']} ${widget.counselorDetails['last_name']}',
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                        color: Color.fromRGBO(3, 71, 120, 1),
-                                        fontSize: 18,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 25),
-                            const Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    'Location : ',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Color.fromRGBO(3, 71, 120, 1),
-                                      fontSize: 20,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Padding(
-                                    padding: const EdgeInsets.fromLTRB(25.0, 0, 0, 0),
-                                    child: Text(
-                                      widget.counselorDetails['location'],
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                        color: Color.fromRGBO(3, 71, 120, 1),
-                                        fontSize: 18,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 25),
-                            const Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    'Phone : ',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Color.fromRGBO(3, 71, 120, 1),
-                                      fontSize: 20,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Padding(
-                                    padding: const EdgeInsets.fromLTRB(25.0, 0, 0, 0),
-                                    child: Text(
-                                      widget.counselorDetails['mobile_number'],
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                        color: Color.fromRGBO(3, 71, 120, 1),
-                                        fontSize: 18,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 25),
-                            const Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    'Email : ',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Color.fromRGBO(3, 71, 120, 1),
-                                      fontSize: 20,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Padding(
-                                    padding: const EdgeInsets.fromLTRB(25.0, 0, 0, 0),
-                                    child: Text(
-                                      widget.counselorDetails['email'],
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                        color: Color.fromRGBO(3, 71, 120, 1),
-                                        fontSize: 18,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 25),
-                            const Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    'Website : ',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Color.fromRGBO(3, 71, 120, 1),
-                                      fontSize: 20,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Padding(
-                                    padding: const EdgeInsets.fromLTRB(25, 0, 0, 0),
-                                    child: InkWell(
-                                      onTap: () => launchWebsiteURL(
-                                          widget.counselorDetails['website']),
-                                      child: Text(
-                                        widget.counselorDetails['website'],
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.w500,
-                                            color: Color.fromRGBO(3, 71, 120, 1),
-                                            fontSize: 18,
-                                            decoration: TextDecoration.underline,
-                                            decorationThickness: 1.5,
-                                            decorationColor:
-                                                Color.fromRGBO(3, 71, 120, 1)),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 40,
-                            ),
-                            Center(
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    gradient: const LinearGradient(
-                                      colors: [
-                                        Color(0xff2a58e5),
-                                        Color(0xff66bef4),
-                                      ],
-                                      stops: [0.5, 1],
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                    )),
-                                height: 45,
-                                constraints: const BoxConstraints(
-                                  maxWidth: 450.0,
-                                ),
-                                child: MaterialButton(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                    onPressed: () {
-                                      if(canMakeAppointment == true){
-                                        //Make the appointment
-                                        sendAppointmentDetails(context);
-                                      }
-                                      else{
-                                        appointmentAlreadyMadeDialog();
-                                      }
-                                    },
-                                    child: const Text(
-                                      'Make Appointment',
+                                      'Name : ',
                                       style: TextStyle(
-                                          fontSize: 17,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold),
-                                    )),
+                                        fontWeight: FontWeight.bold,
+                                        color: Color.fromRGBO(3, 71, 120, 1),
+                                        fontSize: 20,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
-                          ]),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.fromLTRB(25.0, 0, 0, 0),
+                                      child: Text(
+                                        '${widget.counselorDetails['first_name']} ${widget.counselorDetails['last_name']}',
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          color: Color.fromRGBO(3, 71, 120, 1),
+                                          fontSize: 18,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 25),
+                              const Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      'Location : ',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Color.fromRGBO(3, 71, 120, 1),
+                                        fontSize: 20,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.fromLTRB(25.0, 0, 0, 0),
+                                      child: Text(
+                                        widget.counselorDetails['location'],
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          color: Color.fromRGBO(3, 71, 120, 1),
+                                          fontSize: 18,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 25),
+                              const Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      'Phone : ',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Color.fromRGBO(3, 71, 120, 1),
+                                        fontSize: 20,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.fromLTRB(25.0, 0, 0, 0),
+                                      child: Text(
+                                        widget.counselorDetails['mobile_number'],
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          color: Color.fromRGBO(3, 71, 120, 1),
+                                          fontSize: 18,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 25),
+                              const Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      'Email : ',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Color.fromRGBO(3, 71, 120, 1),
+                                        fontSize: 20,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.fromLTRB(25.0, 0, 0, 0),
+                                      child: Text(
+                                        widget.counselorDetails['email'],
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          color: Color.fromRGBO(3, 71, 120, 1),
+                                          fontSize: 18,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 25),
+                              const Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      'Website : ',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Color.fromRGBO(3, 71, 120, 1),
+                                        fontSize: 20,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.fromLTRB(25, 0, 0, 0),
+                                      child: InkWell(
+                                        onTap: () => launchWebsiteURL(
+                                            widget.counselorDetails['website']),
+                                        child: Text(
+                                          widget.counselorDetails['website'],
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.w500,
+                                              color: Color.fromRGBO(3, 71, 120, 1),
+                                              fontSize: 18,
+                                              decoration: TextDecoration.underline,
+                                              decorationThickness: 1.5,
+                                              decorationColor:
+                                                  Color.fromRGBO(3, 71, 120, 1)),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 40,
+                              ),
+                              Center(
+                                child: Container(
+
+                                  decoration: canMakeAppointment ?
+                                  BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      gradient: const LinearGradient(
+                                        colors: [
+                                          Color(0xff2a58e5),
+                                          Color(0xff66bef4),
+                                        ],
+                                        stops: [0.5, 1],
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                      ))
+                                  :
+                                      BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10.0),
+                                        color: Colors.grey,
+                                      ),
+                                  height: 45,
+                                  constraints: const BoxConstraints(
+                                    maxWidth: 450.0,
+                                  ),
+                                  child: MaterialButton(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10.0),
+                                      ),
+                                      onPressed: () {
+                                        if(canMakeAppointment == true){
+                                          //Make the appointment
+                                          sendAppointmentDetails(context);
+                                        }
+                                        else{
+                                          appointmentAlreadyMadeDialog();
+                                        }
+                                      },
+                                      child: canMakeAppointment ?
+                                      const Text(
+                                        'Make Appointment',
+                                        style: TextStyle(
+                                            fontSize: 17,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold),
+                                      )
+                                          :
+                                      const Text(
+                                        'Appointment In Progress',
+                                        style: TextStyle(
+                                            fontSize: 17,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                  ),
+                                ),
+                              ),
+                            ]),
+                      ),
                     ),
                   ),
+                    ],
+                  ),
+                ]
                 ),
-                  ],
-                ),
-              ]
               ),
             ),
     );
@@ -414,7 +434,14 @@ class _ContactCounselorState extends State<ContactCounselor> {
             print("Appointment successfull");
             appointmentSuccessDialog();
           } else {
-            print('Failed to send data ${response.body}');
+            final data = json.decode(response.body);
+
+            if(data.containsKey('counselor_deleted')){
+              counselorNotAvailableDailog();
+            }
+            else {
+              print('Failed to send data ${response.body}');
+            }
           }
         } catch (e) {
           print('Exception occured: $e');
@@ -445,6 +472,19 @@ class _ContactCounselorState extends State<ContactCounselor> {
         type: QuickAlertType.warning,
         title: 'Previously Made Appointment Is Still In Progress',
       text: 'Your previously made appoinment is still in progress, please wait patiently until a mail is received.'
+    );
+  }
+
+  void counselorNotAvailableDailog(){
+    QuickAlert.show(
+        context: context,
+        type: QuickAlertType.warning,
+        title: 'Counselor Not Availbale',
+        text: 'The Counselor is not currently available',
+        onConfirmBtnTap: (){
+          Navigator.of(context).pop();
+          Navigator.of(context).pop();
+    }
     );
   }
 

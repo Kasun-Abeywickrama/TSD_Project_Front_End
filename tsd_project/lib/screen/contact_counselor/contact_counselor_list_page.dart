@@ -111,146 +111,149 @@ class _ContactCounselorListState extends State<ContactCounselorList> {
       body: isLoading
           ? CustomLoadingIndicator()
           :
-          (counselorList.isEmpty
-          ? Container(
-              color: Colors.white,
-              child: const Padding(
-                padding: EdgeInsets.all(15.0),
-                child: Center(
-                    child: Text(
-                  "< No Available Counselors >",
-                  style: TextStyle(
-                      color: Color.fromRGBO(3, 71, 120, 1),
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold),
-                )),
-              ),
-            )
-          : Container(
-              color: Colors.white,
-              //List View
-              child: ListView(children: [
-                Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  //The list generating column
-                  child: Column(
-                    children: List.generate(
-                      counselorList.length,
-                      (i) => Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        //The main container
-                        child: Container(
-                          constraints: const BoxConstraints(maxWidth: 768),
-                          decoration: const BoxDecoration(
-                            color: Color.fromARGB(255, 232, 230, 230),
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(15),
-                              topRight: Radius.circular(15),
-                              bottomLeft: Radius.circular(15),
-                              bottomRight: Radius.circular(15),
+          RefreshIndicator(
+            onRefresh: () => initialProcess(context),
+            child: (counselorList.isEmpty
+            ? Container(
+                color: Colors.white,
+                child: const Padding(
+                  padding: EdgeInsets.all(15.0),
+                  child: Center(
+                      child: Text(
+                    "< No Available Counselors >",
+                    style: TextStyle(
+                        color: Color.fromRGBO(3, 71, 120, 1),
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold),
+                  )),
+                ),
+              )
+            : Container(
+                color: Colors.white,
+                //List View
+                child: ListView(children: [
+                  Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    //The list generating column
+                    child: Column(
+                      children: List.generate(
+                        counselorList.length,
+                        (i) => Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          //The main container
+                          child: Container(
+                            constraints: const BoxConstraints(maxWidth: 768),
+                            decoration: const BoxDecoration(
+                              color: Color.fromARGB(255, 232, 230, 230),
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(15),
+                                topRight: Radius.circular(15),
+                                bottomLeft: Radius.circular(15),
+                                bottomRight: Radius.circular(15),
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                    color: Color.fromRGBO(92, 94, 95, 0.71),
+                                    offset: Offset(5, 2),
+                                    blurRadius: 4)
+                              ],
                             ),
-                            boxShadow: [
-                              BoxShadow(
-                                  color: Color.fromRGBO(92, 94, 95, 0.71),
-                                  offset: Offset(5, 2),
-                                  blurRadius: 4)
-                            ],
-                          ),
-                          //The material button inside the first main container
-                          child: MaterialButton(
-                            onPressed: () {
-                              Map<String, dynamic> counselorDetails = {
-                                'admin_id': counselorList[i].adminId,
-                                'email': counselorList[i].email,
-                                'first_name': counselorList[i].firstName,
-                                'last_name': counselorList[i].lastName,
-                                'location': counselorList[i].location,
-                                'website': counselorList[i].website,
-                                'mobile_number': counselorList[i].mobileNumber,
-                              };
-                              Navigator.push(
-                                  context,
-                                  (MaterialPageRoute(
-                                      builder: (context) =>
-                                           ContactCounselor(quizResultId: widget.quizResultId, counselorDetails: counselorDetails,))));
-                            },
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15)),
-                            child: Row(
-                              children: [
-                                //Counselor image
-                                Flexible(
-                                  flex: 35,
-                                  child: Padding(
-                                    padding: const EdgeInsets.fromLTRB(
-                                        0, 10, 10, 10),
-                                    child: ClipOval(
-                                      child: SizedBox(
-                                        height: 100,
-                                        width: 100,
-                                        child: Image.asset(
-                                          "assets/images/doctor.png",
-                                          fit: BoxFit.cover,
+                            //The material button inside the first main container
+                            child: MaterialButton(
+                              onPressed: () {
+                                Map<String, dynamic> counselorDetails = {
+                                  'admin_id': counselorList[i].adminId,
+                                  'email': counselorList[i].email,
+                                  'first_name': counselorList[i].firstName,
+                                  'last_name': counselorList[i].lastName,
+                                  'location': counselorList[i].location,
+                                  'website': counselorList[i].website,
+                                  'mobile_number': counselorList[i].mobileNumber,
+                                };
+                                Navigator.push(
+                                    context,
+                                    (MaterialPageRoute(
+                                        builder: (context) =>
+                                             ContactCounselor(quizResultId: widget.quizResultId, counselorDetails: counselorDetails,))));
+                              },
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15)),
+                              child: Row(
+                                children: [
+                                  //Counselor image
+                                  Flexible(
+                                    flex: 35,
+                                    child: Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          0, 10, 10, 10),
+                                      child: ClipOval(
+                                        child: SizedBox(
+                                          height: 100,
+                                          width: 100,
+                                          child: Image.asset(
+                                            "assets/images/doctor.png",
+                                            fit: BoxFit.cover,
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ),
-                                ),
 
-                                Flexible(
-                                  flex: 65,
-                                  child: Padding(
-                                    padding:
-                                        const EdgeInsets.fromLTRB(5, 10, 0, 10),
-                                    child: Column(
-                                      children: [
-                                        Row(
-                                          children: [
-                                            //Counselor name
-                                            Expanded(
-                                                child: Text(
-                                              "${counselorList[i].firstName} ${counselorList[i].lastName}",
-                                              style: const TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold,
-                                                color: Color.fromRGBO(
-                                                    3, 71, 120, 1),
-                                              ),
-                                            )),
-                                          ],
-                                        ),
-                                        const SizedBox(
-                                          height: 8,
-                                        ),
-                                        Row(
-                                          children: [
-                                            //Counselor location
-                                            Expanded(
-                                                child: Text(
-                                                    counselorList[i].location
-                                                        ,
-                                                    style: const TextStyle(
-                                                        fontSize: 16,
-                                                        color: Color.fromRGBO(
-                                                            3, 71, 120, 1),
-                                                        fontWeight:
-                                                            FontWeight.bold))),
-                                          ],
-                                        ),
-                                      ],
+                                  Flexible(
+                                    flex: 65,
+                                    child: Padding(
+                                      padding:
+                                          const EdgeInsets.fromLTRB(5, 10, 0, 10),
+                                      child: Column(
+                                        children: [
+                                          Row(
+                                            children: [
+                                              //Counselor name
+                                              Expanded(
+                                                  child: Text(
+                                                "${counselorList[i].firstName} ${counselorList[i].lastName}",
+                                                style: const TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Color.fromRGBO(
+                                                      3, 71, 120, 1),
+                                                ),
+                                              )),
+                                            ],
+                                          ),
+                                          const SizedBox(
+                                            height: 8,
+                                          ),
+                                          Row(
+                                            children: [
+                                              //Counselor location
+                                              Expanded(
+                                                  child: Text(
+                                                      counselorList[i].location
+                                                          ,
+                                                      style: const TextStyle(
+                                                          fontSize: 16,
+                                                          color: Color.fromRGBO(
+                                                              3, 71, 120, 1),
+                                                          fontWeight:
+                                                              FontWeight.bold))),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ]),
-            ))
+                ]),
+              )),
+          )
       );
   }
 }

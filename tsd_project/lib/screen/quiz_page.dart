@@ -816,6 +816,33 @@ class _QuizPageState extends State<QuizPage> {
         });
   }
 
+  void quizUpdatingAlert(){
+    QuickAlert.show(
+        context: context,
+        type: QuickAlertType.warning,
+        title: 'Quiz Is Under Maintenance !',
+        text: 'Quiz is under maintanence, please try again later.',
+      onConfirmBtnTap: (){
+          Navigator.of(context).pop();
+          Navigator.of(context).pop();
+      }
+    );
+  }
+
+  void quizUpdatedAlert(){
+    QuickAlert.show(
+        context: context,
+        type: QuickAlertType.warning,
+        title: 'Quiz Has Been Updated !',
+        text: 'The quiz has been updated recently, please retake the quiz',
+        onConfirmBtnTap: (){
+          Navigator.of(context).pop();
+          Navigator.of(context).pop();
+          Navigator.of(context).pop();
+        }
+    );
+  }
+
   //Creating the function to request the quiz
   Future<void> requestQuiz(BuildContext context) async {
     String? accessToken = await secureStorage.read(key: 'accessToken');
@@ -861,12 +888,24 @@ class _QuizPageState extends State<QuizPage> {
                   );
                 }).toList();
 
+                //Setting the last_updated_timestamp in secure storage
+                secureStorage.write(key: 'lastUpdatedTimestamp', value: data['last_updated_timestamp']);
+
+                print(data['last_updated_timestamp']);
+
                 //Considering the page as loaded
                 isLoading = false;
               });
             }
           } else {
-            print('unable to receive data: ${response.body}');
+            final data = json.decode(response.body);
+
+            if(data.containsKey('quiz_updating')){
+              quizUpdatingAlert();
+            }
+            else {
+              print('unable to receive data: ${response.body}');
+            }
           }
         } catch (e) {
           print("Exception Occured: $e");
@@ -881,69 +920,88 @@ class _QuizPageState extends State<QuizPage> {
       Map<String, dynamic> quizResultMap, BuildContext context) async {
     //Collecting the access token from the secure storage
     String? accessToken = await secureStorage.read(key: 'accessToken');
+    String? lastUpdatedTimestamp = await secureStorage.read(key: 'lastUpdatedTimestamp');
 
-    //If the token is not null continue with the process
+    if(lastUpdatedTimestamp != null){
+      if (context.mounted) {
+        if (await checkLoginStatus(context)) {
+          try {
+            // Obtaining the URL to a variable
+            const String apiUrl = quizResultStoreEndpoint;
 
-    if (context.mounted) {
-      if (await checkLoginStatus(context)) {
-        try {
-          // Obtaining the URL to a variable
-          const String apiUrl = quizResultStoreEndpoint;
+            //Converting the url to uri
+            Uri uri = Uri.parse(apiUrl);
 
-          //Converting the url to uri
-          Uri uri = Uri.parse(apiUrl);
+            //Creating the relavant data map to send
+            final List<Map<String, dynamic>> quizQandAList = [];
 
-          //Creating the relavant data map to send
-          final List<Map<String, dynamic>> quizQandAList = [];
-
-          for (int i = 0; i < qandAData.length; i++) {
-            quizQandAList.add({
-              'question': qandAData[i].questionId,
-              'answer_id': qandAData[i].answerId
-            });
-          }
-
-          Map<String, dynamic> formData = {
-            'quiz_result_data': quizResultMap,
-            'quiz_q_and_a_data': quizQandAList,
-          };
-
-          //Sending the result map to the backend with the token
-          final response = await http.post(
-            uri,
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': 'Bearer $accessToken'
-            },
-            body: json.encode(formData),
-          );
-
-          //Returning an output according to the status code
-          if (response.statusCode == 201) {
-            print('Data submitted successfully');
-
-            // Decode the response data
-            final Map<String, dynamic> responseData =
-                json.decode(response.body);
-
-            if (context.mounted) {
-              Navigator.of(context).pop();
-              //If the result data are submitted suceesfully, navigate to a loading screen by sending the quiz result id with it
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => QuizResultPage(
-                          quizResultId: responseData['quiz_result_id'])));
+            for (int i = 0; i < qandAData.length; i++) {
+              quizQandAList.add({
+                'question': qandAData[i].questionId,
+                'answer_id': qandAData[i].answerId
+              });
             }
-          } else {
-            print('unable to submit data: ${response.body}');
+
+            Map<String, dynamic> formData = {
+              'quiz_result_data': quizResultMap,
+              'quiz_q_and_a_data': quizQandAList,
+              'last_updated_timestamp': lastUpdatedTimestamp,
+            };
+
+            //Sending the result map to the backend with the token
+            final response = await http.post(
+              uri,
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer $accessToken'
+              },
+              body: json.encode(formData),
+            );
+
+            //Returning an output according to the status code
+            if (response.statusCode == 201) {
+              print('Data submitted successfully');
+
+              // Decode the response data
+              final Map<String, dynamic> responseData =
+                  json.decode(response.body);
+
+              if (context.mounted) {
+                Navigator.of(context).pop();
+                //If the result data are submitted suceesfully, navigate to a loading screen by sending the quiz result id with it
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => QuizResultPage(
+                            quizResultId: responseData['quiz_result_id'])));
+              }
+            } else {
+              final data = json.decode(response.body);
+
+              if(data.containsKey('quiz_updating')){
+                if(context.mounted) {
+                  Navigator.of(context).pop();
+                  quizUpdatingAlert();
+                }
+              }
+              else if(data.containsKey('quiz_updated')){
+                quizUpdatedAlert();
+              }
+              else{
+                print('unable to receive data: ${response.body}');
+              }
+            }
+          } catch (e) {
+            print("Exception Occured: $e");
           }
-        } catch (e) {
-          print("Exception Occured: $e");
         }
       }
     }
+    else{
+      print('Last updated timestamp is null');
+    }
   }
+
 }
 
 //The model that stores quiz results of the user
