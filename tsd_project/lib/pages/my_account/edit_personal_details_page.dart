@@ -10,12 +10,12 @@ import 'package:tsd_project/important_tools/api_endpoints.dart';
 import 'package:tsd_project/decoration_tools/top_app_bar.dart';
 import 'package:tsd_project/important_tools/user_authentication.dart';
 
-class EditPersonalDetails extends StatefulWidget {
+class EditPersonalDetailsPage extends StatefulWidget {
   @override
-  State<EditPersonalDetails> createState() => _EditPersonalDetailsState();
+  State<EditPersonalDetailsPage> createState() => _EditPersonalDetailsPageState();
 }
 
-class _EditPersonalDetailsState extends State<EditPersonalDetails> {
+class _EditPersonalDetailsPageState extends State<EditPersonalDetailsPage> {
   //Declaring the variable to check if the page is loading
   bool isLoading = true;
 
@@ -32,7 +32,7 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
   final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
 
   //Function that gets the existing data from the database
-  Future<void> setUserDetails(BuildContext context) async {
+  Future<void> setPersonalDetails(BuildContext context) async {
     //This process Fetches the data from the backend
     String? accessToken = await secureStorage.read(key: 'accessToken');
 
@@ -40,7 +40,7 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
       if (await checkLoginStatus(context)) {
         try {
           // Obtaining the URL to a variable
-          const String apiUrl = requestUserPersonalDetailsEndpoint;
+          const String apiUrl = requestPatientPersonalDetailsEndpoint;
 
           //Converting the url to uri
           Uri uri = Uri.parse(apiUrl);
@@ -62,28 +62,28 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
             if (context.mounted) {
               //Intializing these variables and rebuild the build method
               setState(() {
-                if (backendUserDetails['user_personal_details']['first_name'] !=
+                if (backendUserDetails['patient_personal_details']['first_name'] !=
                     null) {
                   _firstNameController.text =
-                      backendUserDetails['user_personal_details']['first_name'];
+                      backendUserDetails['patient_personal_details']['first_name'];
                 }
-                if (backendUserDetails['user_personal_details']['last_name'] !=
+                if (backendUserDetails['patient_personal_details']['last_name'] !=
                     null) {
                   _lastNameController.text =
-                      backendUserDetails['user_personal_details']['last_name'];
+                      backendUserDetails['patient_personal_details']['last_name'];
                 }
-                if (backendUserDetails['user_personal_details']
+                if (backendUserDetails['patient_personal_details']
                         ['mobile_number'] !=
                     null) {
                   _mobilePhoneController.text =
-                      backendUserDetails['user_personal_details']
+                      backendUserDetails['patient_personal_details']
                           ['mobile_number'];
                 }
-                if (backendUserDetails['user_personal_details']
+                if (backendUserDetails['patient_personal_details']
                         ['date_of_birth'] !=
                     null) {
                   _dateController.text =
-                      backendUserDetails['user_personal_details']
+                      backendUserDetails['patient_personal_details']
                           ['date_of_birth'];
                 }
                 //Considering the page is loaded
@@ -109,7 +109,7 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
   Future<void> initialProcess(BuildContext context) async {
     if (await checkLoginStatus(context)) {
       if (context.mounted) {
-        setUserDetails(context);
+        setPersonalDetails(context);
       }
     }
   }
@@ -582,7 +582,7 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
                                                 if (_userDetailsUpdateformKey
                                                     .currentState!
                                                     .validate()) {
-                                                  updateUserPersonalDetails(
+                                                  updatePersonalDetails(
                                                       context);
                                                 }
                                               },
@@ -609,7 +609,7 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
               ));
   }
 
-  Future<void> updateUserPersonalDetails(BuildContext context) async {
+  Future<void> updatePersonalDetails(BuildContext context) async {
     //This process sends the data to the backend and update them
     String? accessToken = await secureStorage.read(key: 'accessToken');
 
@@ -617,7 +617,7 @@ class _EditPersonalDetailsState extends State<EditPersonalDetails> {
       if (await checkLoginStatus(context)) {
         try {
           // Obtaining the URL to a variable
-          const String apiUrl = updateUserPersonalDetailsEndpoint;
+          const String apiUrl = updatePatientPersonalDetailsEndpoint;
 
           //Converting the url to uri
           Uri uri = Uri.parse(apiUrl);

@@ -10,12 +10,12 @@ import 'package:tsd_project/important_tools/api_endpoints.dart';
 import 'package:tsd_project/decoration_tools/top_app_bar.dart';
 import 'package:tsd_project/important_tools/user_authentication.dart';
 
-class ChangeUserEmail extends StatefulWidget {
+class ChangeEmailPage extends StatefulWidget {
   @override
-  State<ChangeUserEmail> createState() => _ChangeUserEmailState();
+  State<ChangeEmailPage> createState() => _ChangeEmailPageState();
 }
 
-class _ChangeUserEmailState extends State<ChangeUserEmail> {
+class _ChangeEmailPageState extends State<ChangeEmailPage> {
   //Declaring the variable to check if the page is loading
   bool isLoading = true;
 
@@ -40,7 +40,7 @@ class _ChangeUserEmailState extends State<ChangeUserEmail> {
       if (await checkLoginStatus(context)) {
         try {
           // Obtaining the URL to a variable
-          const String apiUrl = requestUserAuthUserDetailsEndpoint;
+          const String apiUrl = requestPatientAuthUserDetailsEndpoint;
 
           //Converting the url to uri
           Uri uri = Uri.parse(apiUrl);
@@ -63,7 +63,7 @@ class _ChangeUserEmailState extends State<ChangeUserEmail> {
               //Intializing these variables and rebuild the build method
               setState(() {
                 _currentEmailController.text =
-                    backendUserAuthUserDetails['user_auth_user_details']
+                    backendUserAuthUserDetails['patient_auth_user_details']
                         ['username'];
                 //Considering the page is loaded
                 isLoading = false;
@@ -494,7 +494,7 @@ class _ChangeUserEmailState extends State<ChangeUserEmail> {
       if (await checkLoginStatus(context)) {
         try {
           // Obtaining the URL to a variable
-          const String apiUrl = updateUserAuthUserDetailsEndpoint;
+          const String apiUrl = updatePatientAuthUserDetailsEndpoint;
 
           //Converting the url to uri
           Uri uri = Uri.parse(apiUrl);
@@ -506,7 +506,7 @@ class _ChangeUserEmailState extends State<ChangeUserEmail> {
           //The data map that must be send to the backend
           Map<String, dynamic> formData = {
             'current_password': _passwordController.text,
-            'user_auth_user_details': newEmail,
+            'patient_auth_user_details': newEmail,
           };
 
           //Requesting the data from the backend

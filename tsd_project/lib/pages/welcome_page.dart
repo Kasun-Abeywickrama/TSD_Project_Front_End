@@ -1,16 +1,16 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:tsd_project/important_tools/user_authentication.dart';
-import 'package:tsd_project/screen/main_screen.dart';
+import 'package:tsd_project/pages/main_page.dart';
 
-class Welcome extends StatefulWidget {
-  const Welcome({super.key});
+class WelcomePage extends StatefulWidget {
+  const WelcomePage({super.key});
 
   @override
-  State<Welcome> createState() => _WelcomeState();
+  State<WelcomePage> createState() => _WelcomePageState();
 }
 
-class _WelcomeState extends State<Welcome> {
+class _WelcomePageState extends State<WelcomePage> {
   @override
   void initState() {
     super.initState();
@@ -24,7 +24,7 @@ class _WelcomeState extends State<Welcome> {
         if (await checkLoginStatus(context)) {
           if (context.mounted) {
             Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (context) => MainScreen()));
+                MaterialPageRoute(builder: (context) => MainPage()));
           }
         }
       }

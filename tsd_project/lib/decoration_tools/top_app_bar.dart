@@ -1,10 +1,16 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import '../important_tools/user_authentication.dart';
 
 class CustomTopAppBar extends StatefulWidget implements PreferredSizeWidget {
+  //Navigating function to go to appointment mails page
+  final Function()? navigateToAppointmentMails;
+
   final int pageIndex;
   final String pageName;
 
@@ -12,7 +18,7 @@ class CustomTopAppBar extends StatefulWidget implements PreferredSizeWidget {
   //Back button displaying pages index = 1
   //Quiz page index = 2
 
-  CustomTopAppBar({Key? key, this.pageIndex = 0, this.pageName = "Home"})
+  CustomTopAppBar({Key? key, this.pageIndex = 0, this.pageName = "Home", this.navigateToAppointmentMails})
       : super(key: key);
 
   @override
@@ -23,6 +29,71 @@ class CustomTopAppBar extends StatefulWidget implements PreferredSizeWidget {
 }
 
 class _CustomTopAppBarState extends State<CustomTopAppBar> {
+
+  //Initializing the flutter secure storage
+  final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
+
+  String notificationAmount = "0";
+
+  Future<void> setNotificationAmount(BuildContext context) async {
+
+    print("notification process executed");
+    //This process Fetches the data from the backend
+    String? accessToken = await secureStorage.read(key: 'accessToken');
+
+    if (context.mounted) {
+      if (await checkLoginStatus(context)) {
+        try {
+          // Obtaining the URL to a variable
+          const String apiUrl = "";
+
+          //Converting the url to uri
+          Uri uri = Uri.parse(apiUrl);
+
+          //Requesting the data from the backend
+          final response = await http.get(
+            uri,
+            headers: {
+              'Authorization': 'Bearer $accessToken',
+              'Content-Type': 'application/json',
+            },
+          );
+
+          if (response.statusCode == 200) {
+            //Decode the response
+            final Map<String, dynamic> backendNotificationAmount =
+            json.decode(response.body);
+
+            if(context.mounted) {
+              setState(() {
+                notificationAmount =
+                backendNotificationAmount['notification_amount'];
+              });
+            }
+          } else {
+            print('Failed to receive data ${response.body}');
+          }
+        } catch (e) {
+          print('Exception occured: $e');
+        }
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    initialProcess(context);
+  }
+
+  Future<void> initialProcess(BuildContext context) async {
+    if (await checkLoginStatus(context)) {
+      if(context.mounted) {
+        setNotificationAmount(context);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     //Defining the icon widget
@@ -59,7 +130,15 @@ class _CustomTopAppBarState extends State<CustomTopAppBar> {
           color: Colors.white,
           size: 35,
         );
-      } else if (widget.pageName == "My Account") {
+      }
+      else if(widget.pageName == "Appointment Mails"){
+        topIcon = const Icon(
+          Icons.mail,
+          color: Colors.white,
+          size: 35,
+        );
+      }
+      else if (widget.pageName == "My Account") {
         topIcon = const Icon(
           Icons.account_circle,
           color: Colors.white,
@@ -108,18 +187,29 @@ class _CustomTopAppBarState extends State<CustomTopAppBar> {
                       color: Colors.white,
                     ),
                     onPressed: () {
-                      print('Notification icon tapped!');
+                      if(widget.navigateToAppointmentMails != null){
+                        widget.navigateToAppointmentMails!();
+                      }
                     },
                   ),
-                  const Positioned(
+                  Positioned(
                     right: 5.0,
                     top: 5.0,
                     child: CircleAvatar(
-                      backgroundColor: Colors.orange,
+                      backgroundColor: Colors.red,
                       radius: 11.0,
-                      child: Text(
-                        '8',
+                      child: notificationAmount == "0" ?
+                      const Text(
+                        "0",
                         style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 15.0,
+                        ),
+                      )
+                      :
+                      Text(
+                        notificationAmount,
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 15.0,
                         ),

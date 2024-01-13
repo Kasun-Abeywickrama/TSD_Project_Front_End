@@ -6,17 +6,17 @@ import 'package:http/http.dart' as http;
 import 'package:quickalert/quickalert.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 import 'package:tsd_project/important_tools/api_endpoints.dart';
-import 'package:tsd_project/screen/login.dart';
+import 'package:tsd_project/pages/patient_login_page.dart';
 
-//Creating the user registration page for the mobile application
+//Creating the patient registration page for the mobile application
 
 //Created the stateless widget and then converted it into a stateful widget.
-class RegisterUser extends StatefulWidget {
+class PatientRegisterPage extends StatefulWidget {
   @override
-  State<RegisterUser> createState() => _RegisterUserState();
+  State<PatientRegisterPage> createState() => _PatientRegisterPageState();
 }
 
-class _RegisterUserState extends State<RegisterUser> {
+class _PatientRegisterPageState extends State<PatientRegisterPage> {
   //Declaring the form key to validate the fields
   final GlobalKey<FormState> _regformKey = GlobalKey<FormState>();
 
@@ -282,7 +282,7 @@ class _RegisterUserState extends State<RegisterUser> {
                               Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => login_user()));
+                                      builder: (context) => PatientLoginPage()));
                             },
                             child: GradientText(
                               'Sign In',
@@ -323,11 +323,11 @@ class _RegisterUserState extends State<RegisterUser> {
           'password': passwordController.text,
         };
 
-        Map<String, dynamic> user = {};
+        Map<String, dynamic> patient = {};
 
         Map<String, dynamic> formData = {
           'auth_user': auth_user,
-          'user': user,
+          'patient': patient,
         };
 
         //Converting the url to uri
@@ -390,7 +390,7 @@ class _RegisterUserState extends State<RegisterUser> {
         cancelBtnText: 'Cancel',
         onConfirmBtnTap: () {
           Navigator.pushReplacement(
-              context, (MaterialPageRoute(builder: (context) => login_user())));
+              context, (MaterialPageRoute(builder: (context) => PatientLoginPage())));
         });
   }
 }

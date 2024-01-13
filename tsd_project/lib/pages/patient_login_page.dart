@@ -7,17 +7,16 @@ import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 import 'package:tsd_project/important_tools/api_endpoints.dart';
-import 'package:tsd_project/screen/main_screen.dart';
-
-import 'package:tsd_project/screen/register.dart';
+import 'package:tsd_project/pages/main_page.dart';
+import 'package:tsd_project/pages/patient_register_page.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-class login_user extends StatefulWidget {
+class PatientLoginPage extends StatefulWidget {
   @override
-  State<login_user> createState() => _login_userState();
+  State<PatientLoginPage> createState() => _PatientLoginPageState();
 }
 
-class _login_userState extends State<login_user> {
+class _PatientLoginPageState extends State<PatientLoginPage> {
   //Declaring the form key to validate the fields
   final GlobalKey<FormState> _logformKey = GlobalKey<FormState>();
 
@@ -229,7 +228,7 @@ class _login_userState extends State<login_user> {
                               Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => RegisterUser()));
+                                      builder: (context) => PatientRegisterPage()));
                             },
                             child: GradientText(
                               'Sign Up',
@@ -305,7 +304,7 @@ class _login_userState extends State<login_user> {
               Navigator.pushReplacement(
                   context,
                   (MaterialPageRoute(
-                      builder: (context) => MainScreen())));
+                      builder: (context) => MainPage())));
             }
           } else {
             print('Access Token is null');

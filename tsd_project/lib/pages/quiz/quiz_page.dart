@@ -9,7 +9,7 @@ import 'package:simple_gradient_text/simple_gradient_text.dart';
 import 'package:tsd_project/decoration_tools/custom_loading_indicator.dart';
 import 'package:tsd_project/important_tools/api_endpoints.dart';
 import 'package:tsd_project/important_tools/result_calculation.dart';
-import 'package:tsd_project/screen/quiz_result_page.dart';
+import 'package:tsd_project/pages/quiz/quiz_result_page.dart';
 import 'package:tsd_project/decoration_tools/top_app_bar.dart';
 import 'package:tsd_project/important_tools/user_authentication.dart';
 

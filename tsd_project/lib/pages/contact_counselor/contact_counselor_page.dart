@@ -9,17 +9,17 @@ import '../../important_tools/user_authentication.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-class ContactCounselor extends StatefulWidget {
+class ContactCounselorPage extends StatefulWidget {
   final int quizResultId;
   final Map<String, dynamic> counselorDetails;
 
-  ContactCounselor({super.key, required this.quizResultId, required this.counselorDetails});
+  ContactCounselorPage({super.key, required this.quizResultId, required this.counselorDetails});
 
   @override
-  State<ContactCounselor> createState() => _ContactCounselorState();
+  State<ContactCounselorPage> createState() => _ContactCounselorPageState();
 }
 
-class _ContactCounselorState extends State<ContactCounselor> {
+class _ContactCounselorPageState extends State<ContactCounselorPage> {
 
   bool canMakeAppointment = true;
 

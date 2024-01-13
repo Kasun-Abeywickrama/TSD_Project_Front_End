@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'screen/welcome_screen.dart';
+import 'pages/welcome_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,6 +11,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // return MaterialApp(home: Splash());
-    return const MaterialApp(home: Welcome());
+    return const MaterialApp(home: WelcomePage());
   }
 }

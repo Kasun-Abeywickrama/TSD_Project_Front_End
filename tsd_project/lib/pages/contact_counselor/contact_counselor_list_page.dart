@@ -2,23 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:tsd_project/decoration_tools/top_app_bar.dart';
 import 'package:tsd_project/important_tools/api_endpoints.dart';
-import 'package:tsd_project/screen/contact_counselor/contact_counselor_page.dart';
+import 'package:tsd_project/pages/contact_counselor/contact_counselor_page.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../../decoration_tools/custom_loading_indicator.dart';
 import '../../important_tools/user_authentication.dart';
 
-class ContactCounselorList extends StatefulWidget {
+class ContactCounselorListPage extends StatefulWidget {
   final int quizResultId;
 
   //This received quizResultId must be passed to the contact counselor page with the admin details id of the counselor
-  ContactCounselorList({required this.quizResultId});
+  ContactCounselorListPage({required this.quizResultId});
 
   @override
-  State<ContactCounselorList> createState() => _ContactCounselorListState();
+  State<ContactCounselorListPage> createState() => _ContactCounselorListPageState();
 }
 
-class _ContactCounselorListState extends State<ContactCounselorList> {
+class _ContactCounselorListPageState extends State<ContactCounselorListPage> {
   //The list that contains the counselor ids, names, and locations
   List<CounselordetailsModel> counselorList = [];
 
@@ -111,26 +111,38 @@ class _ContactCounselorListState extends State<ContactCounselorList> {
       body: isLoading
           ? CustomLoadingIndicator()
           :
-          RefreshIndicator(
-            onRefresh: () => initialProcess(context),
-            child: (counselorList.isEmpty
-            ? Container(
-                color: Colors.white,
-                child: const Padding(
-                  padding: EdgeInsets.all(15.0),
-                  child: Center(
-                      child: Text(
-                    "< No Available Counselors >",
-                    style: TextStyle(
-                        color: Color.fromRGBO(3, 71, 120, 1),
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold),
-                  )),
+          (counselorList.isEmpty
+          ? Container(
+              color: Colors.white,
+              child: RefreshIndicator(
+                onRefresh: () => initialProcess(context),
+                child: const CustomScrollView(slivers: [
+                  SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: Padding(
+                    padding: EdgeInsets.all(15.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Center(
+                            child: Text(
+                          "< No Available Counselors >",
+                          style: TextStyle(
+                              color: Color.fromRGBO(3, 71, 120, 1),
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold),
+                        )),
+                      ],
+                    ),
+                  ),
                 ),
-              )
-            : Container(
-                color: Colors.white,
-                //List View
+              ]),
+              ) )
+          : Container(
+              color: Colors.white,
+              //List View
+              child: RefreshIndicator(
+                  onRefresh: () => initialProcess(context),
                 child: ListView(children: [
                   Padding(
                     padding: const EdgeInsets.all(15.0),
@@ -174,7 +186,7 @@ class _ContactCounselorListState extends State<ContactCounselorList> {
                                     context,
                                     (MaterialPageRoute(
                                         builder: (context) =>
-                                             ContactCounselor(quizResultId: widget.quizResultId, counselorDetails: counselorDetails,))));
+                                             ContactCounselorPage(quizResultId: widget.quizResultId, counselorDetails: counselorDetails,))));
                               },
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(15)),
@@ -252,8 +264,8 @@ class _ContactCounselorListState extends State<ContactCounselorList> {
                     ),
                   ),
                 ]),
-              )),
-          )
+              ),
+            ))
       );
   }
 }

@@ -7,8 +7,8 @@ import 'package:tsd_project/decoration_tools/custom_loading_indicator.dart';
 import 'package:tsd_project/important_tools/api_endpoints.dart';
 import 'package:tsd_project/decoration_tools/top_app_bar.dart';
 import 'package:tsd_project/important_tools/user_authentication.dart';
-import 'package:tsd_project/screen/contact_counselor/contact_counselor_list_page.dart';
-import 'package:tsd_project/screen/my_account/edit_personal_details.dart';
+import 'package:tsd_project/pages/contact_counselor/contact_counselor_list_page.dart';
+import 'package:tsd_project/pages/my_account/edit_personal_details_page.dart';
 
 class QuizResultPage extends StatefulWidget {
   //Declaring the quiz result id that must be received when navigating
@@ -470,21 +470,21 @@ class _QuizResultPageState extends State<QuizResultPage> {
   }
 
   Future<void> redirectToContactCounselorList(BuildContext context) async {
-    if(await allUserPersonalDetailsFilled(context)){
+    if(await allPersonalDetailsFilled(context)){
       if(context.mounted){
       Navigator.push(
           context,
           (MaterialPageRoute(
-              builder: (context) => ContactCounselorList(quizResultId: widget.quizResultId))));
+              builder: (context) => ContactCounselorListPage(quizResultId: widget.quizResultId))));
       }
     }
     else{
-      fillUserPersonalDetailsDialog();
+      fillPersonalDetailsDialog();
     }
   }
 
-  //Info dialog box to tell the user to fill the personal details
-  void fillUserPersonalDetailsDialog(){
+  //Info dialog box to tell the patient to fill the personal details
+  void fillPersonalDetailsDialog(){
     QuickAlert.show(
         context: context,
         type: QuickAlertType.warning,
@@ -494,13 +494,13 @@ class _QuizResultPageState extends State<QuizResultPage> {
       Navigator.pushReplacement(
           context,
           (MaterialPageRoute(
-              builder: (context) => EditPersonalDetails())));
+              builder: (context) => EditPersonalDetailsPage())));
       }
     );
   }
 
   //Function that gets the user personal details from the database and check all of them are filled
-  Future<bool> allUserPersonalDetailsFilled(BuildContext context) async {
+  Future<bool> allPersonalDetailsFilled(BuildContext context) async {
     //This process Fetches the data from the backend
     String? accessToken = await secureStorage.read(key: 'accessToken');
 
@@ -508,7 +508,7 @@ class _QuizResultPageState extends State<QuizResultPage> {
       if (await checkLoginStatus(context)) {
         try {
           // Obtaining the URL to a variable
-          const String apiUrl = requestUserPersonalDetailsEndpoint;
+          const String apiUrl = requestPatientPersonalDetailsEndpoint;
 
           //Converting the url to uri
           Uri uri = Uri.parse(apiUrl);
@@ -527,10 +527,10 @@ class _QuizResultPageState extends State<QuizResultPage> {
             final Map<String, dynamic> backendUserDetails =
             json.decode(response.body);
 
-            if ((backendUserDetails['user_personal_details']['first_name'] != null) &&
-                (backendUserDetails['user_personal_details']['last_name'] != null) &&
-                (backendUserDetails['user_personal_details']['mobile_number'] != null) &&
-                (backendUserDetails['user_personal_details']['date_of_birth'] != null) ) {
+            if ((backendUserDetails['patient_personal_details']['first_name'] != null) &&
+                (backendUserDetails['patient_personal_details']['last_name'] != null) &&
+                (backendUserDetails['patient_personal_details']['mobile_number'] != null) &&
+                (backendUserDetails['patient_personal_details']['date_of_birth'] != null) ) {
                   return true;
                 }
           } else {

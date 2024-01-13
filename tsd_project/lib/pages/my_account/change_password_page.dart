@@ -7,12 +7,12 @@ import 'package:tsd_project/important_tools/api_endpoints.dart';
 import 'package:tsd_project/decoration_tools/top_app_bar.dart';
 import 'package:tsd_project/important_tools/user_authentication.dart';
 
-class ChangeUserPassword extends StatefulWidget {
+class ChangePasswordPage extends StatefulWidget {
   @override
-  State<ChangeUserPassword> createState() => _ChangeUserPasswordState();
+  State<ChangePasswordPage> createState() => _ChangePasswordPageState();
 }
 
-class _ChangeUserPasswordState extends State<ChangeUserPassword> {
+class _ChangePasswordPageState extends State<ChangePasswordPage> {
   //Form key
   final GlobalKey<FormState> _changePasswordformKey = GlobalKey<FormState>();
 
@@ -407,7 +407,7 @@ class _ChangeUserPasswordState extends State<ChangeUserPassword> {
       if (await checkLoginStatus(context)) {
         try {
           // Obtaining the URL to a variable
-          const String apiUrl = updateUserAuthUserDetailsEndpoint;
+          const String apiUrl = updatePatientAuthUserDetailsEndpoint;
 
           //Converting the url to uri
           Uri uri = Uri.parse(apiUrl);
@@ -419,7 +419,7 @@ class _ChangeUserPasswordState extends State<ChangeUserPassword> {
           //The data map that must be send to the backend
           Map<String, dynamic> formData = {
             'current_password': _currentPasswordController.text,
-            'user_auth_user_details': newPassword,
+            'patient_auth_user_details': newPassword,
           };
 
           //Requesting the data from the backend

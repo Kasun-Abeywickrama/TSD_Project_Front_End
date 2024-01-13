@@ -1,4 +1,4 @@
-const String baseApiUrl = 'http://10.0.2.2:8000';
+const String baseApiUrl = 'http://10.0.2.2:8000/api/ma';
 
 const String registerEndpoint = '$baseApiUrl/register/';
 
@@ -13,17 +13,17 @@ const String viewQuizResultEndpoint = '$baseApiUrl/view_quiz_result/';
 const String viewPreviousQuizResultsEndpoint =
     '$baseApiUrl/view_previous_quiz_results/';
 
-const String requestUserAuthUserDetailsEndpoint =
-    '$baseApiUrl/send_user_auth_user_details/';
+const String requestPatientAuthUserDetailsEndpoint =
+    '$baseApiUrl/send_patient_auth_user_details/';
 
-const String updateUserAuthUserDetailsEndpoint =
-    '$baseApiUrl/update_user_auth_user_details/';
+const String updatePatientAuthUserDetailsEndpoint =
+    '$baseApiUrl/update_patient_auth_user_details/';
 
-const String requestUserPersonalDetailsEndpoint =
-    '$baseApiUrl/send_user_personal_details/';
+const String requestPatientPersonalDetailsEndpoint =
+    '$baseApiUrl/send_patient_personal_details/';
 
-const String updateUserPersonalDetailsEndpoint =
-    '$baseApiUrl/update_user_personal_details/';
+const String updatePatientPersonalDetailsEndpoint =
+    '$baseApiUrl/update_patient_personal_details/';
 
 const String requestCounselorDetailsEndpoint = '$baseApiUrl/send_counselor_details/';
 

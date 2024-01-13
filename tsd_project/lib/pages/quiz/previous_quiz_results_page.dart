@@ -4,15 +4,18 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:tsd_project/decoration_tools/custom_loading_indicator.dart';
 import 'package:tsd_project/important_tools/api_endpoints.dart';
-import 'package:tsd_project/screen/quiz_result_page.dart';
+import 'package:tsd_project/pages/quiz/quiz_result_page.dart';
 import 'package:tsd_project/important_tools/user_authentication.dart';
 
-class PreviousQuizResults extends StatefulWidget {
+class PreviousQuizResultsPage extends StatefulWidget {
+  //When a new unique key is passed, the widget page will rebuild including the initial process method
+  const PreviousQuizResultsPage({Key? key}) : super(key: key);
+
   @override
-  State<PreviousQuizResults> createState() => _PreviousQuizResultsState();
+  State<PreviousQuizResultsPage> createState() => _PreviousQuizResultsPageState();
 }
 
-class _PreviousQuizResultsState extends State<PreviousQuizResults> {
+class _PreviousQuizResultsPageState extends State<PreviousQuizResultsPage> {
   //Declaring the variable to check if the page is still loading
   bool isLoading = true;
 
@@ -113,33 +116,41 @@ class _PreviousQuizResultsState extends State<PreviousQuizResults> {
                 : (previousQuizResultsList.isEmpty
                     ? Container(
                         color: Colors.white,
-                        child: const Padding(
-                          padding: EdgeInsets.all(15.0),
-                          child: Center(
-                              child: Text(
-                            "< No Previous Results >",
-                            style: TextStyle(
-                                color: Color.fromRGBO(3, 71, 120, 1),
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold),
-                          )),
-                        ),
-                      )
-                    : SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Container(
-                            constraints: BoxConstraints(
-                              maxWidth: screenWidth,
+                        child: const CustomScrollView(slivers: [
+                          SliverFillRemaining(
+                          hasScrollBody: false,
+                          child: Padding(
+                            padding: EdgeInsets.all(15.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Center(
+                                    child: Text(
+                                  "< No Previous Results >",
+                                  style: TextStyle(
+                                      color: Color.fromRGBO(3, 71, 120, 1),
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                )),
+                              ],
                             ),
-                            decoration:
-                                const BoxDecoration(color: Colors.white),
-                            child: Padding(
-                              padding: const EdgeInsets.all(15.0),
-                              //A list.generate can only be used as a chilren of a column
-                              child: RefreshIndicator(
-                                onRefresh: () => initialProcess(context),
-                                child: ListView(children: [
-                                  Center(
+                          ),
+                        ),
+                                                ]) )
+                    : ListView(
+                      children: [
+                        SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Container(
+                                constraints: BoxConstraints(
+                                  maxWidth: screenWidth,
+                                ),
+                                decoration:
+                                    const BoxDecoration(color: Colors.white),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(15.0),
+                                  //A list.generate can only be used as a chilren of a column
+                                  child: Center(
                                     child: Container(
                                       constraints:
                                           const BoxConstraints(maxWidth: 768),
@@ -546,11 +557,11 @@ class _PreviousQuizResultsState extends State<PreviousQuizResults> {
                                         ],
                                       ),
                                     ),
-                                  )
-                                ]),
-                              ),
-                            )),
-                      ));
+                                  ),
+                                )),
+                          ),
+                      ],
+                    ));
   }
 }
 

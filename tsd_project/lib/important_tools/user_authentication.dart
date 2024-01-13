@@ -1,6 +1,6 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:tsd_project/screen/login.dart';
+import 'package:tsd_project/pages/patient_login_page.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 
 const FlutterSecureStorage secureStorage = FlutterSecureStorage();
@@ -14,15 +14,15 @@ Future<bool> checkLoginStatus(BuildContext context) async {
     //Checking if the access token is expired
     bool isTokenExpired = Jwt.isExpired(accessToken);
     if (isTokenExpired == false) {
-      //The access token is valid, the user can access the content
-      print('User Access Token is Valid');
+      //The access token is valid, the patient can access the content
+      print('Patient Access Token is Valid');
       return true;
     } else {
       //If the access token is expired return false and navigate to login screen
       print('Access Token is expired');
       if (context.mounted) {
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => login_user()));
+            context, MaterialPageRoute(builder: (context) => PatientLoginPage()));
       }
       return false;
     }
@@ -31,7 +31,7 @@ Future<bool> checkLoginStatus(BuildContext context) async {
     print('Access Token is Null');
     if (context.mounted) {
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => login_user()));
+          context, MaterialPageRoute(builder: (context) => PatientLoginPage()));
     }
     return false;
   }
@@ -46,7 +46,7 @@ Future<void> signOut(BuildContext context) async {
     //Redirecting to the login page
     if (context.mounted) {
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => login_user()));
+          context, MaterialPageRoute(builder: (context) => PatientLoginPage()));
     }
   }
 }

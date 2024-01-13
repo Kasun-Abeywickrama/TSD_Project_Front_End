@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:tsd_project/screen/quiz_page.dart';
+import 'package:tsd_project/pages/quiz/quiz_page.dart';
 
 class ResultCalculation extends StatelessWidget {
   final List<QuizResultModel> qandAData;
