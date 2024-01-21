@@ -5,6 +5,7 @@ import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:tsd_project/important_tools/api_endpoints.dart';
 import '../important_tools/user_authentication.dart';
 
 class CustomTopAppBar extends StatefulWidget implements PreferredSizeWidget {
@@ -45,7 +46,7 @@ class _CustomTopAppBarState extends State<CustomTopAppBar> {
       if (await checkLoginStatus(context)) {
         try {
           // Obtaining the URL to a variable
-          const String apiUrl = "";
+          const String apiUrl = requestNotificationAmountEndpoint;
 
           //Converting the url to uri
           Uri uri = Uri.parse(apiUrl);
@@ -192,30 +193,28 @@ class _CustomTopAppBarState extends State<CustomTopAppBar> {
                       }
                     },
                   ),
-                  Positioned(
-                    right: 5.0,
-                    top: 5.0,
-                    child: CircleAvatar(
-                      backgroundColor: Colors.red,
-                      radius: 11.0,
-                      child: notificationAmount == "0" ?
-                      const Text(
-                        "0",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 15.0,
-                        ),
-                      )
-                      :
-                      Text(
-                        notificationAmount,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 15.0,
-                        ),
+                  notificationAmount != "0" ?
+                    Positioned(
+                      right: 5.0,
+                      top: 5.0,
+                      child: CircleAvatar(
+                        backgroundColor: Colors.red,
+                        radius: 11.0,
+                        child: Text(
+                          notificationAmount,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 15.0,
+                          ),
+                        )
                       ),
-                    ),
-                  ),
+                    )
+                      :
+                      Positioned(
+                        right: 5.0,
+                        top: 5.0,
+                        child: Container(),
+                      )
                 ],
               )
             : Container()

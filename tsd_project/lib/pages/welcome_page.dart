@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:tsd_project/important_tools/user_authentication.dart';
 import 'package:tsd_project/pages/main_page.dart';
 
@@ -58,7 +59,7 @@ class _WelcomePageState extends State<WelcomePage> {
             child: Align(
               alignment: Alignment.bottomCenter,
               child: Text(
-                'Welcome',
+                'Mind Care',
                 style: TextStyle(
                   fontSize: screenWidth * 0.1,
                   fontFamily: 'archivo_black.ttf',
@@ -72,10 +73,12 @@ class _WelcomePageState extends State<WelcomePage> {
             height: screenHeight * 0.05,
           ),
           SizedBox(
-              height: screenHeight * 0.045,
-              width: screenHeight * 0.045,
-              child: const CircularProgressIndicator(
-                color: Color.fromRGBO(0, 57, 255, 0.8),
+              height: screenHeight * 0.075,
+              width: screenHeight * 0.075,
+              child: const LoadingIndicator(
+                indicatorType: Indicator.ballPulse,
+                colors: [Color.fromRGBO(0, 57, 255, 0.8)],
+                strokeWidth: 30,
               ))
         ],
       ),

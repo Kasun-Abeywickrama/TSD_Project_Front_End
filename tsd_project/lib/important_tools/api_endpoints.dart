@@ -1,4 +1,4 @@
-const String baseApiUrl = 'http://10.0.2.2:8000/api/ma';
+const String baseApiUrl = 'https://mindcare.pythonanywhere.com/api/ma';
 
 const String registerEndpoint = '$baseApiUrl/register/';
 
@@ -30,3 +30,9 @@ const String requestCounselorDetailsEndpoint = '$baseApiUrl/send_counselor_detai
 const String makeAppointmentEndpoint = '$baseApiUrl/make_appointment/';
 
 const String checkOngoingAppointmentEndpoint = '$baseApiUrl/check_ongoing_appointment/';
+
+const String requestAppointmentListEndpoint = '$baseApiUrl/send_appointment_list/';
+
+const String makeIsPatientViewedTrueEndpoint = '$baseApiUrl/make_is_patient_viewed_true/';
+
+const String requestNotificationAmountEndpoint = '$baseApiUrl/send_notification_amount/';

@@ -57,28 +57,28 @@ class ResultCalculation extends StatelessWidget {
       counselor_or_not = 0;
 
       conclusion =
-          'You had these effects for only $noOfDays days. Therefore we cannot give you a conclusion about your state. Please take this test again on $nextTestDate, then we will give you a conclusion about your state';
+          'You had these effects for only $noOfDays days. Therefore we cannot give you a conclusion about your state. Please take this test again on $nextTestDate, then we will give you a conclusion about your state.';
     } else {
       if (dpLevel == 'Minimal') {
         counselor_or_not = 0;
         conclusion =
-            'You have very few/none depression symptoms. There is nothing to worry about';
+            'You have very few/none depression symptoms. There is nothing to worry about.';
       } else if (dpLevel == 'Mild') {
         counselor_or_not = 0;
         conclusion =
-            'Some mild symptoms are present, which might be distressing, but manageble';
+            'Some mild symptoms are present, which might be distressing, but manageble.';
       } else if (dpLevel == 'Moderate') {
         counselor_or_not = 1;
         conclusion =
-            'Moderate Symptoms are present. Please seek professional help before this affects your general life';
+            'Moderate Symptoms are present. Please seek professional help before this affects your general life.';
       } else if (dpLevel == 'Moderately Severe') {
         counselor_or_not = 1;
         conclusion =
-            'Depression is already impacted daily life. Please seek to professional help immediately';
+            'Depression is already impacted daily life. Please seek to professional help immediately.';
       } else {
         counselor_or_not = 1;
         conclusion =
-            'Symptoms are severe, professional care is needed urgently';
+            'Symptoms are severe, professional care is needed urgently.';
       }
     }
 

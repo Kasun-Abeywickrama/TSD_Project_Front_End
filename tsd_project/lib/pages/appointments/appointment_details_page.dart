@@ -3,6 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:tsd_project/decoration_tools/custom_loading_indicator.dart';
+import 'package:tsd_project/important_tools/api_endpoints.dart';
 import '../../decoration_tools/top_app_bar.dart';
 import '../../important_tools/user_authentication.dart';
 
@@ -17,7 +18,7 @@ class AppointmentDetailsPage extends StatefulWidget{
 
 class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
 
-  /*//Declaring the variable to check if the page is loading
+  //Declaring the variable to check if the page is loading
   bool isLoading = true;
 
   //Initializing the flutter secure storage
@@ -31,13 +32,13 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
       if (await checkLoginStatus(context)) {
         try {
           // Obtaining the URL to a variable
-          const String apiUrl = "";
+          const String apiUrl = makeIsPatientViewedTrueEndpoint;
 
           //Converting the url to uri
           Uri uri = Uri.parse(apiUrl);
 
           Map<String, dynamic> appointmentId = {
-            'id': widget.appointmentDetails['appointment_id']
+            'appointment_id': widget.appointmentDetails['appointment_id']
           };
 
           final response = await http.post(
@@ -68,7 +69,7 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
         }
       }
     }
-  }*/
+  }
 
   @override
   void initState() {
@@ -77,11 +78,11 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
   }
 
   Future<void> initialProcess(BuildContext context) async {
-    /*if (await checkLoginStatus(context)) {
+    if (await checkLoginStatus(context)) {
       if(context.mounted){
         setIsPatientViewedTrue(context);
       }
-    }*/
+    }
   }
 
   @override
@@ -91,9 +92,9 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
       pageIndex: 1,
       pageName: "Appointment Details",
     ),
-      body: /*isLoading
+      body: isLoading
           ? CustomLoadingIndicator()
-          :*/
+          :
         Container(
           color: Colors.white,
           child: RefreshIndicator(
@@ -261,6 +262,38 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                                       padding: const EdgeInsets.fromLTRB(50.0, 0, 0, 0),
                                       child: Text(
                                         widget.appointmentDetails['appointment_location'],
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          color: Color.fromRGBO(3, 71, 120, 1),
+                                          fontSize: 18,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 25),
+                              const Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      'Additional Notes : ',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Color.fromRGBO(3, 71, 120, 1),
+                                        fontSize: 20,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.fromLTRB(50.0, 0, 0, 0),
+                                      child: Text(
+                                        widget.appointmentDetails['response_description'],
                                         style: const TextStyle(
                                           fontWeight: FontWeight.w500,
                                           color: Color.fromRGBO(3, 71, 120, 1),

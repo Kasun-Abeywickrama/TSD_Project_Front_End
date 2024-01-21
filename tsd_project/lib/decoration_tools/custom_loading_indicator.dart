@@ -9,11 +9,17 @@ class CustomLoadingIndicator extends StatefulWidget {
 class _CustomLoadingIndicatorState extends State<CustomLoadingIndicator> {
   @override
   Widget build(BuildContext context) {
-    return const Center(
-        child: LoadingIndicator(
-      indicatorType: Indicator.ballClipRotateMultiple,
-      colors: [Color.fromRGBO(0, 57, 255, 0.8)],
-      strokeWidth: 20,
-    ));
+    double screenHeight = MediaQuery.of(context).size.height;
+
+    return Center(
+        child: SizedBox(
+          height: screenHeight * 0.15,
+          width: screenHeight * 0.15,
+          child: const LoadingIndicator(
+                indicatorType: Indicator.ballPulse,
+                colors: [Color.fromRGBO(0, 57, 255, 0.8)],
+                strokeWidth: 30,
+              ),
+        ));
   }
 }

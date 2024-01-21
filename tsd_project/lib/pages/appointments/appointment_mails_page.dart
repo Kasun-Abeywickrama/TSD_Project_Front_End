@@ -3,6 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:tsd_project/decoration_tools/custom_loading_indicator.dart';
+import 'package:tsd_project/important_tools/api_endpoints.dart';
 import 'package:tsd_project/pages/appointments/appointment_details_page.dart';
 import '../../important_tools/user_authentication.dart';
 
@@ -20,21 +21,18 @@ class _AppointmentMailsPageState extends State<AppointmentMailsPage> {
   //This is for the latest date filters
   bool latestDate = true;
 
-  /*
+
   //Declaring the variable to check if the page is loading
   bool isLoading = true;
 
   //Initializing the flutter secure storage
   final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
-  */
+
 
   //Sample list of appointments
-  List<AppointmentListModel> appointmentList = [
-    AppointmentListModel(appointmentId: 1, appointmentDate: "2002/10/28", appointmentTime: "2.00 TO 4.00", counselorFirstName: "Hansa", counselorLastName: "Sithuruwan", appointmentLocation: "abc", is_patient_viewed: 0),
-    AppointmentListModel(appointmentId: 2, appointmentDate: "2002/10/28", appointmentTime: "2.00 TO 4.00", counselorFirstName: "Sanhastha", counselorLastName: "Mudalige", appointmentLocation: "abc", is_patient_viewed: 1)
-  ];
+  List<AppointmentListModel> appointmentList = [];
 
-  /*
+
   //Function that gets the existing data from the database
   Future<void> setAppointmentList(BuildContext context) async {
     //This process Fetches the data from the backend
@@ -44,7 +42,7 @@ class _AppointmentMailsPageState extends State<AppointmentMailsPage> {
       if (await checkLoginStatus(context)) {
         try {
           // Obtaining the URL to a variable
-          const String apiUrl = "";
+          const String apiUrl = requestAppointmentListEndpoint;
 
           //Converting the url to uri
           Uri uri = Uri.parse(apiUrl);
@@ -69,16 +67,19 @@ class _AppointmentMailsPageState extends State<AppointmentMailsPage> {
 
                 appointmentList = List.from(backendAppointmentList['appointment_list']).map<AppointmentListModel>((item){
                   return AppointmentListModel(
-                    appointmentID: item['appointment_id'],
+                    appointmentId: item['appointment_id'],
                     appointmentDate: item['appointment_date'],
                     appointmentTime: item['appointment_time'],
                     counselorFirstName: item['counselor_first_name'],
                     counselorLastName: item['counselor_last_name'],
                     appointmentLocation: item['appointment_location'],
-                    is_user_viewed: item['is_user_viewed'],
+                    responseDescription: item['response_description'],
+                    isPatientViewed: item['is_patient_viewed'],
                   );
                 }
                 ).toList();
+
+                appointmentList = List.from(appointmentList.reversed);
 
                 //Considering the page is loaded
                 isLoading = false;
@@ -96,7 +97,7 @@ class _AppointmentMailsPageState extends State<AppointmentMailsPage> {
       }
     }
   }
-   */
+
 
   @override
   void initState() {
@@ -106,11 +107,9 @@ class _AppointmentMailsPageState extends State<AppointmentMailsPage> {
 
   Future<void> initialProcess(BuildContext context) async {
     if (await checkLoginStatus(context)) {
-      /*
       if (context.mounted) {
         setAppointmentList(context);
       }
-       */
     }
   }
 
@@ -120,9 +119,9 @@ class _AppointmentMailsPageState extends State<AppointmentMailsPage> {
     if (screenWidth < 260) {
       screenWidth = 260;
     }
-    return /*isLoading ?
+    return isLoading ?
             CustomLoadingIndicator()
-            :*/
+            :
             (appointmentList.isEmpty ?
               Container(
                 color: Colors.white,
@@ -362,7 +361,7 @@ class _AppointmentMailsPageState extends State<AppointmentMailsPage> {
                                     //The main container
                                     child: Container(
                                       //If the appointment mail is not viewed highlight it
-                                      decoration: appointmentList[i].is_patient_viewed == 0 ?
+                                      decoration: appointmentList[i].isPatientViewed == 0 ?
                                         BoxDecoration(
                                           color: const Color.fromARGB(255, 232, 230, 230),
                                           borderRadius: const BorderRadius.only(
@@ -403,6 +402,7 @@ class _AppointmentMailsPageState extends State<AppointmentMailsPage> {
                                             'appointment_date': appointmentList[i].appointmentDate,
                                             'appointment_time':appointmentList[i].appointmentTime,
                                             'appointment_location': appointmentList[i].appointmentLocation,
+                                            'response_description': appointmentList[i].responseDescription,
                                           };
                                           Navigator.push(
                                               context,
@@ -560,7 +560,8 @@ class AppointmentListModel{
   String counselorFirstName;
   String counselorLastName;
   String appointmentLocation;
-  int is_patient_viewed;
+  int isPatientViewed;
+  String responseDescription;
 
   AppointmentListModel({
     required this.appointmentId,
@@ -569,6 +570,7 @@ class AppointmentListModel{
     required this.counselorFirstName,
     required this.counselorLastName,
     required this.appointmentLocation,
-    required this.is_patient_viewed,
+    required this.responseDescription,
+    required this.isPatientViewed,
   });
 }
