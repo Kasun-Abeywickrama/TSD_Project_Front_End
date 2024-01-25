@@ -69,6 +69,7 @@ class _ContactCounselorListPageState extends State<ContactCounselorListPage> {
                       lastName: item['last_name'],
                       location: item['location'],
                       mobileNumber: item['mobile_number'],
+                      profileImage: item['profile_image'],
                       website: item['website']);
                 }
                 ).toList();
@@ -181,6 +182,7 @@ class _ContactCounselorListPageState extends State<ContactCounselorListPage> {
                                   'location': counselorList[i].location,
                                   'website': counselorList[i].website,
                                   'mobile_number': counselorList[i].mobileNumber,
+                                  'profile_image': counselorList[i].profileImage,
                                 };
                                 Navigator.push(
                                     context,
@@ -202,8 +204,8 @@ class _ContactCounselorListPageState extends State<ContactCounselorListPage> {
                                         child: SizedBox(
                                           height: 100,
                                           width: 100,
-                                          child: Image.asset(
-                                            "assets/images/doctor.png",
+                                          child: Image.network(
+                                            "https://mindcare.pythonanywhere.com//media/${counselorList[i].profileImage}",
                                             fit: BoxFit.cover,
                                           ),
                                         ),
@@ -279,6 +281,7 @@ class CounselordetailsModel {
   String location;
   String website;
   String mobileNumber;
+  String profileImage;
 
   CounselordetailsModel({
     required this.authUserId,
@@ -289,6 +292,7 @@ class CounselordetailsModel {
     required this.location,
     required this.website,
     required this.mobileNumber,
+    required this.profileImage,
   });
 }
 

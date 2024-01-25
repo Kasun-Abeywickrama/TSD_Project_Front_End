@@ -109,9 +109,9 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                         child: SizedBox(
                           height: 150,
                           width: 150,
-                          child: Image.asset(
+                          child: Image.network(
                             //Replace with the actual doctors image
-                            "assets/images/doctor.png",
+                            "https://mindcare.pythonanywhere.com//media/${widget.appointmentDetails['profile_image']}",
                             fit: BoxFit.cover,
                           ),
                         ),

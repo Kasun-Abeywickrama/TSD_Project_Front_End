@@ -75,6 +75,7 @@ class _AppointmentMailsPageState extends State<AppointmentMailsPage> {
                     appointmentLocation: item['appointment_location'],
                     responseDescription: item['response_description'],
                     isPatientViewed: item['is_patient_viewed'],
+                    profileImage: item['profile_image'],
                   );
                 }
                 ).toList();
@@ -403,6 +404,7 @@ class _AppointmentMailsPageState extends State<AppointmentMailsPage> {
                                             'appointment_time':appointmentList[i].appointmentTime,
                                             'appointment_location': appointmentList[i].appointmentLocation,
                                             'response_description': appointmentList[i].responseDescription,
+                                            'profile_image': appointmentList[i].profileImage,
                                           };
                                           Navigator.push(
                                               context,
@@ -425,8 +427,8 @@ class _AppointmentMailsPageState extends State<AppointmentMailsPage> {
                                                   child: SizedBox(
                                                     height: 80,
                                                     width: 80,
-                                                    child: Image.asset(
-                                                      "assets/images/doctor.png",
+                                                    child: Image.network(
+                                                      "https://mindcare.pythonanywhere.com//media/${appointmentList[i].profileImage}",
                                                       fit: BoxFit.cover,
                                                     ),
                                                   ),
@@ -562,6 +564,7 @@ class AppointmentListModel{
   String appointmentLocation;
   int isPatientViewed;
   String responseDescription;
+  String profileImage;
 
   AppointmentListModel({
     required this.appointmentId,
@@ -572,5 +575,6 @@ class AppointmentListModel{
     required this.appointmentLocation,
     required this.responseDescription,
     required this.isPatientViewed,
+    required this.profileImage,
   });
 }
