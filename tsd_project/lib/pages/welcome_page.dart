@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:tsd_project/important_tools/user_authentication.dart';
 import 'package:tsd_project/pages/main_page.dart';
+import 'package:tsd_project/pages/patient_login_page.dart';
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({super.key});
@@ -19,15 +20,26 @@ class _WelcomePageState extends State<WelcomePage> {
   }
 
   Future<void> initialProcess(BuildContext context) async {
-    if (context.mounted) {
-      await Future.delayed(const Duration(seconds: 2));
+    //Put the try catch block to catch exception
+    try{
       if (context.mounted) {
-        if (await checkLoginStatus(context)) {
-          if (context.mounted) {
-            Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (context) => MainPage()));
+        await Future.delayed(const Duration(seconds: 2));
+        if (context.mounted) {
+          if (await checkLoginStatus(context)) {
+            if (context.mounted) {
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (context) => MainPage()));
+            }
           }
         }
+      }
+    }
+    //Catch the exception occured after reinstalling the application, then redirect to the login page
+    catch(e)
+    {
+      if (context.mounted) {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => PatientLoginPage()));
       }
     }
   }
