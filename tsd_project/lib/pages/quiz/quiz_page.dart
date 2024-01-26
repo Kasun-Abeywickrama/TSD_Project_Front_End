@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'dart:math';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:simple_gradient_text/simple_gradient_text.dart';
@@ -39,9 +38,6 @@ class _QuizPageState extends State<QuizPage> {
 
   //Creating the list to store the answers of the user (question id, answer id, mark)
   List<QuizResultModel> qandAData = [];
-
-  //Declaring the secure storage where we stored the token in the login page
-  final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
 
   //These two functions are used to check whether the user logged in
   //This function will call the checkLoginState() and requestQuiz() functions at the beggining of the page
@@ -816,36 +812,34 @@ class _QuizPageState extends State<QuizPage> {
         });
   }
 
-  void quizUpdatingAlert(){
+  void quizUpdatingAlert() {
     QuickAlert.show(
         context: context,
         type: QuickAlertType.warning,
         title: 'Quiz Is Under Maintenance !',
         text: 'Quiz is under maintanence, please try again later.',
-      onConfirmBtnTap: (){
+        onConfirmBtnTap: () {
           Navigator.of(context).pop();
           Navigator.of(context).pop();
-      }
-    );
+        });
   }
 
-  void quizUpdatedAlert(){
+  void quizUpdatedAlert() {
     QuickAlert.show(
         context: context,
         type: QuickAlertType.warning,
         title: 'Quiz Has Been Updated !',
         text: 'The quiz has been updated recently, please retake the quiz',
-        onConfirmBtnTap: (){
+        onConfirmBtnTap: () {
           Navigator.of(context).pop();
           Navigator.of(context).pop();
           Navigator.of(context).pop();
-        }
-    );
+        });
   }
 
   //Creating the function to request the quiz
   Future<void> requestQuiz(BuildContext context) async {
-    String? accessToken = await secureStorage.read(key: 'accessToken');
+    String? accessToken = await retrieveAccessToken();
 
     if (context.mounted) {
       if (await checkLoginStatus(context)) {
@@ -889,7 +883,7 @@ class _QuizPageState extends State<QuizPage> {
                 }).toList();
 
                 //Setting the last_updated_timestamp in secure storage
-                secureStorage.write(key: 'lastUpdatedTimestamp', value: data['last_updated_timestamp']);
+                storeLastUpdatedTimestamp(data['last_updated_timestamp']);
 
                 print(data['last_updated_timestamp']);
 
@@ -900,10 +894,9 @@ class _QuizPageState extends State<QuizPage> {
           } else {
             final data = json.decode(response.body);
 
-            if(data.containsKey('quiz_updating')){
+            if (data.containsKey('quiz_updating')) {
               quizUpdatingAlert();
-            }
-            else {
+            } else {
               print('unable to receive data: ${response.body}');
             }
           }
@@ -919,10 +912,10 @@ class _QuizPageState extends State<QuizPage> {
   Future<void> submitResultData(
       Map<String, dynamic> quizResultMap, BuildContext context) async {
     //Collecting the access token from the secure storage
-    String? accessToken = await secureStorage.read(key: 'accessToken');
-    String? lastUpdatedTimestamp = await secureStorage.read(key: 'lastUpdatedTimestamp');
+    String? accessToken = await retrieveAccessToken();
+    String? lastUpdatedTimestamp = await retrieveLastUpdatedTimestamp();
 
-    if(lastUpdatedTimestamp != null){
+    if (lastUpdatedTimestamp != null) {
       if (context.mounted) {
         if (await checkLoginStatus(context)) {
           try {
@@ -978,16 +971,14 @@ class _QuizPageState extends State<QuizPage> {
             } else {
               final data = json.decode(response.body);
 
-              if(data.containsKey('quiz_updating')){
-                if(context.mounted) {
+              if (data.containsKey('quiz_updating')) {
+                if (context.mounted) {
                   Navigator.of(context).pop();
                   quizUpdatingAlert();
                 }
-              }
-              else if(data.containsKey('quiz_updated')){
+              } else if (data.containsKey('quiz_updated')) {
                 quizUpdatedAlert();
-              }
-              else{
+              } else {
                 print('unable to receive data: ${response.body}');
               }
             }
@@ -996,12 +987,10 @@ class _QuizPageState extends State<QuizPage> {
           }
         }
       }
-    }
-    else{
+    } else {
       print('Last updated timestamp is null');
     }
   }
-
 }
 
 //The model that stores quiz results of the user

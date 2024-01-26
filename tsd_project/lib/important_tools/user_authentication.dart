@@ -1,13 +1,41 @@
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tsd_project/pages/patient_login_page.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 
-const FlutterSecureStorage secureStorage = FlutterSecureStorage();
+//Function that stores the accessToken
+Future<void> storeAccessToken(String accessToken) async{
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.setString('accessToken', accessToken);
+  print("Accesss token stored");
+}
+
+//Function that retrieves the accessToken
+Future<String?> retrieveAccessToken() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  String? accessToken = prefs.getString('accessToken');
+  print("Access token read successfully");
+  return accessToken;
+}
+
+//Function that stores the lastUpdatedTimestamp
+Future<void> storeLastUpdatedTimestamp(String lastUpdatedTimestamp) async{
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.setString('lastUpdatedTimestamp', lastUpdatedTimestamp);
+  print("Last updated timestamp stored");
+}
+
+//Function that retrieves the last updated timestamp
+Future<String?> retrieveLastUpdatedTimestamp() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  String? lastUpdatedTimestamp = prefs.getString('lastUpdatedTimestamp');
+  print("Last updated timestamp read successfully");
+  return lastUpdatedTimestamp;
+}
 
 //The function that checks the user access token authentication everywhere
 Future<bool> checkLoginStatus(BuildContext context) async {
-  String? accessToken = await secureStorage.read(key: 'accessToken');
+  String? accessToken = await retrieveAccessToken();
 
   //Checkking if the access token is null
   if (accessToken != null) {
@@ -21,8 +49,8 @@ Future<bool> checkLoginStatus(BuildContext context) async {
       //If the access token is expired return false and navigate to login screen
       print('Access Token is expired');
       if (context.mounted) {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => PatientLoginPage()));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => PatientLoginPage()));
       }
       return false;
     }
@@ -41,7 +69,8 @@ Future<void> signOut(BuildContext context) async {
   if (await checkLoginStatus(context)) {
     //Implement the log out scenario
     //Delete the current access token
-    await secureStorage.delete(key: 'accessToken');
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('accessToken');
     print("Access Token deleted");
     //Redirecting to the login page
     if (context.mounted) {

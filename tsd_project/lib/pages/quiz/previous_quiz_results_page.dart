@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:tsd_project/decoration_tools/custom_loading_indicator.dart';
@@ -12,7 +11,8 @@ class PreviousQuizResultsPage extends StatefulWidget {
   const PreviousQuizResultsPage({Key? key}) : super(key: key);
 
   @override
-  State<PreviousQuizResultsPage> createState() => _PreviousQuizResultsPageState();
+  State<PreviousQuizResultsPage> createState() =>
+      _PreviousQuizResultsPageState();
 }
 
 class _PreviousQuizResultsPageState extends State<PreviousQuizResultsPage> {
@@ -20,9 +20,6 @@ class _PreviousQuizResultsPageState extends State<PreviousQuizResultsPage> {
   bool isLoading = true;
 
   bool latestDate = true;
-
-  //Initializing the flutter secure storage
-  final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
 
   //Initializing the list to store the data
   List<PreviousQuizResultsDataModel> previousQuizResultsList = [];
@@ -32,7 +29,7 @@ class _PreviousQuizResultsPageState extends State<PreviousQuizResultsPage> {
     print("refreshed");
 
     //This process Fetches the data from the backend
-    String? accessToken = await secureStorage.read(key: 'accessToken');
+    String? accessToken = await retrieveAccessToken();
 
     if (context.mounted) {
       if (await checkLoginStatus(context)) {
@@ -112,456 +109,419 @@ class _PreviousQuizResultsPageState extends State<PreviousQuizResultsPage> {
       screenWidth = 300;
     }
     return isLoading
-                ? CustomLoadingIndicator()
-                : (previousQuizResultsList.isEmpty
-                    ? Container(
-                        color: Colors.white,
-                        child: const CustomScrollView(slivers: [
-                          SliverFillRemaining(
-                          hasScrollBody: false,
-                          child: Padding(
-                            padding: EdgeInsets.all(15.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Center(
-                                    child: Text(
-                                  "< No Previous Results >",
-                                  style: TextStyle(
-                                      color: Color.fromRGBO(3, 71, 120, 1),
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold),
-                                )),
-                              ],
-                            ),
-                          ),
+        ? CustomLoadingIndicator()
+        : (previousQuizResultsList.isEmpty
+            ? Container(
+                color: Colors.white,
+                child: const CustomScrollView(slivers: [
+                  SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: Padding(
+                      padding: EdgeInsets.all(15.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Center(
+                              child: Text(
+                            "< No Previous Results >",
+                            style: TextStyle(
+                                color: Color.fromRGBO(3, 71, 120, 1),
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold),
+                          )),
+                        ],
+                      ),
+                    ),
+                  ),
+                ]))
+            : ListView(
+                children: [
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Container(
+                        constraints: BoxConstraints(
+                          maxWidth: screenWidth,
                         ),
-                                                ]) )
-                    : ListView(
-                      children: [
-                        SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
+                        decoration: const BoxDecoration(color: Colors.white),
+                        child: Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          //A list.generate can only be used as a chilren of a column
+                          child: Center(
                             child: Container(
-                                constraints: BoxConstraints(
-                                  maxWidth: screenWidth,
-                                ),
-                                decoration:
-                                    const BoxDecoration(color: Colors.white),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(15.0),
-                                  //A list.generate can only be used as a chilren of a column
-                                  child: Center(
-                                    child: Container(
-                                      constraints:
-                                          const BoxConstraints(maxWidth: 768),
-                                      child: Column(
-                                        children: [
-                                          Padding(
-                                            padding:
-                                                const EdgeInsets.all(15.0),
-                                            child: Row(
-                                              children: [
-                                                latestDate == true
-                                                    ? Container(
-                                                        constraints:
-                                                            const BoxConstraints(
-                                                                maxHeight:
-                                                                    40),
-                                                        decoration:
-                                                            BoxDecoration(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            15),
-                                                                gradient:
-                                                                    const LinearGradient(
-                                                                  colors: [
-                                                                    Color(
-                                                                        0xff66bef4),
-                                                                    Color(
-                                                                        0xff2a58e5)
-                                                                  ],
-                                                                  stops: [
-                                                                    0.25,
-                                                                    0.6
-                                                                  ],
-                                                                  begin: Alignment
-                                                                      .topLeft,
-                                                                  end: Alignment
-                                                                      .bottomRight,
-                                                                )),
-                                                        child: MaterialButton(
-                                                            shape: RoundedRectangleBorder(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            15)),
-                                                            onPressed: () {},
-                                                            child: const Text(
-                                                              "Latest",
-                                                              style:
-                                                                  TextStyle(
-                                                                color: Colors
-                                                                    .white,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                              ),
-                                                            )),
-                                                      )
-                                                    : Container(
-                                                        constraints:
-                                                            const BoxConstraints(
-                                                                maxHeight:
-                                                                    40),
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color: const Color
-                                                              .fromARGB(255,
-                                                              212, 211, 211),
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      15),
-                                                        ),
-                                                        child: MaterialButton(
-                                                            onPressed: () {
-                                                              if (context
-                                                                  .mounted) {
-                                                                setState(() {
-                                                                  previousQuizResultsList =
-                                                                      List.from(
-                                                                          previousQuizResultsList.reversed);
-                                                                  latestDate =
-                                                                      true;
-                                                                });
-                                                              }
-                                                            },
-                                                            child: const Text(
-                                                              "Latest",
-                                                              style: TextStyle(
-                                                                  color: Color
-                                                                      .fromRGBO(
-                                                                          3,
-                                                                          71,
-                                                                          120,
-                                                                          1),
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold),
-                                                            )),
-                                                      ),
-                                                const SizedBox(
-                                                  width: 10,
-                                                ),
-                                                latestDate == false
-                                                    ? Container(
-                                                        constraints:
-                                                            const BoxConstraints(
-                                                                maxHeight:
-                                                                    40),
-                                                        decoration:
-                                                            BoxDecoration(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            15),
-                                                                gradient:
-                                                                    const LinearGradient(
-                                                                  colors: [
-                                                                    Color(
-                                                                        0xff66bef4),
-                                                                    Color(
-                                                                        0xff2a58e5)
-                                                                  ],
-                                                                  stops: [
-                                                                    0.25,
-                                                                    0.6
-                                                                  ],
-                                                                  begin: Alignment
-                                                                      .topLeft,
-                                                                  end: Alignment
-                                                                      .bottomRight,
-                                                                )),
-                                                        child: MaterialButton(
-                                                            shape: RoundedRectangleBorder(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            15)),
-                                                            onPressed: () {},
-                                                            child: const Text(
-                                                                "Oldest",
-                                                                style: TextStyle(
-                                                                    color: Colors
-                                                                        .white,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold))),
-                                                      )
-                                                    : Container(
-                                                        constraints:
-                                                            const BoxConstraints(
-                                                                maxHeight:
-                                                                    40),
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color: const Color
-                                                              .fromARGB(255,
-                                                              212, 211, 211),
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      15),
-                                                        ),
-                                                        child: MaterialButton(
-                                                            onPressed: () {
-                                                              if (context
-                                                                  .mounted) {
-                                                                setState(() {
-                                                                  previousQuizResultsList =
-                                                                      List.from(
-                                                                          previousQuizResultsList.reversed);
-                                                                  latestDate =
-                                                                      false;
-                                                                });
-                                                              }
-                                                            },
-                                                            child: const Text(
-                                                              "Oldest",
-                                                              style: TextStyle(
-                                                                  color: Color
-                                                                      .fromRGBO(
-                                                                          3,
-                                                                          71,
-                                                                          120,
-                                                                          1),
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold),
-                                                            )),
-                                                      ),
-                                              ],
-                                            ),
-                                          ),
-                                          Column(
-                                            children: List.generate(
-                                              previousQuizResultsList.length,
-                                              (i) => Padding(
-                                                padding: const EdgeInsets.all(
-                                                    15.0),
-                                                child: Container(
-                                                  decoration:
-                                                      const BoxDecoration(
-                                                    color: Color.fromARGB(
-                                                        255, 232, 230, 230),
+                              constraints: const BoxConstraints(maxWidth: 768),
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(15.0),
+                                    child: Row(
+                                      children: [
+                                        latestDate == true
+                                            ? Container(
+                                                constraints:
+                                                    const BoxConstraints(
+                                                        maxHeight: 40),
+                                                decoration: BoxDecoration(
                                                     borderRadius:
-                                                        BorderRadius.only(
-                                                      topLeft:
-                                                          Radius.circular(15),
-                                                      topRight:
-                                                          Radius.circular(15),
-                                                      bottomLeft:
-                                                          Radius.circular(15),
-                                                      bottomRight:
-                                                          Radius.circular(15),
-                                                    ),
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                          color:
-                                                              Color.fromRGBO(
-                                                                  92,
-                                                                  94,
-                                                                  95,
-                                                                  0.71),
-                                                          offset:
-                                                              Offset(5, 2),
-                                                          blurRadius: 4)
-                                                    ],
-                                                  ),
-                                                  child: Row(children: [
-                                                    Expanded(
-                                                        flex: 8,
-                                                        child: Column(
-                                                          children: [
-                                                            Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .fromLTRB(
-                                                                      20.0,
-                                                                      10.0,
-                                                                      20.0,
-                                                                      5.0),
-                                                              child: Row(
-                                                                children: [
-                                                                  Expanded(
-                                                                      child:
-                                                                          Text(
-                                                                    previousQuizResultsList[
-                                                                            i]
-                                                                        .date,
-                                                                    style:
-                                                                        const TextStyle(
+                                                        BorderRadius.circular(
+                                                            15),
+                                                    gradient:
+                                                        const LinearGradient(
+                                                      colors: [
+                                                        Color(0xff66bef4),
+                                                        Color(0xff2a58e5)
+                                                      ],
+                                                      stops: [0.25, 0.6],
+                                                      begin: Alignment.topLeft,
+                                                      end:
+                                                          Alignment.bottomRight,
+                                                    )),
+                                                child: MaterialButton(
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        15)),
+                                                    onPressed: () {},
+                                                    child: const Text(
+                                                      "Latest",
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    )),
+                                              )
+                                            : Container(
+                                                constraints:
+                                                    const BoxConstraints(
+                                                        maxHeight: 40),
+                                                decoration: BoxDecoration(
+                                                  color: const Color.fromARGB(
+                                                      255, 212, 211, 211),
+                                                  borderRadius:
+                                                      BorderRadius.circular(15),
+                                                ),
+                                                child: MaterialButton(
+                                                    onPressed: () {
+                                                      if (context.mounted) {
+                                                        setState(() {
+                                                          previousQuizResultsList =
+                                                              List.from(
+                                                                  previousQuizResultsList
+                                                                      .reversed);
+                                                          latestDate = true;
+                                                        });
+                                                      }
+                                                    },
+                                                    child: const Text(
+                                                      "Latest",
+                                                      style: TextStyle(
+                                                          color: Color.fromRGBO(
+                                                              3, 71, 120, 1),
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    )),
+                                              ),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        latestDate == false
+                                            ? Container(
+                                                constraints:
+                                                    const BoxConstraints(
+                                                        maxHeight: 40),
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            15),
+                                                    gradient:
+                                                        const LinearGradient(
+                                                      colors: [
+                                                        Color(0xff66bef4),
+                                                        Color(0xff2a58e5)
+                                                      ],
+                                                      stops: [0.25, 0.6],
+                                                      begin: Alignment.topLeft,
+                                                      end:
+                                                          Alignment.bottomRight,
+                                                    )),
+                                                child: MaterialButton(
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        15)),
+                                                    onPressed: () {},
+                                                    child: const Text("Oldest",
+                                                        style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold))),
+                                              )
+                                            : Container(
+                                                constraints:
+                                                    const BoxConstraints(
+                                                        maxHeight: 40),
+                                                decoration: BoxDecoration(
+                                                  color: const Color.fromARGB(
+                                                      255, 212, 211, 211),
+                                                  borderRadius:
+                                                      BorderRadius.circular(15),
+                                                ),
+                                                child: MaterialButton(
+                                                    onPressed: () {
+                                                      if (context.mounted) {
+                                                        setState(() {
+                                                          previousQuizResultsList =
+                                                              List.from(
+                                                                  previousQuizResultsList
+                                                                      .reversed);
+                                                          latestDate = false;
+                                                        });
+                                                      }
+                                                    },
+                                                    child: const Text(
+                                                      "Oldest",
+                                                      style: TextStyle(
+                                                          color: Color.fromRGBO(
+                                                              3, 71, 120, 1),
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    )),
+                                              ),
+                                      ],
+                                    ),
+                                  ),
+                                  Column(
+                                    children: List.generate(
+                                      previousQuizResultsList.length,
+                                      (i) => Padding(
+                                        padding: const EdgeInsets.all(15.0),
+                                        child: Container(
+                                          decoration: const BoxDecoration(
+                                            color: Color.fromARGB(
+                                                255, 232, 230, 230),
+                                            borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(15),
+                                              topRight: Radius.circular(15),
+                                              bottomLeft: Radius.circular(15),
+                                              bottomRight: Radius.circular(15),
+                                            ),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                  color: Color.fromRGBO(
+                                                      92, 94, 95, 0.71),
+                                                  offset: Offset(5, 2),
+                                                  blurRadius: 4)
+                                            ],
+                                          ),
+                                          child: Row(children: [
+                                            Expanded(
+                                                flex: 8,
+                                                child: Column(
+                                                  children: [
+                                                    Padding(
+                                                      padding: const EdgeInsets
+                                                          .fromLTRB(20.0, 10.0,
+                                                          20.0, 5.0),
+                                                      child: Row(
+                                                        children: [
+                                                          Expanded(
+                                                              child: Text(
+                                                            previousQuizResultsList[
+                                                                    i]
+                                                                .date,
+                                                            style:
+                                                                const TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              color: Color
+                                                                  .fromRGBO(
+                                                                      3,
+                                                                      71,
+                                                                      120,
+                                                                      1),
+                                                              fontSize: 13,
+                                                            ),
+                                                          )),
+                                                          Expanded(
+                                                              child: Text(
+                                                                  previousQuizResultsList[i]
+                                                                      .time,
+                                                                  style: const TextStyle(
                                                                       fontWeight:
-                                                                          FontWeight.bold,
-                                                                      color: Color.fromRGBO(
-                                                                          3,
-                                                                          71,
-                                                                          120,
-                                                                          1),
+                                                                          FontWeight
+                                                                              .bold,
+                                                                      color: Color
+                                                                          .fromRGBO(
+                                                                              3,
+                                                                              71,
+                                                                              120,
+                                                                              1),
                                                                       fontSize:
-                                                                          13,
-                                                                    ),
-                                                                  )),
-                                                                  Expanded(
-                                                                      child: Text(
-                                                                          previousQuizResultsList[i]
-                                                                              .time,
-                                                                          style: const TextStyle(
-                                                                              fontWeight: FontWeight.bold,
-                                                                              color: Color.fromRGBO(3, 71, 120, 1),
-                                                                              fontSize: 13))),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                            Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .fromLTRB(
-                                                                      20.0,
-                                                                      10.0,
-                                                                      20.0,
-                                                                      5.0),
-                                                              child: Row(
-                                                                children: [
-                                                                  const Expanded(
-                                                                      child: Text(
-                                                                          "Score : ",
-                                                                          style: TextStyle(
-                                                                              fontWeight: FontWeight.bold,
-                                                                              color: Color.fromRGBO(3, 71, 120, 1),
-                                                                              fontSize: 13))),
-                                                                  Expanded(
-                                                                      child: Text(
-                                                                          "${previousQuizResultsList[i].score}%",
-                                                                          style: const TextStyle(
-                                                                              fontWeight: FontWeight.bold,
-                                                                              color: Color.fromRGBO(3, 71, 120, 1),
-                                                                              fontSize: 13))),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                            Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .fromLTRB(
-                                                                      20.0,
-                                                                      10.0,
-                                                                      20.0,
-                                                                      10.0),
-                                                              child: Row(
-                                                                children: [
-                                                                  const Expanded(
-                                                                      child: Text(
-                                                                          "DP Level : ",
-                                                                          style: TextStyle(
-                                                                              fontWeight: FontWeight.bold,
-                                                                              color: Color.fromRGBO(3, 71, 120, 1),
-                                                                              fontSize: 13))),
-                                                                  Expanded(
-                                                                      child: Text(
-                                                                          previousQuizResultsList[i]
-                                                                              .dpLevel,
-                                                                          style: const TextStyle(
-                                                                              fontWeight: FontWeight.bold,
-                                                                              color: Color.fromRGBO(3, 71, 120, 1),
-                                                                              fontSize: 13))),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        )),
-                                                    Flexible(
-                                                      flex: 2,
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .fromLTRB(
-                                                                0, 0, 12, 0),
-                                                        child: Container(
-                                                          decoration:
-                                                              BoxDecoration(
-                                                                  borderRadius:
-                                                                      BorderRadius.circular(
-                                                                          10.0),
-                                                                  gradient:
-                                                                      const LinearGradient(
-                                                                    colors: [
-                                                                      Color(
-                                                                          0xff66bef4),
-                                                                      Color(
-                                                                          0xff2a58e5)
-                                                                    ],
-                                                                    stops: [
-                                                                      0.25,
-                                                                      0.6
-                                                                    ],
-                                                                    begin: Alignment
-                                                                        .topLeft,
-                                                                    end: Alignment
-                                                                        .bottomRight,
-                                                                  )),
-                                                          constraints:
-                                                              const BoxConstraints(
-                                                                  maxWidth:
-                                                                      75,
-                                                                  maxHeight:
-                                                                      35),
-                                                          child: MaterialButton(
-                                                              shape: RoundedRectangleBorder(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            10.0),
-                                                              ),
-                                                              onPressed: () {
-                                                                Navigator.push(
-                                                                    context,
-                                                                    (MaterialPageRoute(
-                                                                        builder: (context) => QuizResultPage(
-                                                                              quizResultId: previousQuizResultsList[i].quizResultId,
-                                                                            ))));
-                                                              },
-                                                              child: const Row(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .center,
-                                                                children: [
-                                                                  Icon(
-                                                                    Icons
-                                                                        .double_arrow,
-                                                                    color: Colors
-                                                                        .white,
-                                                                    size: 20,
-                                                                  ),
-                                                                ],
-                                                              )),
-                                                        ),
+                                                                          13))),
+                                                        ],
                                                       ),
                                                     ),
-                                                  ]),
+                                                    Padding(
+                                                      padding: const EdgeInsets
+                                                          .fromLTRB(20.0, 10.0,
+                                                          20.0, 5.0),
+                                                      child: Row(
+                                                        children: [
+                                                          const Expanded(
+                                                              child: Text(
+                                                                  "Score : ",
+                                                                  style: TextStyle(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                      color: Color
+                                                                          .fromRGBO(
+                                                                              3,
+                                                                              71,
+                                                                              120,
+                                                                              1),
+                                                                      fontSize:
+                                                                          13))),
+                                                          Expanded(
+                                                              child: Text(
+                                                                  "${previousQuizResultsList[i].score}%",
+                                                                  style: const TextStyle(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                      color: Color
+                                                                          .fromRGBO(
+                                                                              3,
+                                                                              71,
+                                                                              120,
+                                                                              1),
+                                                                      fontSize:
+                                                                          13))),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    Padding(
+                                                      padding: const EdgeInsets
+                                                          .fromLTRB(20.0, 10.0,
+                                                          20.0, 10.0),
+                                                      child: Row(
+                                                        children: [
+                                                          const Expanded(
+                                                              child: Text(
+                                                                  "DP Level : ",
+                                                                  style: TextStyle(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                      color: Color
+                                                                          .fromRGBO(
+                                                                              3,
+                                                                              71,
+                                                                              120,
+                                                                              1),
+                                                                      fontSize:
+                                                                          13))),
+                                                          Expanded(
+                                                              child: Text(
+                                                                  previousQuizResultsList[
+                                                                          i]
+                                                                      .dpLevel,
+                                                                  style: const TextStyle(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                      color: Color
+                                                                          .fromRGBO(
+                                                                              3,
+                                                                              71,
+                                                                              120,
+                                                                              1),
+                                                                      fontSize:
+                                                                          13))),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                )),
+                                            Flexible(
+                                              flex: 2,
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.fromLTRB(
+                                                        0, 0, 12, 0),
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10.0),
+                                                      gradient:
+                                                          const LinearGradient(
+                                                        colors: [
+                                                          Color(0xff66bef4),
+                                                          Color(0xff2a58e5)
+                                                        ],
+                                                        stops: [0.25, 0.6],
+                                                        begin:
+                                                            Alignment.topLeft,
+                                                        end: Alignment
+                                                            .bottomRight,
+                                                      )),
+                                                  constraints:
+                                                      const BoxConstraints(
+                                                          maxWidth: 75,
+                                                          maxHeight: 35),
+                                                  child: MaterialButton(
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10.0),
+                                                      ),
+                                                      onPressed: () {
+                                                        Navigator.push(
+                                                            context,
+                                                            (MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        QuizResultPage(
+                                                                          quizResultId:
+                                                                              previousQuizResultsList[i].quizResultId,
+                                                                        ))));
+                                                      },
+                                                      child: const Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Icon(
+                                                            Icons.double_arrow,
+                                                            color: Colors.white,
+                                                            size: 20,
+                                                          ),
+                                                        ],
+                                                      )),
                                                 ),
                                               ),
                                             ),
-                                          ),
-                                        ],
+                                          ]),
+                                        ),
                                       ),
                                     ),
                                   ),
-                                )),
+                                ],
+                              ),
+                            ),
                           ),
-                      ],
-                    ));
+                        )),
+                  ),
+                ],
+              ));
   }
 }
 

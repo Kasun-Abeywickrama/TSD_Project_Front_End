@@ -25,14 +25,25 @@ const String requestPatientPersonalDetailsEndpoint =
 const String updatePatientPersonalDetailsEndpoint =
     '$baseApiUrl/update_patient_personal_details/';
 
-const String requestCounselorDetailsEndpoint = '$baseApiUrl/send_counselor_details/';
+const String requestCounselorDetailsEndpoint =
+    '$baseApiUrl/send_counselor_details/';
 
 const String makeAppointmentEndpoint = '$baseApiUrl/make_appointment/';
 
-const String checkOngoingAppointmentEndpoint = '$baseApiUrl/check_ongoing_appointment/';
+const String checkOngoingAppointmentEndpoint =
+    '$baseApiUrl/check_ongoing_appointment/';
 
-const String requestAppointmentListEndpoint = '$baseApiUrl/send_appointment_list/';
+const String requestAppointmentListEndpoint =
+    '$baseApiUrl/send_appointment_list/';
 
-const String makeIsPatientViewedTrueEndpoint = '$baseApiUrl/make_is_patient_viewed_true/';
+const String makeIsPatientViewedTrueEndpoint =
+    '$baseApiUrl/make_is_patient_viewed_true/';
 
-const String requestNotificationAmountEndpoint = '$baseApiUrl/send_notification_amount/';
+const String requestNotificationAmountEndpoint =
+    '$baseApiUrl/send_notification_amount/';
+
+const String requestPrivateQuestionsEndpoint =
+    '$baseApiUrl/send_private_questions/';
+
+const String storePrivateQuestionEndpoint =
+    '$baseApiUrl/store_private_question/';

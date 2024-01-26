@@ -6,24 +6,38 @@ import 'package:tsd_project/important_tools/api_endpoints.dart';
 import 'package:tsd_project/decoration_tools/top_app_bar.dart';
 import 'package:tsd_project/important_tools/user_authentication.dart';
 
-class ChangePasswordPage extends StatefulWidget {
+class AskPrivateQuestionPage extends StatefulWidget {
+  final int adminId;
+  final String counselorFirstName;
+  final String counselorLastName;
+
+  AskPrivateQuestionPage(
+      {super.key,
+      required this.adminId,
+      required this.counselorFirstName,
+      required this.counselorLastName});
+
   @override
-  State<ChangePasswordPage> createState() => _ChangePasswordPageState();
+  State<AskPrivateQuestionPage> createState() => _AskPrivateQuestionPageState();
 }
 
-class _ChangePasswordPageState extends State<ChangePasswordPage> {
+class _AskPrivateQuestionPageState extends State<AskPrivateQuestionPage> {
   //Form key
-  final GlobalKey<FormState> _changePasswordformKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _askPrivateQuestionformKey =
+      GlobalKey<FormState>();
 
   //Text editing controllers
-  final TextEditingController _currentPasswordController =
+  final TextEditingController _privateQuestionController =
       TextEditingController();
-  final TextEditingController _newPasswordController = TextEditingController();
+  final TextEditingController _counselorNameController =
+      TextEditingController();
 
   @override
   void initState() {
     super.initState();
     Future.microtask(() => checkLoginStatus(context));
+    _counselorNameController.text =
+        "${widget.counselorFirstName} ${widget.counselorLastName}";
   }
 
   @override
@@ -31,7 +45,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
     return Scaffold(
         appBar: CustomTopAppBar(
           pageIndex: 1,
-          pageName: "Change Password",
+          pageName: "Request Guidance",
         ),
         body: Container(
           color: Colors.white,
@@ -61,15 +75,15 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                     child: Padding(
                       padding: const EdgeInsets.all(15.0),
                       child: Form(
-                        key: _changePasswordformKey,
+                        key: _askPrivateQuestionformKey,
                         child: Column(
                           children: [
-                            //Change Password text
+                            //request guidance text
                             const Row(
                               children: [
                                 Expanded(
                                   child: Text(
-                                    'Change The Password',
+                                    'Request Guidance',
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                         color: Color.fromRGBO(3, 71, 120, 1),
@@ -84,14 +98,14 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                             const SizedBox(
                               height: 30,
                             ),
-                            //Displaying the current password text
+                            //Displaying the counselor name text
                             const Padding(
                               padding: EdgeInsets.all(8.0),
                               child: Row(
                                 children: [
                                   Expanded(
                                     child: Text(
-                                      "Current Password : ",
+                                      "Counselor : ",
                                       textAlign: TextAlign.left,
                                       style: TextStyle(
                                           color: Color.fromRGBO(3, 71, 120, 1),
@@ -104,7 +118,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                                 ],
                               ),
                             ),
-                            //Displaying the current password form field
+                            //Displaying the couselor name form field
                             Padding(
                               padding: const EdgeInsets.fromLTRB(8.0, 0, 8, 15),
                               child: Container(
@@ -112,11 +126,75 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                                   maxWidth: 450.0,
                                 ),
                                 child: TextFormField(
-                                  controller: _currentPasswordController,
-                                  keyboardType: TextInputType.visiblePassword,
+                                  controller: _counselorNameController,
+                                  keyboardType: TextInputType.name,
+                                  readOnly: true,
                                   decoration: InputDecoration(
-                                    hintText: 'Enter the Current Password',
-                                    prefixIcon: const Icon(Icons.password),
+                                    filled: true,
+                                    fillColor: const Color.fromARGB(
+                                        255, 232, 230, 230),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      borderSide: const BorderSide(
+                                          color: Color.fromARGB(
+                                              255, 232, 230, 230)),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      borderSide: const BorderSide(
+                                          color: Color.fromARGB(
+                                              255, 232, 230, 230)),
+                                    ),
+                                    errorBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      borderSide: const BorderSide(
+                                          color: Colors.red, width: 2),
+                                    ),
+                                    focusedErrorBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      borderSide: const BorderSide(
+                                          color: Colors.red, width: 2),
+                                    ),
+                                  ),
+                                  onChanged: (String value) {},
+                                ),
+                              ),
+                            ),
+
+                            //Displaying the private question text
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      "The Question : ",
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(
+                                          color: Color.fromRGBO(3, 71, 120, 1),
+                                          fontSize: 18,
+                                          letterSpacing: 0,
+                                          fontWeight: FontWeight.bold,
+                                          height: 1),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            //Displaying the private question form field
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(8.0, 0, 8, 15),
+                              child: Container(
+                                constraints: const BoxConstraints(
+                                  maxWidth: 450.0,
+                                ),
+                                child: TextFormField(
+                                  controller: _privateQuestionController,
+                                  keyboardType: TextInputType.multiline,
+                                  maxLines: 15,
+                                  decoration: InputDecoration(
+                                    hintText:
+                                        'Enter your question. This conversation will be completely private between yourself and the counselor.',
                                     filled: true,
                                     fillColor: const Color.fromARGB(
                                         255, 232, 230, 230),
@@ -146,150 +224,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                                   onChanged: (String value) {},
                                   validator: (value) {
                                     if (value!.isEmpty) {
-                                      return "Please enter the current password";
-                                    } else {
-                                      return null;
-                                    }
-                                  },
-                                ),
-                              ),
-                            ),
-                            //Displaying the new password text
-                            const Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      "New Password : ",
-                                      textAlign: TextAlign.left,
-                                      style: TextStyle(
-                                          color: Color.fromRGBO(3, 71, 120, 1),
-                                          fontSize: 18,
-                                          letterSpacing: 0,
-                                          fontWeight: FontWeight.bold,
-                                          height: 1),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            //Displaying the new password form field
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(8.0, 0, 8, 15),
-                              child: Container(
-                                constraints: const BoxConstraints(
-                                  maxWidth: 450.0,
-                                ),
-                                child: TextFormField(
-                                  controller: _newPasswordController,
-                                  keyboardType: TextInputType.visiblePassword,
-                                  decoration: InputDecoration(
-                                    hintText: 'Enter The New Password',
-                                    prefixIcon: const Icon(Icons.password),
-                                    filled: true,
-                                    fillColor: const Color.fromARGB(
-                                        255, 232, 230, 230),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                      borderSide: const BorderSide(
-                                          color: Color.fromARGB(
-                                              255, 232, 230, 230)),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(30.0),
-                                      borderSide: const BorderSide(
-                                          color: Color.fromARGB(
-                                              255, 232, 230, 230)),
-                                    ),
-                                    errorBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(30.0),
-                                      borderSide: const BorderSide(
-                                          color: Colors.red, width: 2),
-                                    ),
-                                    focusedErrorBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(30.0),
-                                      borderSide: const BorderSide(
-                                          color: Colors.red, width: 2),
-                                    ),
-                                  ),
-                                  onChanged: (String value) {},
-                                  validator: (value) {
-                                    if (value!.isEmpty) {
-                                      return "Please enter a new password";
-                                    } else if (_currentPasswordController
-                                            .text ==
-                                        _newPasswordController.text) {
-                                      return "Please enter a new password";
-                                    } else {
-                                      return null;
-                                    }
-                                  },
-                                ),
-                              ),
-                            ),
-                            //Displaying the retype new password text
-                            const Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      "Retype New Password : ",
-                                      textAlign: TextAlign.left,
-                                      style: TextStyle(
-                                          color: Color.fromRGBO(3, 71, 120, 1),
-                                          fontSize: 18,
-                                          letterSpacing: 0,
-                                          fontWeight: FontWeight.bold,
-                                          height: 1),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            //Displaying the Retype New password form field
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(8.0, 0, 8, 15),
-                              child: Container(
-                                constraints: const BoxConstraints(
-                                  maxWidth: 450.0,
-                                ),
-                                child: TextFormField(
-                                  keyboardType: TextInputType.visiblePassword,
-                                  decoration: InputDecoration(
-                                    hintText: 'Retype New Password',
-                                    prefixIcon: const Icon(Icons.password),
-                                    filled: true,
-                                    fillColor: const Color.fromARGB(
-                                        255, 232, 230, 230),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                      borderSide: const BorderSide(
-                                          color: Color.fromARGB(
-                                              255, 232, 230, 230)),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(30.0),
-                                      borderSide: const BorderSide(
-                                          color: Color.fromARGB(
-                                              255, 232, 230, 230)),
-                                    ),
-                                    errorBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(30.0),
-                                      borderSide: const BorderSide(
-                                          color: Colors.red, width: 2),
-                                    ),
-                                    focusedErrorBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(30.0),
-                                      borderSide: const BorderSide(
-                                          color: Colors.red, width: 2),
-                                    ),
-                                  ),
-                                  onChanged: (String value) {},
-                                  validator: (value) {
-                                    if (value != _newPasswordController.text) {
-                                      return "Please correctly retype the new password";
+                                      return "Please enter a question!";
                                     } else {
                                       return null;
                                     }
@@ -341,7 +276,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                                     ),
                                   ),
                                 ),
-                                //Update button
+                                //submit button
                                 Expanded(
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
@@ -367,15 +302,15 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                                             borderRadius:
                                                 BorderRadius.circular(35)),
                                         onPressed: () {
-                                          if (_changePasswordformKey
+                                          if (_askPrivateQuestionformKey
                                               .currentState!
                                               .validate()) {
-                                            updatePassword(context);
+                                            submitPrivateQuestion(context);
                                           }
                                         },
                                         textColor: Colors.white,
                                         child: const Text(
-                                          'Update',
+                                          'Submit',
                                           style: TextStyle(fontSize: 17),
                                         ),
                                       ),
@@ -396,27 +331,21 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
         ));
   }
 
-  Future<void> updatePassword(BuildContext context) async {
-    //This process sends the data to the backend and update them
+  Future<void> submitPrivateQuestion(BuildContext context) async {
     String? accessToken = await retrieveAccessToken();
 
     if (context.mounted) {
       if (await checkLoginStatus(context)) {
         try {
           // Obtaining the URL to a variable
-          const String apiUrl = updatePatientAuthUserDetailsEndpoint;
+          const String apiUrl = storePrivateQuestionEndpoint;
 
           //Converting the url to uri
           Uri uri = Uri.parse(apiUrl);
 
-          Map<String, dynamic> newPassword = {
-            'password': _newPasswordController.text,
-          };
-
-          //The data map that must be send to the backend
           Map<String, dynamic> formData = {
-            'current_password': _currentPasswordController.text,
-            'patient_auth_user_details': newPassword,
+            'private_question': _privateQuestionController.text,
+            'admin': widget.adminId,
           };
 
           //Requesting the data from the backend
@@ -430,10 +359,8 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
           );
 
           if (response.statusCode == 201) {
-            print('Data updated successfully');
-            dataSuccessfullyUpdatedDialogBox();
-          } else if (response.statusCode == 401) {
-            incorrectPasswordDialog();
+            print('Question Submitted successfully');
+            privateQuestionSubmittedDialogBox();
           } else {
             //Decode the response received from the server
             final Map<String, dynamic> errorData = json.decode(response.body);
@@ -446,26 +373,17 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
     }
   }
 
-  void dataSuccessfullyUpdatedDialogBox() {
+  void privateQuestionSubmittedDialogBox() {
     QuickAlert.show(
         context: context,
         type: QuickAlertType.success,
-        title: 'Password Changed',
-        text: 'Successfully changed the password',
+        title: 'Question Sent To The Counselor',
+        text: 'Please wait patiently until a reply is received.',
         onConfirmBtnTap: () {
           Navigator.of(context).pop();
           Navigator.of(context).pop();
         },
         barrierDismissible: false,
         disableBackBtn: true);
-  }
-
-  //Creating the alert dialog box to display invalid credentials
-  void incorrectPasswordDialog() {
-    QuickAlert.show(
-        context: context,
-        type: QuickAlertType.error,
-        title: 'Incorrect Password',
-        text: 'Please enter the correct password');
   }
 }

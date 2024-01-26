@@ -20,8 +20,6 @@ class _WelcomePageState extends State<WelcomePage> {
   }
 
   Future<void> initialProcess(BuildContext context) async {
-    //Put the try catch block to catch exception
-    try{
       if (context.mounted) {
         await Future.delayed(const Duration(seconds: 2));
         if (context.mounted) {
@@ -33,15 +31,6 @@ class _WelcomePageState extends State<WelcomePage> {
           }
         }
       }
-    }
-    //Catch the exception occured after reinstalling the application, then redirect to the login page
-    catch(e)
-    {
-      if (context.mounted) {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => PatientLoginPage()));
-      }
-    }
   }
 
   @override

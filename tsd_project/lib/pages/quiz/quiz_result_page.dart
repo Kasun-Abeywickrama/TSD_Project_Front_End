@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:quickalert/quickalert.dart';
 import 'package:tsd_project/decoration_tools/custom_loading_indicator.dart';
 import 'package:tsd_project/important_tools/api_endpoints.dart';
 import 'package:tsd_project/decoration_tools/top_app_bar.dart';
 import 'package:tsd_project/important_tools/user_authentication.dart';
-import 'package:tsd_project/pages/contact_counselor/contact_counselor_list_page.dart';
+import 'package:tsd_project/pages/appointments/make_appointment_counselor_list_page.dart';
 import 'package:tsd_project/pages/my_account/edit_personal_details_page.dart';
 
 class QuizResultPage extends StatefulWidget {
@@ -33,9 +32,6 @@ class _QuizResultPageState extends State<QuizResultPage> {
   String conclusion = '';
   int counselorOrNot = 0;
 
-  //Initializing the flutter secure storage
-  final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
-
   //Creating the function that sets the relavant fields
   void setQuizResultData(BuildContext context) async {
     //Declaring the requested quiz result id
@@ -44,7 +40,7 @@ class _QuizResultPageState extends State<QuizResultPage> {
     };
 
     //This process Fetches the data from the backend
-    String? accessToken = await secureStorage.read(key: 'accessToken');
+    String? accessToken = await retrieveAccessToken();
 
     if (context.mounted) {
       //If this function returns true this will get executed.
@@ -441,7 +437,8 @@ class _QuizResultPageState extends State<QuizResultPage> {
                                                           10.0),
                                                 ),
                                                 onPressed: () {
-                                                  redirectToContactCounselorList(context);
+                                                  redirectToContactCounselorList(
+                                                      context);
                                                 },
                                                 child: const Text(
                                                   'Request Professional Help',
@@ -470,39 +467,39 @@ class _QuizResultPageState extends State<QuizResultPage> {
   }
 
   Future<void> redirectToContactCounselorList(BuildContext context) async {
-    if(await allPersonalDetailsFilled(context)){
-      if(context.mounted){
-      Navigator.push(
-          context,
-          (MaterialPageRoute(
-              builder: (context) => ContactCounselorListPage(quizResultId: widget.quizResultId))));
+    if (await allPersonalDetailsFilled(context)) {
+      if (context.mounted) {
+        Navigator.push(
+            context,
+            (MaterialPageRoute(
+                builder: (context) => MakeAppointmentCounselorListPage(
+                    quizResultId: widget.quizResultId))));
       }
-    }
-    else{
+    } else {
       fillPersonalDetailsDialog();
     }
   }
 
   //Info dialog box to tell the patient to fill the personal details
-  void fillPersonalDetailsDialog(){
+  void fillPersonalDetailsDialog() {
     QuickAlert.show(
         context: context,
         type: QuickAlertType.warning,
         title: 'The Personal Details are Required',
-        text: 'Please fill your personal details before requesting professional help.',
-        onConfirmBtnTap: (){
-      Navigator.pushReplacement(
-          context,
-          (MaterialPageRoute(
-              builder: (context) => EditPersonalDetailsPage())));
-      }
-    );
+        text:
+            'Please fill your personal details before requesting professional help.',
+        onConfirmBtnTap: () {
+          Navigator.pushReplacement(
+              context,
+              (MaterialPageRoute(
+                  builder: (context) => EditPersonalDetailsPage())));
+        });
   }
 
   //Function that gets the user personal details from the database and check all of them are filled
   Future<bool> allPersonalDetailsFilled(BuildContext context) async {
     //This process Fetches the data from the backend
-    String? accessToken = await secureStorage.read(key: 'accessToken');
+    String? accessToken = await retrieveAccessToken();
 
     if (context.mounted) {
       if (await checkLoginStatus(context)) {
@@ -525,14 +522,21 @@ class _QuizResultPageState extends State<QuizResultPage> {
           if (response.statusCode == 200) {
             //Decode the response
             final Map<String, dynamic> backendUserDetails =
-            json.decode(response.body);
+                json.decode(response.body);
 
-            if ((backendUserDetails['patient_personal_details']['first_name'] != null) &&
-                (backendUserDetails['patient_personal_details']['last_name'] != null) &&
-                (backendUserDetails['patient_personal_details']['mobile_number'] != null) &&
-                (backendUserDetails['patient_personal_details']['date_of_birth'] != null) ) {
-                  return true;
-                }
+            if ((backendUserDetails['patient_personal_details']['first_name'] !=
+                    null) &&
+                (backendUserDetails['patient_personal_details']
+                        ['last_name'] !=
+                    null) &&
+                (backendUserDetails['patient_personal_details']
+                        ['mobile_number'] !=
+                    null) &&
+                (backendUserDetails['patient_personal_details']
+                        ['date_of_birth'] !=
+                    null)) {
+              return true;
+            }
           } else {
             print('Failed to receive data ${response.body}');
           }

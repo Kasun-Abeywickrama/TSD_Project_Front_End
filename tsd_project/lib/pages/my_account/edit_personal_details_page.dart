@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -12,7 +11,8 @@ import 'package:tsd_project/important_tools/user_authentication.dart';
 
 class EditPersonalDetailsPage extends StatefulWidget {
   @override
-  State<EditPersonalDetailsPage> createState() => _EditPersonalDetailsPageState();
+  State<EditPersonalDetailsPage> createState() =>
+      _EditPersonalDetailsPageState();
 }
 
 class _EditPersonalDetailsPageState extends State<EditPersonalDetailsPage> {
@@ -28,13 +28,10 @@ class _EditPersonalDetailsPageState extends State<EditPersonalDetailsPage> {
   final TextEditingController _mobilePhoneController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
 
-  //Initializing the flutter secure storage
-  final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
-
   //Function that gets the existing data from the database
   Future<void> setPersonalDetails(BuildContext context) async {
     //This process Fetches the data from the backend
-    String? accessToken = await secureStorage.read(key: 'accessToken');
+    String? accessToken = await retrieveAccessToken();
 
     if (context.mounted) {
       if (await checkLoginStatus(context)) {
@@ -62,15 +59,19 @@ class _EditPersonalDetailsPageState extends State<EditPersonalDetailsPage> {
             if (context.mounted) {
               //Intializing these variables and rebuild the build method
               setState(() {
-                if (backendUserDetails['patient_personal_details']['first_name'] !=
+                if (backendUserDetails['patient_personal_details']
+                        ['first_name'] !=
                     null) {
                   _firstNameController.text =
-                      backendUserDetails['patient_personal_details']['first_name'];
+                      backendUserDetails['patient_personal_details']
+                          ['first_name'];
                 }
-                if (backendUserDetails['patient_personal_details']['last_name'] !=
+                if (backendUserDetails['patient_personal_details']
+                        ['last_name'] !=
                     null) {
                   _lastNameController.text =
-                      backendUserDetails['patient_personal_details']['last_name'];
+                      backendUserDetails['patient_personal_details']
+                          ['last_name'];
                 }
                 if (backendUserDetails['patient_personal_details']
                         ['mobile_number'] !=
@@ -611,7 +612,7 @@ class _EditPersonalDetailsPageState extends State<EditPersonalDetailsPage> {
 
   Future<void> updatePersonalDetails(BuildContext context) async {
     //This process sends the data to the backend and update them
-    String? accessToken = await secureStorage.read(key: 'accessToken');
+    String? accessToken = await retrieveAccessToken();
 
     if (context.mounted) {
       if (await checkLoginStatus(context)) {

@@ -1,6 +1,5 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'dart:convert';
@@ -19,7 +18,11 @@ class CustomTopAppBar extends StatefulWidget implements PreferredSizeWidget {
   //Back button displaying pages index = 1
   //Quiz page index = 2
 
-  CustomTopAppBar({Key? key, this.pageIndex = 0, this.pageName = "Home", this.navigateToAppointmentMails})
+  CustomTopAppBar(
+      {Key? key,
+      this.pageIndex = 0,
+      this.pageName = "Home",
+      this.navigateToAppointmentMails})
       : super(key: key);
 
   @override
@@ -30,17 +33,12 @@ class CustomTopAppBar extends StatefulWidget implements PreferredSizeWidget {
 }
 
 class _CustomTopAppBarState extends State<CustomTopAppBar> {
-
-  //Initializing the flutter secure storage
-  final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
-
   String notificationAmount = "0";
 
   Future<void> setNotificationAmount(BuildContext context) async {
-
     print("notification process executed");
     //This process Fetches the data from the backend
-    String? accessToken = await secureStorage.read(key: 'accessToken');
+    String? accessToken = await retrieveAccessToken();
 
     if (context.mounted) {
       if (await checkLoginStatus(context)) {
@@ -63,12 +61,12 @@ class _CustomTopAppBarState extends State<CustomTopAppBar> {
           if (response.statusCode == 200) {
             //Decode the response
             final Map<String, dynamic> backendNotificationAmount =
-            json.decode(response.body);
+                json.decode(response.body);
 
-            if(context.mounted) {
+            if (context.mounted) {
               setState(() {
                 notificationAmount =
-                backendNotificationAmount['notification_amount'];
+                    backendNotificationAmount['notification_amount'];
               });
             }
           } else {
@@ -89,7 +87,7 @@ class _CustomTopAppBarState extends State<CustomTopAppBar> {
 
   Future<void> initialProcess(BuildContext context) async {
     if (await checkLoginStatus(context)) {
-      if(context.mounted) {
+      if (context.mounted) {
         setNotificationAmount(context);
       }
     }
@@ -131,15 +129,13 @@ class _CustomTopAppBarState extends State<CustomTopAppBar> {
           color: Colors.white,
           size: 35,
         );
-      }
-      else if(widget.pageName == "Appointment Mails"){
+      } else if (widget.pageName == "Appointment Mails") {
         topIcon = const Icon(
           Icons.mail,
           color: Colors.white,
           size: 35,
         );
-      }
-      else if (widget.pageName == "My Account") {
+      } else if (widget.pageName == "My Account") {
         topIcon = const Icon(
           Icons.account_circle,
           color: Colors.white,
@@ -188,33 +184,31 @@ class _CustomTopAppBarState extends State<CustomTopAppBar> {
                       color: Colors.white,
                     ),
                     onPressed: () {
-                      if(widget.navigateToAppointmentMails != null){
+                      if (widget.navigateToAppointmentMails != null) {
                         widget.navigateToAppointmentMails!();
                       }
                     },
                   ),
-                  notificationAmount != "0" ?
-                    Positioned(
-                      right: 5.0,
-                      top: 5.0,
-                      child: CircleAvatar(
-                        backgroundColor: Colors.red,
-                        radius: 11.0,
-                        child: Text(
-                          notificationAmount,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 15.0,
-                          ),
+                  notificationAmount != "0"
+                      ? Positioned(
+                          right: 5.0,
+                          top: 5.0,
+                          child: CircleAvatar(
+                              backgroundColor: Colors.red,
+                              radius: 11.0,
+                              child: Text(
+                                notificationAmount,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 15.0,
+                                ),
+                              )),
                         )
-                      ),
-                    )
-                      :
-                      Positioned(
-                        right: 5.0,
-                        top: 5.0,
-                        child: Container(),
-                      )
+                      : Positioned(
+                          right: 5.0,
+                          top: 5.0,
+                          child: Container(),
+                        )
                 ],
               )
             : Container()

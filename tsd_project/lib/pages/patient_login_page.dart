@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:jwt_decode/jwt_decode.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 import 'package:tsd_project/important_tools/api_endpoints.dart';
+import 'package:tsd_project/important_tools/user_authentication.dart';
 import 'package:tsd_project/pages/main_page.dart';
 import 'package:tsd_project/pages/patient_register_page.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class PatientLoginPage extends StatefulWidget {
   @override
@@ -22,9 +21,6 @@ class _PatientLoginPageState extends State<PatientLoginPage> {
 
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-
-  //Creating a Flutter secure storage
-  final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
 
   @override
   Widget build(BuildContext context) {
@@ -228,7 +224,8 @@ class _PatientLoginPageState extends State<PatientLoginPage> {
                               Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => PatientRegisterPage()));
+                                      builder: (context) =>
+                                          PatientRegisterPage()));
                             },
                             child: GradientText(
                               'Sign Up',
@@ -286,25 +283,12 @@ class _PatientLoginPageState extends State<PatientLoginPage> {
           final String? accessToken = responseData['access_token'];
 
           if (accessToken != null) {
-            //Setting the access token in secure storage
-            secureStorage.write(key: 'accessToken', value: accessToken);
-
-            //Decoding the access token data
-            final Map<String, dynamic> decodedAccessToken =
-                Jwt.parseJwt(accessToken);
-
-            //Storing auth_user_id in a variable
-            final int authUserId = decodedAccessToken['user_id'];
-
-            //Print auth_user_id
-            print('Auth_user_id: $authUserId');
+            storeAccessToken(accessToken);
 
             if (context.mounted) {
               //Navigate to the Home page
-              Navigator.pushReplacement(
-                  context,
-                  (MaterialPageRoute(
-                      builder: (context) => MainPage())));
+              Navigator.pushReplacement(context,
+                  (MaterialPageRoute(builder: (context) => MainPage())));
             }
           } else {
             print('Access Token is null');

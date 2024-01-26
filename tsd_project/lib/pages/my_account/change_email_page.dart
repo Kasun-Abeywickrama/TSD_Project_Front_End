@@ -1,6 +1,5 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:quickalert/models/quickalert_type.dart';
@@ -23,18 +22,14 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
   final GlobalKey<FormState> _changeEmailformKey = GlobalKey<FormState>();
 
   //Text editing controllers
-  final TextEditingController _currentEmailController =
-      TextEditingController();
+  final TextEditingController _currentEmailController = TextEditingController();
   final TextEditingController _newEmailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
-  //Initializing the flutter secure storage
-  final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
 
   //Function that gets the current email from the database
   Future<void> setCurrentEmail(BuildContext context) async {
     //This process Fetches the data from the backend
-    String? accessToken = await secureStorage.read(key: 'accessToken');
+    String? accessToken = await retrieveAccessToken();
 
     if (context.mounted) {
       if (await checkLoginStatus(context)) {
@@ -186,7 +181,8 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
                                       child: TextFormField(
                                         controller: _currentEmailController,
                                         readOnly: true,
-                                        keyboardType: TextInputType.emailAddress,
+                                        keyboardType:
+                                            TextInputType.emailAddress,
                                         decoration: InputDecoration(
                                           prefixIcon: const Icon(Icons.email),
                                           filled: true,
@@ -255,7 +251,8 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
                                       ),
                                       child: TextFormField(
                                         controller: _newEmailController,
-                                        keyboardType: TextInputType.emailAddress,
+                                        keyboardType:
+                                            TextInputType.emailAddress,
                                         decoration: InputDecoration(
                                           hintText: 'Enter New Email Address',
                                           prefixIcon: const Icon(Icons.email),
@@ -294,12 +291,14 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
                                         validator: (value) {
                                           if (value!.isEmpty) {
                                             return "Please enter a email address";
-                                          } else if (!EmailValidator.validate(value)) {
+                                          } else if (!EmailValidator.validate(
+                                              value)) {
                                             return "Please enter a valid email address";
-                                          } else if(_currentEmailController.text == _newEmailController.text){
+                                          } else if (_currentEmailController
+                                                  .text ==
+                                              _newEmailController.text) {
                                             return "Please enter a new email address";
-                                          }
-                                          else {
+                                          } else {
                                             return null;
                                           }
                                         },
@@ -488,7 +487,7 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
 
   Future<void> updateEmail(BuildContext context) async {
     //This process sends the data to the backend and update them
-    String? accessToken = await secureStorage.read(key: 'accessToken');
+    String? accessToken = await retrieveAccessToken();
 
     if (context.mounted) {
       if (await checkLoginStatus(context)) {
