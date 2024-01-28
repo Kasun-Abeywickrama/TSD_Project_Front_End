@@ -332,6 +332,7 @@ class _AskPrivateQuestionPageState extends State<AskPrivateQuestionPage> {
   }
 
   Future<void> submitPrivateQuestion(BuildContext context) async {
+    loadingDialog();
     String? accessToken = await retrieveAccessToken();
 
     if (context.mounted) {
@@ -360,7 +361,10 @@ class _AskPrivateQuestionPageState extends State<AskPrivateQuestionPage> {
 
           if (response.statusCode == 201) {
             print('Question Submitted successfully');
-            privateQuestionSubmittedDialogBox();
+            if(context.mounted) {
+              Navigator.of(context).pop();
+              privateQuestionSubmittedDialogBox();
+            }
           } else {
             //Decode the response received from the server
             final Map<String, dynamic> errorData = json.decode(response.body);
@@ -385,5 +389,16 @@ class _AskPrivateQuestionPageState extends State<AskPrivateQuestionPage> {
         },
         barrierDismissible: false,
         disableBackBtn: true);
+  }
+
+  //Creating the alert dialog box to display loading
+  void loadingDialog() {
+    QuickAlert.show(
+        context: context,
+        type: QuickAlertType.loading,
+        barrierDismissible: false,
+        disableBackBtn: true,
+        title: 'Submitting',
+        text: 'Please wait patiently!');
   }
 }

@@ -486,6 +486,7 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
   }
 
   Future<void> updateEmail(BuildContext context) async {
+    loadingDialog();
     //This process sends the data to the backend and update them
     String? accessToken = await retrieveAccessToken();
 
@@ -520,9 +521,15 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
 
           if (response.statusCode == 201) {
             print('Data updated successfully');
-            dataSuccessfullyUpdatedDialogBox();
+            if(context.mounted) {
+              Navigator.of(context).pop();
+              dataSuccessfullyUpdatedDialogBox();
+            }
           } else if (response.statusCode == 401) {
-            incorrectPasswordDialog();
+            if(context.mounted) {
+              Navigator.of(context).pop();
+              incorrectPasswordDialog();
+            }
           } else {
             //Decode the response received from the server
             final Map<String, dynamic> errorData = json.decode(response.body);
@@ -531,7 +538,10 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
               if (errorData['errors']['username']
                   .contains('A user with that username already exists.')) {
                 print('Email already exists');
-                emailExistsDialog();
+                if(context.mounted) {
+                  Navigator.of(context).pop();
+                  emailExistsDialog();
+                }
               }
               //If it is not
               else {
@@ -576,5 +586,16 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
         type: QuickAlertType.warning,
         title: 'Email Address Already Exists',
         text: 'Please enter another email address');
+  }
+
+  //Creating the alert dialog box to display loading
+  void loadingDialog() {
+    QuickAlert.show(
+        context: context,
+        type: QuickAlertType.loading,
+        barrierDismissible: false,
+        disableBackBtn: true,
+        title: 'Submitting',
+        text: 'Please wait patiently!');
   }
 }

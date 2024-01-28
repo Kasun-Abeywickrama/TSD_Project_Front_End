@@ -397,6 +397,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
   }
 
   Future<void> updatePassword(BuildContext context) async {
+    loadingDialog();
     //This process sends the data to the backend and update them
     String? accessToken = await retrieveAccessToken();
 
@@ -431,9 +432,15 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
 
           if (response.statusCode == 201) {
             print('Data updated successfully');
-            dataSuccessfullyUpdatedDialogBox();
+            if(context.mounted) {
+              Navigator.of(context).pop();
+              dataSuccessfullyUpdatedDialogBox();
+            }
           } else if (response.statusCode == 401) {
-            incorrectPasswordDialog();
+            if(context.mounted) {
+              Navigator.of(context).pop();
+              incorrectPasswordDialog();
+            }
           } else {
             //Decode the response received from the server
             final Map<String, dynamic> errorData = json.decode(response.body);
@@ -467,5 +474,16 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
         type: QuickAlertType.error,
         title: 'Incorrect Password',
         text: 'Please enter the correct password');
+  }
+
+  //Creating the alert dialog box to display loading
+  void loadingDialog() {
+    QuickAlert.show(
+        context: context,
+        type: QuickAlertType.loading,
+        barrierDismissible: false,
+        disableBackBtn: true,
+        title: 'Submitting',
+        text: 'Please wait patiently!');
   }
 }

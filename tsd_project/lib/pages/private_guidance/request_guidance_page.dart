@@ -672,13 +672,17 @@ class _RequestGuidancePageState extends State<RequestGuidancePage> {
   Future<void> redirectToCounselorList(BuildContext context) async {
     if (await allPersonalDetailsFilled(context)) {
       if (context.mounted) {
+        Navigator.of(context).pop();
         Navigator.push(
             context,
             (MaterialPageRoute(
                 builder: (context) => AskPrivateQuestionCounselorListPage())));
       }
     } else {
-      fillPersonalDetailsDialog();
+      if(context.mounted) {
+        Navigator.of(context).pop();
+        fillPersonalDetailsDialog();
+      }
     }
   }
 
@@ -699,6 +703,7 @@ class _RequestGuidancePageState extends State<RequestGuidancePage> {
 
   //Function that gets the user personal details from the database and check all of them are filled
   Future<bool> allPersonalDetailsFilled(BuildContext context) async {
+    loadingDialog();
     //This process Fetches the data from the backend
     String? accessToken = await retrieveAccessToken();
 
@@ -747,6 +752,17 @@ class _RequestGuidancePageState extends State<RequestGuidancePage> {
       }
     }
     return false;
+  }
+
+  //Creating the alert dialog box to display loading
+  void loadingDialog() {
+    QuickAlert.show(
+        context: context,
+        type: QuickAlertType.loading,
+        barrierDismissible: false,
+        disableBackBtn: true,
+        title: 'Loading',
+        text: 'Please wait patiently!');
   }
 }
 

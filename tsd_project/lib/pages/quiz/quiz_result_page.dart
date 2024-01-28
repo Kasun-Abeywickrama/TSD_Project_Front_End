@@ -469,6 +469,7 @@ class _QuizResultPageState extends State<QuizResultPage> {
   Future<void> redirectToContactCounselorList(BuildContext context) async {
     if (await allPersonalDetailsFilled(context)) {
       if (context.mounted) {
+        Navigator.of(context).pop();
         Navigator.push(
             context,
             (MaterialPageRoute(
@@ -476,7 +477,10 @@ class _QuizResultPageState extends State<QuizResultPage> {
                     quizResultId: widget.quizResultId))));
       }
     } else {
-      fillPersonalDetailsDialog();
+      if(context.mounted) {
+        Navigator.of(context).pop();
+        fillPersonalDetailsDialog();
+      }
     }
   }
 
@@ -498,6 +502,7 @@ class _QuizResultPageState extends State<QuizResultPage> {
 
   //Function that gets the user personal details from the database and check all of them are filled
   Future<bool> allPersonalDetailsFilled(BuildContext context) async {
+    loadingDialog();
     //This process Fetches the data from the backend
     String? accessToken = await retrieveAccessToken();
 
@@ -546,5 +551,16 @@ class _QuizResultPageState extends State<QuizResultPage> {
       }
     }
     return false;
+  }
+
+  //Creating the alert dialog box to display loading
+  void loadingDialog() {
+    QuickAlert.show(
+        context: context,
+        type: QuickAlertType.loading,
+        barrierDismissible: false,
+        disableBackBtn: true,
+        title: 'Loading',
+        text: 'Please wait patiently!');
   }
 }

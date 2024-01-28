@@ -312,6 +312,7 @@ class _PatientRegisterPageState extends State<PatientRegisterPage> {
 
   //Function of submitting the data
   void submitForm(BuildContext context) async {
+    loadingDialog();
     if (context.mounted) {
       try {
         //Obtaining the URL to a variable
@@ -344,7 +345,10 @@ class _PatientRegisterPageState extends State<PatientRegisterPage> {
         if (response.statusCode == 201) {
           print('Data submitted successfully');
           //Displaying a successfull login dialog box and navigating to login screen through it
-          loginSuccessDialog();
+          if(context.mounted) {
+            Navigator.of(context).pop();
+            loginSuccessDialog();
+          }
           //If status code is not 201
         } else {
           //Decode the response received from the server
@@ -354,7 +358,10 @@ class _PatientRegisterPageState extends State<PatientRegisterPage> {
             if (errorData['errors']['username']
                 .contains('A user with that username already exists.')) {
               print('Email already exists');
-              emailExistsDialog();
+              if(context.mounted) {
+                Navigator.of(context).pop();
+                emailExistsDialog();
+              }
             } else {
               print('$errorData');
             }
@@ -376,6 +383,9 @@ class _PatientRegisterPageState extends State<PatientRegisterPage> {
         context: context,
         type: QuickAlertType.warning,
         title: 'Email Already Exists',
+        onConfirmBtnTap: () {
+          Navigator.of(context).pop();
+        },
         text: 'Please enter another email');
   }
 
@@ -389,8 +399,20 @@ class _PatientRegisterPageState extends State<PatientRegisterPage> {
         confirmBtnText: 'Sign In',
         cancelBtnText: 'Cancel',
         onConfirmBtnTap: () {
+          Navigator.of(context).pop();
           Navigator.pushReplacement(
               context, (MaterialPageRoute(builder: (context) => PatientLoginPage())));
         });
+  }
+
+  //Creating the alert dialog box to display loading
+  void loadingDialog() {
+    QuickAlert.show(
+        context: context,
+        type: QuickAlertType.loading,
+        barrierDismissible: false,
+        disableBackBtn: true,
+        title: 'Signing Up',
+        text: 'Please wait patiently!');
   }
 }

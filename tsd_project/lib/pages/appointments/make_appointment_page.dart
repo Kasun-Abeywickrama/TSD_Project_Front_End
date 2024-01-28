@@ -417,6 +417,7 @@ class _MakeAppointmentPageState extends State<MakeAppointmentPage> {
 
   //Function that send the appointment details to the backend
   Future<void> sendAppointmentDetails(BuildContext context) async {
+    loadingDialog();
     String? accessToken = await retrieveAccessToken();
 
     if (context.mounted) {
@@ -445,12 +446,18 @@ class _MakeAppointmentPageState extends State<MakeAppointmentPage> {
 
           if (response.statusCode == 201) {
             print("Appointment successfull");
-            appointmentSuccessDialog();
+            if(context.mounted) {
+              Navigator.of(context).pop();
+              appointmentSuccessDialog();
+            }
           } else {
             final data = json.decode(response.body);
 
             if (data.containsKey('counselor_deleted')) {
-              counselorNotAvailableDailog();
+              if(context.mounted) {
+                Navigator.of(context).pop();
+                counselorNotAvailableDailog();
+              }
             } else {
               print('Failed to send data ${response.body}');
             }
@@ -507,5 +514,16 @@ class _MakeAppointmentPageState extends State<MakeAppointmentPage> {
     } catch (e) {
       print("could not launch url : $url");
     }
+  }
+
+  //Creating the alert dialog box to display loading
+  void loadingDialog() {
+    QuickAlert.show(
+        context: context,
+        type: QuickAlertType.loading,
+        barrierDismissible: false,
+        disableBackBtn: true,
+        title: 'Submitting',
+        text: 'Please wait patiently!');
   }
 }

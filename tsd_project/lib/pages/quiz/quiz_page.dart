@@ -619,9 +619,9 @@ class _QuizPageState extends State<QuizPage> {
                                                                 duration:
                                                                     const Duration(
                                                                         milliseconds:
-                                                                            30),
+                                                                            500),
                                                                 curve: Curves
-                                                                    .bounceOut);
+                                                                    .ease);
                                                       }
                                                     },
                                                     child: const Icon(
@@ -684,9 +684,9 @@ class _QuizPageState extends State<QuizPage> {
                                                               questionPageController.nextPage(
                                                                   duration: const Duration(
                                                                       milliseconds:
-                                                                          30),
+                                                                          500),
                                                                   curve: Curves
-                                                                      .bounceIn);
+                                                                      .ease);
                                                             } else {
                                                               noSelectedOptionDialog();
                                                             }
@@ -833,7 +833,6 @@ class _QuizPageState extends State<QuizPage> {
         onConfirmBtnTap: () {
           Navigator.of(context).pop();
           Navigator.of(context).pop();
-          Navigator.of(context).pop();
         });
   }
 
@@ -911,6 +910,8 @@ class _QuizPageState extends State<QuizPage> {
   //This function will get the result map as the parameter and directly send it to the backend
   Future<void> submitResultData(
       Map<String, dynamic> quizResultMap, BuildContext context) async {
+    Navigator.of(context).pop();
+    loadingDialog();
     //Collecting the access token from the secure storage
     String? accessToken = await retrieveAccessToken();
     String? lastUpdatedTimestamp = await retrieveLastUpdatedTimestamp();
@@ -977,7 +978,10 @@ class _QuizPageState extends State<QuizPage> {
                   quizUpdatingAlert();
                 }
               } else if (data.containsKey('quiz_updated')) {
-                quizUpdatedAlert();
+                if(context.mounted) {
+                  Navigator.of(context).pop();
+                  quizUpdatedAlert();
+                }
               } else {
                 print('unable to receive data: ${response.body}');
               }
@@ -990,6 +994,17 @@ class _QuizPageState extends State<QuizPage> {
     } else {
       print('Last updated timestamp is null');
     }
+  }
+
+  //Creating the alert dialog box to display loading
+  void loadingDialog() {
+    QuickAlert.show(
+        context: context,
+        type: QuickAlertType.loading,
+        barrierDismissible: false,
+        disableBackBtn: true,
+        title: 'Submitting',
+        text: 'Please wait patiently!');
   }
 }
 

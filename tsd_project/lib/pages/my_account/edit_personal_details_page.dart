@@ -611,6 +611,7 @@ class _EditPersonalDetailsPageState extends State<EditPersonalDetailsPage> {
   }
 
   Future<void> updatePersonalDetails(BuildContext context) async {
+    loadingDialog();
     //This process sends the data to the backend and update them
     String? accessToken = await retrieveAccessToken();
 
@@ -643,8 +644,10 @@ class _EditPersonalDetailsPageState extends State<EditPersonalDetailsPage> {
 
           if (response.statusCode == 201) {
             print('Data updated successfully');
-
-            dataSuccessfullyUpdatedDialogBox();
+            if(context.mounted) {
+              Navigator.of(context).pop();
+              dataSuccessfullyUpdatedDialogBox();
+            }
           } else {
             print('Failed to submit data ${response.body}');
           }
@@ -667,6 +670,17 @@ class _EditPersonalDetailsPageState extends State<EditPersonalDetailsPage> {
         },
         barrierDismissible: false,
         disableBackBtn: true);
+  }
+
+  //Creating the alert dialog box to display loading
+  void loadingDialog() {
+    QuickAlert.show(
+        context: context,
+        type: QuickAlertType.loading,
+        barrierDismissible: false,
+        disableBackBtn: true,
+        title: 'Submitting',
+        text: 'Please wait patiently!');
   }
 
   @override

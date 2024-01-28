@@ -255,6 +255,7 @@ class _PatientLoginPageState extends State<PatientLoginPage> {
 
   //Creating the function to send data and receive response
   Future<void> submitForm(BuildContext context) async {
+    loadingDialog();
     if (context.mounted) {
       try {
         //Getting the url to a variable
@@ -286,6 +287,7 @@ class _PatientLoginPageState extends State<PatientLoginPage> {
             storeAccessToken(accessToken);
 
             if (context.mounted) {
+              Navigator.of(context).pop();
               //Navigate to the Home page
               Navigator.pushReplacement(context,
                   (MaterialPageRoute(builder: (context) => MainPage())));
@@ -297,7 +299,10 @@ class _PatientLoginPageState extends State<PatientLoginPage> {
         //If the authentication fails
         else if (response.statusCode == 401) {
           print('Invalid credentials');
-          invalidCredentialsDialog();
+          if(context.mounted) {
+            Navigator.of(context).pop();
+            invalidCredentialsDialog();
+          }
         }
         //If there is an other type of error
         else {
@@ -317,7 +322,21 @@ class _PatientLoginPageState extends State<PatientLoginPage> {
     QuickAlert.show(
         context: context,
         type: QuickAlertType.error,
+        onConfirmBtnTap: (){
+          Navigator.of(context).pop();
+        },
         title: 'Invalid Credentials',
         text: 'Please enter correct credentials');
+  }
+
+  //Creating the alert dialog box to display loading
+  void loadingDialog() {
+    QuickAlert.show(
+        context: context,
+        type: QuickAlertType.loading,
+        barrierDismissible: false,
+        disableBackBtn: true,
+        title: 'Signing In',
+        text: 'Please wait patiently!');
   }
 }
