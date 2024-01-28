@@ -393,7 +393,7 @@ class _MakeAppointmentPageState extends State<MakeAppointmentPage> {
                                                         FontWeight.bold),
                                               )
                                             : const Text(
-                                                'Appointment In Progress',
+                                                'Appointment Already Made',
                                                 style: TextStyle(
                                                     fontSize: 17,
                                                     color: Colors.white,
@@ -483,9 +483,8 @@ class _MakeAppointmentPageState extends State<MakeAppointmentPage> {
     QuickAlert.show(
         context: context,
         type: QuickAlertType.warning,
-        title: 'Previously Made Appointment Is Still In Progress',
-        text:
-            'Your previously made appoinment is still in progress, please wait patiently until a mail is received.');
+        title: 'Appointment Already Made',
+        text: 'Please do the quiz again to make an another appointment!');
   }
 
   void counselorNotAvailableDailog() {
