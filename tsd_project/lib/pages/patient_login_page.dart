@@ -281,10 +281,13 @@ class _PatientLoginPageState extends State<PatientLoginPage> {
         if (response.statusCode == 200) {
           final Map<String, dynamic> responseData = json.decode(response.body);
 
+          //Storing the access token and the refresh token
           final String? accessToken = responseData['access_token'];
+          final String? refreshToken = responseData['refresh_token'];
 
-          if (accessToken != null) {
+          if (accessToken != null && refreshToken != null) {
             storeAccessToken(accessToken);
+            storeRefreshToken(refreshToken);
 
             if (context.mounted) {
               Navigator.of(context).pop();
@@ -293,7 +296,7 @@ class _PatientLoginPageState extends State<PatientLoginPage> {
                   (MaterialPageRoute(builder: (context) => MainPage())));
             }
           } else {
-            print('Access Token is null');
+            print('Either or both the tokens are null');
           }
         }
         //If the authentication fails

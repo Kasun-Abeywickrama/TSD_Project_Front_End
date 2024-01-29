@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tsd_project/decoration_tools/custom_loading_indicator.dart';
 import 'package:tsd_project/important_tools/api_endpoints.dart';
 import 'package:tsd_project/pages/my_account/change_password_page.dart';
@@ -9,6 +10,8 @@ import 'package:tsd_project/pages/my_account/edit_personal_details_page.dart';
 import 'package:tsd_project/important_tools/user_authentication.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+
+import '../patient_login_page.dart';
 
 class MyAccountPage extends StatefulWidget {
   //When a new unique key is passed, the widget page will rebuild including the initial process method
@@ -424,7 +427,9 @@ class _MyAccountPageState extends State<MyAccountPage> {
                                       shadowColor:
                                           const Color.fromRGBO(0, 0, 0, 0.25),
                                     ),
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      accountDeleteWarningDialog();
+                                    },
                                     child: const SizedBox(
                                         height: 60,
                                         child: Row(
@@ -483,5 +488,101 @@ class _MyAccountPageState extends State<MyAccountPage> {
         onConfirmBtnTap: () {
           signOut(context);
         });
+  }
+
+  void accountDeleteWarningDialog() {
+    QuickAlert.show(
+        context: context,
+        type: QuickAlertType.warning,
+        title: 'Deleting The Account',
+        text: 'Deleting your account will permanently erase all the information related to your account. This action cannot be undone !',
+        confirmBtnText: 'Delete Account',
+        onConfirmBtnTap: () {
+          Navigator.of(context).pop();
+          deleteAccountDialog();
+        });
+  }
+
+  void deleteAccountDialog(){
+    QuickAlert.show(
+        context: context,
+        type: QuickAlertType.confirm,
+        title: 'Are You Sure ?',
+        text: 'Please confirm that you want to delete your account !',
+        confirmBtnText: 'Delete',
+        onConfirmBtnTap: () {
+          Navigator.of(context).pop();
+          deleteAccount(context);
+        });
+  }
+
+  Future<void> deleteAccount(BuildContext context) async{
+    loadingDialog();
+    final String? accessToken = await retrieveAccessToken();
+
+    if(context.mounted){
+      if(await checkLoginStatus(context)){
+        try{
+          const String apiUrl = requestDeleteAccountEndpoint;
+
+          //Converting the url to uri
+          Uri uri = Uri.parse(apiUrl);
+
+          //Requesting the data from the backend
+          final response = await http.post(
+            uri,
+            headers: {
+              'Authorization': 'Bearer $accessToken',
+              'Content-Type': 'application/json',
+            },
+          );
+
+          if(response.statusCode == 201){
+            final SharedPreferences prefs = await SharedPreferences.getInstance();
+            await prefs.remove('accessToken');
+            await prefs.remove('refreshToken');
+            if(context.mounted){
+              Navigator.of(context).pop();
+            }
+            accountDeletedDialog();
+          }
+          else{
+            print('Failed to delete account ${response.body}');
+          }
+        }
+        catch(e){
+          print("Exception occured : $e");
+        }
+      }
+    }
+  }
+
+  void accountDeletedDialog() {
+    QuickAlert.show(
+        context: context,
+        type: QuickAlertType.success,
+        title: 'Account Deleted',
+        disableBackBtn: true,
+        barrierDismissible: false,
+        text: 'Account Successfully Deleted !',
+        onConfirmBtnTap: () {
+          if (context.mounted) {
+            Navigator.of(context).pop();
+            Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => PatientLoginPage()));
+          }
+        });
+  }
+
+  //Creating the alert dialog box to display loading
+  void loadingDialog() {
+    QuickAlert.show(
+        context: context,
+        type: QuickAlertType.loading,
+        barrierDismissible: false,
+        disableBackBtn: true,
+        title: 'Deleting Account',
+        text: 'Please wait patiently!');
   }
 }

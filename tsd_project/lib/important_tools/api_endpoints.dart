@@ -47,3 +47,7 @@ const String requestPrivateQuestionsEndpoint =
 
 const String storePrivateQuestionEndpoint =
     '$baseApiUrl/store_private_question/';
+
+const String blacklistRefreshTokenEndpoint = '$baseApiUrl/blacklist_refresh_token/';
+
+const String requestDeleteAccountEndpoint = '$baseApiUrl/delete_account/';
