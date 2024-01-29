@@ -31,11 +31,12 @@ class _EditPersonalDetailsPageState extends State<EditPersonalDetailsPage> {
   //Function that gets the existing data from the database
   Future<void> setPersonalDetails(BuildContext context) async {
     //This process Fetches the data from the backend
-    String? accessToken = await retrieveAccessToken();
 
     if (context.mounted) {
       if (await checkLoginStatus(context)) {
         try {
+          String? accessToken = await retrieveAccessToken();
+
           // Obtaining the URL to a variable
           const String apiUrl = requestPatientPersonalDetailsEndpoint;
 
@@ -613,11 +614,12 @@ class _EditPersonalDetailsPageState extends State<EditPersonalDetailsPage> {
   Future<void> updatePersonalDetails(BuildContext context) async {
     loadingDialog();
     //This process sends the data to the backend and update them
-    String? accessToken = await retrieveAccessToken();
 
     if (context.mounted) {
       if (await checkLoginStatus(context)) {
         try {
+          String? accessToken = await retrieveAccessToken();
+
           // Obtaining the URL to a variable
           const String apiUrl = updatePatientPersonalDetailsEndpoint;
 

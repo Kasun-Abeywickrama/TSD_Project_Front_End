@@ -28,11 +28,12 @@ class _MakeAppointmentPageState extends State<MakeAppointmentPage> {
   //Function that gets the existing data from the database
   Future<void> checkOngoingAppointment(BuildContext context) async {
     //This process Fetches the data from the backend
-    String? accessToken = await retrieveAccessToken();
 
     if (context.mounted) {
       if (await checkLoginStatus(context)) {
         try {
+          String? accessToken = await retrieveAccessToken();
+
           // Obtaining the URL to a variable
           const String apiUrl = checkOngoingAppointmentEndpoint;
 
@@ -418,11 +419,12 @@ class _MakeAppointmentPageState extends State<MakeAppointmentPage> {
   //Function that send the appointment details to the backend
   Future<void> sendAppointmentDetails(BuildContext context) async {
     loadingDialog();
-    String? accessToken = await retrieveAccessToken();
 
     if (context.mounted) {
       if (await checkLoginStatus(context)) {
         try {
+          String? accessToken = await retrieveAccessToken();
+
           // Obtaining the URL to a variable
           const String apiUrl = makeAppointmentEndpoint;
 

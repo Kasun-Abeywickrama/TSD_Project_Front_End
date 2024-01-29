@@ -24,11 +24,12 @@ class _AskPrivateQuestionCounselorListPageState
   //Function that gets the existing data from the database
   Future<void> setCounselorDetails(BuildContext context) async {
     //This process Fetches the data from the backend
-    String? accessToken = await retrieveAccessToken();
 
     if (context.mounted) {
       if (await checkLoginStatus(context)) {
         try {
+          String? accessToken = await retrieveAccessToken();
+
           // Obtaining the URL to a variable
           const String apiUrl = requestCounselorDetailsEndpoint;
 

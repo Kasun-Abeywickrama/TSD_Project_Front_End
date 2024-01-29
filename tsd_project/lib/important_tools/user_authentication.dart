@@ -53,7 +53,6 @@ Future<String?> retrieveLastUpdatedTimestamp() async {
 
 //The function that checks the user access token authentication everywhere
 Future<bool> checkLoginStatus(BuildContext context) async {
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
   String? accessToken = await retrieveAccessToken();
 
   //Checkking if the access token is null
@@ -67,35 +66,26 @@ Future<bool> checkLoginStatus(BuildContext context) async {
     } else {
       //If the access token is expired return false and navigate to login screen
       print('Access Token is expired');
-      if (context.mounted) {
-        if(await blacklistRefreshToken(context)) {
-          await prefs.remove('accessToken');
-          await prefs.remove('refreshToken');
-          if(context.mounted) {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => PatientLoginPage()));
-          }
+      if(context.mounted) {
+        if (await regenerateAccessToken(context)) {
+          return true;
         }
-        else{
-          print("refresh token blacklisting failed");
+        else {
+          print('regenerating access token unsuccessfull');
+          return false;
         }
       }
       return false;
     }
   } else {
-    //If the access token is null return false and navigate to login screen
     print('Access Token is Null');
-    if (context.mounted) {
-      if(await blacklistRefreshToken(context)) {
-        await prefs.remove('refreshToken');
-        if (context.mounted) {
-          Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => PatientLoginPage()));
-        }
+    if(context.mounted) {
+      if (await regenerateAccessToken(context)) {
+        return true;
       }
-      else{
-        print("refresh token blacklisting failed");
+      else {
+        print('regenerating access token unsuccessfull');
+        return false;
       }
     }
     return false;
@@ -104,11 +94,9 @@ Future<bool> checkLoginStatus(BuildContext context) async {
 
 Future<void> signOut(BuildContext context) async {
   if (await checkLoginStatus(context)) {
-    //Implement the log out scenario
-    //Delete the current access token
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     if(context.mounted) {
-      if (await blacklistRefreshToken(context)) {
+      if (await blacklistTokens(context)) {
         await prefs.remove('accessToken');
         await prefs.remove('refreshToken');
         print("signed out");
@@ -118,20 +106,21 @@ Future<void> signOut(BuildContext context) async {
         }
       }
       else{
-        print("refresh token blacklisting failed");
+        print("token blacklisting failed");
       }
     }
   }
 }
 
-Future<bool> blacklistRefreshToken(BuildContext context) async{
+//This will return true if a access token is generated, otherwise false
+Future<bool> regenerateAccessToken(BuildContext context) async{
+
+  final String? refreshToken = await retrieveRefreshToken();
 
   try {
-    final String? refreshToken = await retrieveRefreshToken();
-
-    if(refreshToken != null) {
+    if (refreshToken != null) {
       // Obtaining the URL to a variable
-      const String apiUrl = blacklistRefreshTokenEndpoint;
+      const String apiUrl = regenerateAccessTokenEndpoint;
 
       //Converting the url to uri
       Uri uri = Uri.parse(apiUrl);
@@ -150,16 +139,85 @@ Future<bool> blacklistRefreshToken(BuildContext context) async{
       );
 
       if (response.statusCode == 201) {
-        print("refresh token blacklisted");
+        final Map<String, dynamic> responseData = json.decode(response.body);
+
+        //Storing the access token
+        final String? backendAccessToken = responseData['access_token'];
+
+        if (backendAccessToken != null) {
+          storeAccessToken(backendAccessToken);
+          print("New access token generated");
+          return true;
+        }
+        else {
+          print("access token is null");
+          return false;
+        }
+      }
+      else {
+        print("refresh token is expired or invalid");
+        if (context.mounted) {
+          Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => PatientLoginPage()));
+        }
+        return false;
+      }
+    }
+    else {
+      print("refresh token is null");
+      if (context.mounted) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => PatientLoginPage()));
+      }
+      return false;
+    }
+  }
+  catch(e){
+    print('Exception occured: $e');
+    return false;
+  }
+}
+
+Future<bool> blacklistTokens(BuildContext context) async{
+
+  try {
+    final String? refreshToken = await retrieveRefreshToken();
+    final String? accessToken = await retrieveAccessToken();
+
+    if(refreshToken != null && accessToken != null) {
+      // Obtaining the URL to a variable
+      const String apiUrl = blacklistTokensEndpoint;
+
+      //Converting the url to uri
+      Uri uri = Uri.parse(apiUrl);
+
+      Map<String, dynamic> formData = {
+        'refresh_token': refreshToken,
+        'access_token': accessToken,
+      };
+
+      //Requesting the data from the backend
+      final response = await http.post(
+        uri,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: json.encode(formData),
+      );
+
+      if (response.statusCode == 201) {
+        print("both tokens blacklisted");
         return true;
 
       } else {
-        print('refresh token expired or any other error');
+        print('one or both tokens are expired or any other error');
         return true;
       }
     }
     else{
-      print("refresh token is null");
+      print("either one or both tokens are null");
       if (context.mounted) {
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => PatientLoginPage()));

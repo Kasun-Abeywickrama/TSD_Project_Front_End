@@ -29,11 +29,12 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
   //Function that gets the current email from the database
   Future<void> setCurrentEmail(BuildContext context) async {
     //This process Fetches the data from the backend
-    String? accessToken = await retrieveAccessToken();
 
     if (context.mounted) {
       if (await checkLoginStatus(context)) {
         try {
+          String? accessToken = await retrieveAccessToken();
+
           // Obtaining the URL to a variable
           const String apiUrl = requestPatientAuthUserDetailsEndpoint;
 
@@ -488,11 +489,12 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
   Future<void> updateEmail(BuildContext context) async {
     loadingDialog();
     //This process sends the data to the backend and update them
-    String? accessToken = await retrieveAccessToken();
 
     if (context.mounted) {
       if (await checkLoginStatus(context)) {
         try {
+          String? accessToken = await retrieveAccessToken();
+
           // Obtaining the URL to a variable
           const String apiUrl = updatePatientAuthUserDetailsEndpoint;
 

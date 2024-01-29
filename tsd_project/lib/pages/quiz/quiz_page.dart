@@ -838,11 +838,12 @@ class _QuizPageState extends State<QuizPage> {
 
   //Creating the function to request the quiz
   Future<void> requestQuiz(BuildContext context) async {
-    String? accessToken = await retrieveAccessToken();
 
     if (context.mounted) {
       if (await checkLoginStatus(context)) {
         try {
+          String? accessToken = await retrieveAccessToken();
+
           // Obtaining the URL to a variable
           const String apiUrl = requestQuizEndpoint;
 
@@ -912,14 +913,15 @@ class _QuizPageState extends State<QuizPage> {
       Map<String, dynamic> quizResultMap, BuildContext context) async {
     Navigator.of(context).pop();
     loadingDialog();
-    //Collecting the access token from the secure storage
-    String? accessToken = await retrieveAccessToken();
+
     String? lastUpdatedTimestamp = await retrieveLastUpdatedTimestamp();
 
     if (lastUpdatedTimestamp != null) {
       if (context.mounted) {
         if (await checkLoginStatus(context)) {
           try {
+            String? accessToken = await retrieveAccessToken();
+
             // Obtaining the URL to a variable
             const String apiUrl = quizResultStoreEndpoint;
 

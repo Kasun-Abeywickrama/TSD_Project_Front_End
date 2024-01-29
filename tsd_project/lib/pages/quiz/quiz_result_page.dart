@@ -40,7 +40,7 @@ class _QuizResultPageState extends State<QuizResultPage> {
     };
 
     //This process Fetches the data from the backend
-    String? accessToken = await retrieveAccessToken();
+
 
     if (context.mounted) {
       //If this function returns true this will get executed.
@@ -49,6 +49,8 @@ class _QuizResultPageState extends State<QuizResultPage> {
 
       if (await checkLoginStatus(context)) {
         try {
+          String? accessToken = await retrieveAccessToken();
+
           // Obtaining the URL to a variable
           const String apiUrl = viewQuizResultEndpoint;
 
@@ -504,11 +506,12 @@ class _QuizResultPageState extends State<QuizResultPage> {
   Future<bool> allPersonalDetailsFilled(BuildContext context) async {
     loadingDialog();
     //This process Fetches the data from the backend
-    String? accessToken = await retrieveAccessToken();
 
     if (context.mounted) {
       if (await checkLoginStatus(context)) {
         try {
+          String? accessToken = await retrieveAccessToken();
+
           // Obtaining the URL to a variable
           const String apiUrl = requestPatientPersonalDetailsEndpoint;
 

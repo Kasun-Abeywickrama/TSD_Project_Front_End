@@ -399,11 +399,12 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
   Future<void> updatePassword(BuildContext context) async {
     loadingDialog();
     //This process sends the data to the backend and update them
-    String? accessToken = await retrieveAccessToken();
 
     if (context.mounted) {
       if (await checkLoginStatus(context)) {
         try {
+          String? accessToken = await retrieveAccessToken();
+
           // Obtaining the URL to a variable
           const String apiUrl = updatePatientAuthUserDetailsEndpoint;
 

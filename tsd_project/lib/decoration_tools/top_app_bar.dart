@@ -38,11 +38,12 @@ class _CustomTopAppBarState extends State<CustomTopAppBar> {
   Future<void> setNotificationAmount(BuildContext context) async {
     print("notification process executed");
     //This process Fetches the data from the backend
-    String? accessToken = await retrieveAccessToken();
 
     if (context.mounted) {
       if (await checkLoginStatus(context)) {
         try {
+          String? accessToken = await retrieveAccessToken();
+
           // Obtaining the URL to a variable
           const String apiUrl = requestNotificationAmountEndpoint;
 

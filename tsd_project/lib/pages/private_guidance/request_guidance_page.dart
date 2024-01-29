@@ -30,11 +30,12 @@ class _RequestGuidancePageState extends State<RequestGuidancePage> {
     print("refreshed");
 
     //This process Fetches the data from the backend
-    String? accessToken = await retrieveAccessToken();
 
     if (context.mounted) {
       if (await checkLoginStatus(context)) {
         try {
+          String? accessToken = await retrieveAccessToken();
+
           // Obtaining the URL to a variable
           const String apiUrl = requestPrivateQuestionsEndpoint;
 
@@ -705,11 +706,12 @@ class _RequestGuidancePageState extends State<RequestGuidancePage> {
   Future<bool> allPersonalDetailsFilled(BuildContext context) async {
     loadingDialog();
     //This process Fetches the data from the backend
-    String? accessToken = await retrieveAccessToken();
 
     if (context.mounted) {
       if (await checkLoginStatus(context)) {
         try {
+          String? accessToken = await retrieveAccessToken();
+
           // Obtaining the URL to a variable
           const String apiUrl = requestPatientPersonalDetailsEndpoint;
 

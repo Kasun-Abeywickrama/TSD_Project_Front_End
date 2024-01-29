@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:tsd_project/important_tools/user_authentication.dart';
 import 'package:tsd_project/pages/main_page.dart';
-import 'package:tsd_project/pages/patient_login_page.dart';
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({super.key});
@@ -20,17 +19,17 @@ class _WelcomePageState extends State<WelcomePage> {
   }
 
   Future<void> initialProcess(BuildContext context) async {
+    if (context.mounted) {
+      await Future.delayed(const Duration(seconds: 2));
       if (context.mounted) {
-        await Future.delayed(const Duration(seconds: 2));
-        if (context.mounted) {
-          if (await checkLoginStatus(context)) {
-            if (context.mounted) {
-              Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) => MainPage()));
-            }
+        if (await checkLoginStatus(context)) {
+          if (context.mounted) {
+            Navigator.pushReplacement(
+                context, MaterialPageRoute(builder: (context) => MainPage()));
           }
         }
       }
+    }
   }
 
   @override

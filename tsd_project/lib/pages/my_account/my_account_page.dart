@@ -32,11 +32,12 @@ class _MyAccountPageState extends State<MyAccountPage> {
   //Function that gets the current email from the database
   Future<void> setCurrentEmail(BuildContext context) async {
     //This process Fetches the data from the backend
-    String? accessToken = await retrieveAccessToken();
 
     if (context.mounted) {
       if (await checkLoginStatus(context)) {
         try {
+          String? accessToken = await retrieveAccessToken();
+
           // Obtaining the URL to a variable
           const String apiUrl = requestPatientAuthUserDetailsEndpoint;
 
@@ -518,11 +519,12 @@ class _MyAccountPageState extends State<MyAccountPage> {
 
   Future<void> deleteAccount(BuildContext context) async{
     loadingDialog();
-    final String? accessToken = await retrieveAccessToken();
 
     if(context.mounted){
       if(await checkLoginStatus(context)){
         try{
+          final String? accessToken = await retrieveAccessToken();
+
           const String apiUrl = requestDeleteAccountEndpoint;
 
           //Converting the url to uri

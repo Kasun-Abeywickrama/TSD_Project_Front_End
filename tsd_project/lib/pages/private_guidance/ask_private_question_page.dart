@@ -333,11 +333,12 @@ class _AskPrivateQuestionPageState extends State<AskPrivateQuestionPage> {
 
   Future<void> submitPrivateQuestion(BuildContext context) async {
     loadingDialog();
-    String? accessToken = await retrieveAccessToken();
 
     if (context.mounted) {
       if (await checkLoginStatus(context)) {
         try {
+          String? accessToken = await retrieveAccessToken();
+
           // Obtaining the URL to a variable
           const String apiUrl = storePrivateQuestionEndpoint;
 
