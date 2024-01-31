@@ -34,7 +34,8 @@ class ResultCalculation extends StatelessWidget {
       score = score + qandAData[i].mark;
     }
 
-    score = score / noOfQuestions;
+    score = double.parse((score / noOfQuestions).toStringAsFixed(2));
+
 
     //Determining the depression level
     if (score <= 19.00) {
