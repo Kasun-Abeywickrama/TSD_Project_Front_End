@@ -38,13 +38,13 @@ class ResultCalculation extends StatelessWidget {
 
 
     //Determining the depression level
-    if (score <= 19.00) {
+    if (score <= 15.00) {
       dpLevel = 'Minimal';
-    } else if (score <= 39.0) {
+    } else if (score <= 33.0) {
       dpLevel = 'Mild';
-    } else if (score <= 59.0) {
+    } else if (score <= 51.0) {
       dpLevel = 'Moderate';
-    } else if (score <= 79.0) {
+    } else if (score <= 70.0) {
       dpLevel = 'Moderately Severe';
     } else {
       dpLevel = 'Severe';
@@ -67,7 +67,7 @@ class ResultCalculation extends StatelessWidget {
       } else if (dpLevel == 'Mild') {
         counselor_or_not = 0;
         conclusion =
-            'Some mild symptoms are present, which might be distressing, but manageble.';
+            'Some mild symptoms are present, which might be distressing, but manageable.';
       } else if (dpLevel == 'Moderate') {
         counselor_or_not = 1;
         conclusion =
