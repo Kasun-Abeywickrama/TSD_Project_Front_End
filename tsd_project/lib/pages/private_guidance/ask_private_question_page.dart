@@ -340,7 +340,7 @@ class _AskPrivateQuestionPageState extends State<AskPrivateQuestionPage> {
           String? accessToken = await retrieveAccessToken();
 
           // Obtaining the URL to a variable
-          const String apiUrl = storePrivateQuestionEndpoint;
+          String apiUrl = (await ReadApiEndpoints.readApiEndpointsData())["storePrivateQuestionEndpoint"];
 
           //Converting the url to uri
           Uri uri = Uri.parse(apiUrl);

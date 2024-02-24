@@ -37,7 +37,7 @@ class _RequestGuidancePageState extends State<RequestGuidancePage> {
           String? accessToken = await retrieveAccessToken();
 
           // Obtaining the URL to a variable
-          const String apiUrl = requestPrivateQuestionsEndpoint;
+          String apiUrl = (await ReadApiEndpoints.readApiEndpointsData())["requestPrivateQuestionsEndpoint"];
 
           //Converting the url to uri
           Uri uri = Uri.parse(apiUrl);
@@ -713,7 +713,7 @@ class _RequestGuidancePageState extends State<RequestGuidancePage> {
           String? accessToken = await retrieveAccessToken();
 
           // Obtaining the URL to a variable
-          const String apiUrl = requestPatientPersonalDetailsEndpoint;
+          String apiUrl = (await ReadApiEndpoints.readApiEndpointsData())["requestPatientPersonalDetailsEndpoint"];
 
           //Converting the url to uri
           Uri uri = Uri.parse(apiUrl);

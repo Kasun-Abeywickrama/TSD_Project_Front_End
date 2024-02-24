@@ -93,6 +93,7 @@ flutter:
      - assets/images/doctor.png
      - assets/images/background.png
      - assets/images/myaccount.png
+     - assets/cfg/api_endpoint.json
 
 
 

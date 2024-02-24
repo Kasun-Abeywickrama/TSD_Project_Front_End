@@ -120,7 +120,7 @@ Future<bool> regenerateAccessToken(BuildContext context) async{
   try {
     if (refreshToken != null) {
       // Obtaining the URL to a variable
-      const String apiUrl = regenerateAccessTokenEndpoint;
+      String apiUrl = (await ReadApiEndpoints.readApiEndpointsData())["regenerateAccessTokenEndpoint"];
 
       //Converting the url to uri
       Uri uri = Uri.parse(apiUrl);
@@ -188,7 +188,7 @@ Future<bool> blacklistTokens(BuildContext context) async{
 
     if(refreshToken != null && accessToken != null) {
       // Obtaining the URL to a variable
-      const String apiUrl = blacklistTokensEndpoint;
+      String apiUrl = (await ReadApiEndpoints.readApiEndpointsData())["blacklistTokensEndpoint"];
 
       //Converting the url to uri
       Uri uri = Uri.parse(apiUrl);

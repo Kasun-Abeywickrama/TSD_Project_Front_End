@@ -27,7 +27,7 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
           String? accessToken = await retrieveAccessToken();
 
           // Obtaining the URL to a variable
-          const String apiUrl = makeIsPatientViewedTrueEndpoint;
+          String apiUrl = (await ReadApiEndpoints.readApiEndpointsData())["makeIsPatientViewedTrueEndpoint"];
 
           //Converting the url to uri
           Uri uri = Uri.parse(apiUrl);

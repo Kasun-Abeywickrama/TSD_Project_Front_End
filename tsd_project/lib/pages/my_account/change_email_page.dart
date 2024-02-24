@@ -36,7 +36,7 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
           String? accessToken = await retrieveAccessToken();
 
           // Obtaining the URL to a variable
-          const String apiUrl = requestPatientAuthUserDetailsEndpoint;
+          String apiUrl = (await ReadApiEndpoints.readApiEndpointsData())["requestPatientAuthUserDetailsEndpoint"];
 
           //Converting the url to uri
           Uri uri = Uri.parse(apiUrl);
@@ -496,7 +496,7 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
           String? accessToken = await retrieveAccessToken();
 
           // Obtaining the URL to a variable
-          const String apiUrl = updatePatientAuthUserDetailsEndpoint;
+          String apiUrl = (await ReadApiEndpoints.readApiEndpointsData())["updatePatientAuthUserDetailsEndpoint"];
 
           //Converting the url to uri
           Uri uri = Uri.parse(apiUrl);

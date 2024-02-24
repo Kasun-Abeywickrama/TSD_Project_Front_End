@@ -35,7 +35,7 @@ class _AppointmentMailsPageState extends State<AppointmentMailsPage> {
           String? accessToken = await retrieveAccessToken();
 
           // Obtaining the URL to a variable
-          const String apiUrl = requestAppointmentListEndpoint;
+          String apiUrl = (await ReadApiEndpoints.readApiEndpointsData())["requestAppointmentListEndpoint"];
 
           //Converting the url to uri
           Uri uri = Uri.parse(apiUrl);

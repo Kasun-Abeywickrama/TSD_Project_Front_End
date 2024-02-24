@@ -316,7 +316,7 @@ class _PatientRegisterPageState extends State<PatientRegisterPage> {
     if (context.mounted) {
       try {
         //Obtaining the URL to a variable
-        const String apiUrl = registerEndpoint;
+        String apiUrl = (await ReadApiEndpoints.readApiEndpointsData())["registerEndpoint"];
 
         //Mapping the relavant data
         Map<String, dynamic> auth_user = {

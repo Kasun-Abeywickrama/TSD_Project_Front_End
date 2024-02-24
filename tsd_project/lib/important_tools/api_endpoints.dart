@@ -1,56 +1,77 @@
-const String baseApiUrl = 'https://mindcare.pythonanywhere.com/api/ma';
+import 'dart:convert';
+import 'package:flutter/services.dart' as root_bundle;
 
-const String registerEndpoint = '$baseApiUrl/register/';
+//Read the config text and return it
+class ReadJsonFile{
 
-const String loginEndpoint = '$baseApiUrl/login/';
+  static Future<String> readJsonData({required String path}) async {
 
-const String requestQuizEndpoint = '$baseApiUrl/quiz_send/';
+    // read json file
+    final jsondata = await root_bundle.rootBundle.loadString(path);
 
-const String quizResultStoreEndpoint = '$baseApiUrl/quiz_data_store/';
+    // decode json data as list
+    final list = json.decode(jsondata) as Map;
 
-const String viewQuizResultEndpoint = '$baseApiUrl/view_quiz_result/';
+    return list["api_endpoint"];
+  }
+}
 
-const String viewPreviousQuizResultsEndpoint =
-    '$baseApiUrl/view_previous_quiz_results/';
+//Read api endpoints
+class ReadApiEndpoints{
 
-const String requestPatientAuthUserDetailsEndpoint =
-    '$baseApiUrl/send_patient_auth_user_details/';
+  static Future<Map> readApiEndpointsData() async{
 
-const String updatePatientAuthUserDetailsEndpoint =
-    '$baseApiUrl/update_patient_auth_user_details/';
+    String apiUrl = await ReadJsonFile.readJsonData(path: "assets/cfg/api_endpoint.json");
 
-const String requestPatientPersonalDetailsEndpoint =
-    '$baseApiUrl/send_patient_personal_details/';
+    String baseApiUrl = '$apiUrl/api/ma';
 
-const String updatePatientPersonalDetailsEndpoint =
-    '$baseApiUrl/update_patient_personal_details/';
+    Map<String, String> apiEndpointsMap = {
+      "registerEndpoint" : '$baseApiUrl/register/',
 
-const String requestCounselorDetailsEndpoint =
-    '$baseApiUrl/send_counselor_details/';
+      "loginEndpoint" : '$baseApiUrl/login/',
 
-const String makeAppointmentEndpoint = '$baseApiUrl/make_appointment/';
+      "requestQuizEndpoint" : '$baseApiUrl/quiz_send/',
 
-const String checkOngoingAppointmentEndpoint =
-    '$baseApiUrl/check_ongoing_appointment/';
+      "quizResultStoreEndpoint" : '$baseApiUrl/quiz_data_store/',
 
-const String requestAppointmentListEndpoint =
-    '$baseApiUrl/send_appointment_list/';
+      "viewQuizResultEndpoint" : '$baseApiUrl/view_quiz_result/',
 
-const String makeIsPatientViewedTrueEndpoint =
-    '$baseApiUrl/make_is_patient_viewed_true/';
+      "viewPreviousQuizResultsEndpoint" : '$baseApiUrl/view_previous_quiz_results/',
 
-const String requestNotificationAmountEndpoint =
-    '$baseApiUrl/send_notification_amount/';
+      "requestPatientAuthUserDetailsEndpoint" : '$baseApiUrl/send_patient_auth_user_details/',
 
-const String requestPrivateQuestionsEndpoint =
-    '$baseApiUrl/send_private_questions/';
+      "updatePatientAuthUserDetailsEndpoint" : '$baseApiUrl/update_patient_auth_user_details/',
 
-const String storePrivateQuestionEndpoint =
-    '$baseApiUrl/store_private_question/';
+      "requestPatientPersonalDetailsEndpoint" : '$baseApiUrl/send_patient_personal_details/',
 
-const String blacklistTokensEndpoint = '$baseApiUrl/blacklist_tokens/';
+      "updatePatientPersonalDetailsEndpoint" : '$baseApiUrl/update_patient_personal_details/',
 
-const String requestDeleteAccountEndpoint = '$baseApiUrl/delete_account/';
+      "requestCounselorDetailsEndpoint" : '$baseApiUrl/send_counselor_details/',
 
-const String regenerateAccessTokenEndpoint =
-    '$baseApiUrl/regenerate_access_token/';
+      "makeAppointmentEndpoint" : '$baseApiUrl/make_appointment/',
+
+      "checkOngoingAppointmentEndpoint" : '$baseApiUrl/check_ongoing_appointment/',
+
+      "requestAppointmentListEndpoint" : '$baseApiUrl/send_appointment_list/',
+
+      "makeIsPatientViewedTrueEndpoint" : '$baseApiUrl/make_is_patient_viewed_true/',
+
+      "requestNotificationAmountEndpoint" : '$baseApiUrl/send_notification_amount/',
+
+      "requestPrivateQuestionsEndpoint" : '$baseApiUrl/send_private_questions/',
+
+      "storePrivateQuestionEndpoint" : '$baseApiUrl/store_private_question/',
+
+      "blacklistTokensEndpoint" : '$baseApiUrl/blacklist_tokens/',
+
+      "requestDeleteAccountEndpoint" : '$baseApiUrl/delete_account/',
+
+      "regenerateAccessTokenEndpoint" : '$baseApiUrl/regenerate_access_token/',
+    };
+
+    return apiEndpointsMap;
+  }
+}
+
+
+

@@ -31,7 +31,7 @@ class _AskPrivateQuestionCounselorListPageState
           String? accessToken = await retrieveAccessToken();
 
           // Obtaining the URL to a variable
-          const String apiUrl = requestCounselorDetailsEndpoint;
+          String apiUrl = (await ReadApiEndpoints.readApiEndpointsData())["requestCounselorDetailsEndpoint"];
 
           //Converting the url to uri
           Uri uri = Uri.parse(apiUrl);

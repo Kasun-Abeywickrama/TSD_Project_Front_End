@@ -406,7 +406,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
           String? accessToken = await retrieveAccessToken();
 
           // Obtaining the URL to a variable
-          const String apiUrl = updatePatientAuthUserDetailsEndpoint;
+          String apiUrl = (await ReadApiEndpoints.readApiEndpointsData())["updatePatientAuthUserDetailsEndpoint"];
 
           //Converting the url to uri
           Uri uri = Uri.parse(apiUrl);

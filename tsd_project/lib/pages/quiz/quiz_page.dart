@@ -845,7 +845,7 @@ class _QuizPageState extends State<QuizPage> {
           String? accessToken = await retrieveAccessToken();
 
           // Obtaining the URL to a variable
-          const String apiUrl = requestQuizEndpoint;
+          String apiUrl = (await ReadApiEndpoints.readApiEndpointsData())["requestQuizEndpoint"];
 
           //Converting the url to uri
           Uri uri = Uri.parse(apiUrl);
@@ -923,7 +923,7 @@ class _QuizPageState extends State<QuizPage> {
             String? accessToken = await retrieveAccessToken();
 
             // Obtaining the URL to a variable
-            const String apiUrl = quizResultStoreEndpoint;
+            String apiUrl = (await ReadApiEndpoints.readApiEndpointsData())["quizResultStoreEndpoint"];
 
             //Converting the url to uri
             Uri uri = Uri.parse(apiUrl);

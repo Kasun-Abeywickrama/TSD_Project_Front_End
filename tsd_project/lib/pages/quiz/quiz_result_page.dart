@@ -52,7 +52,7 @@ class _QuizResultPageState extends State<QuizResultPage> {
           String? accessToken = await retrieveAccessToken();
 
           // Obtaining the URL to a variable
-          const String apiUrl = viewQuizResultEndpoint;
+          String apiUrl = (await ReadApiEndpoints.readApiEndpointsData())["viewQuizResultEndpoint"];
 
           //Converting the url to uri
           Uri uri = Uri.parse(apiUrl);
@@ -513,7 +513,7 @@ class _QuizResultPageState extends State<QuizResultPage> {
           String? accessToken = await retrieveAccessToken();
 
           // Obtaining the URL to a variable
-          const String apiUrl = requestPatientPersonalDetailsEndpoint;
+          String apiUrl = (await ReadApiEndpoints.readApiEndpointsData())["requestPatientPersonalDetailsEndpoint"];
 
           //Converting the url to uri
           Uri uri = Uri.parse(apiUrl);

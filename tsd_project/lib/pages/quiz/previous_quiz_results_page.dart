@@ -36,7 +36,7 @@ class _PreviousQuizResultsPageState extends State<PreviousQuizResultsPage> {
           String? accessToken = await retrieveAccessToken();
 
           // Obtaining the URL to a variable
-          const String apiUrl = viewPreviousQuizResultsEndpoint;
+          String apiUrl = (await ReadApiEndpoints.readApiEndpointsData())["viewPreviousQuizResultsEndpoint"];
 
           //Converting the url to uri
           Uri uri = Uri.parse(apiUrl);

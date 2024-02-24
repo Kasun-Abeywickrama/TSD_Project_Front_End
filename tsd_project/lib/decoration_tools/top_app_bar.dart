@@ -45,7 +45,7 @@ class _CustomTopAppBarState extends State<CustomTopAppBar> {
           String? accessToken = await retrieveAccessToken();
 
           // Obtaining the URL to a variable
-          const String apiUrl = requestNotificationAmountEndpoint;
+          String apiUrl = (await ReadApiEndpoints.readApiEndpointsData())["requestNotificationAmountEndpoint"] ;
 
           //Converting the url to uri
           Uri uri = Uri.parse(apiUrl);

@@ -259,7 +259,7 @@ class _PatientLoginPageState extends State<PatientLoginPage> {
     if (context.mounted) {
       try {
         //Getting the url to a variable
-        const String apiUrl = loginEndpoint;
+        String apiUrl = (await ReadApiEndpoints.readApiEndpointsData())["loginEndpoint"];
 
         //Map the data into a dictionary
         Map<String, dynamic> formData = {

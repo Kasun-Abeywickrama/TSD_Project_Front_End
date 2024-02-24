@@ -35,7 +35,7 @@ class _MakeAppointmentPageState extends State<MakeAppointmentPage> {
           String? accessToken = await retrieveAccessToken();
 
           // Obtaining the URL to a variable
-          const String apiUrl = checkOngoingAppointmentEndpoint;
+          String apiUrl = (await ReadApiEndpoints.readApiEndpointsData())["checkOngoingAppointmentEndpoint"];
 
           //Converting the url to uri
           Uri uri = Uri.parse(apiUrl);
@@ -426,7 +426,7 @@ class _MakeAppointmentPageState extends State<MakeAppointmentPage> {
           String? accessToken = await retrieveAccessToken();
 
           // Obtaining the URL to a variable
-          const String apiUrl = makeAppointmentEndpoint;
+          String apiUrl = (await ReadApiEndpoints.readApiEndpointsData())["makeAppointmentEndpoint"];
 
           //Converting the url to uri
           Uri uri = Uri.parse(apiUrl);

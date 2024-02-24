@@ -39,7 +39,7 @@ class _MyAccountPageState extends State<MyAccountPage> {
           String? accessToken = await retrieveAccessToken();
 
           // Obtaining the URL to a variable
-          const String apiUrl = requestPatientAuthUserDetailsEndpoint;
+          String apiUrl = (await ReadApiEndpoints.readApiEndpointsData())["requestPatientAuthUserDetailsEndpoint"];
 
           //Converting the url to uri
           Uri uri = Uri.parse(apiUrl);
@@ -525,7 +525,7 @@ class _MyAccountPageState extends State<MyAccountPage> {
         try{
           final String? accessToken = await retrieveAccessToken();
 
-          const String apiUrl = requestDeleteAccountEndpoint;
+          String apiUrl = (await ReadApiEndpoints.readApiEndpointsData())["requestDeleteAccountEndpoint"];
 
           //Converting the url to uri
           Uri uri = Uri.parse(apiUrl);
