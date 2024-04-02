@@ -387,6 +387,7 @@ class _AskPrivateQuestionPageState extends State<AskPrivateQuestionPage> {
         onConfirmBtnTap: () {
           Navigator.of(context).pop();
           Navigator.of(context).pop();
+          Navigator.of(context).pop();
         },
         barrierDismissible: false,
         disableBackBtn: true);

@@ -480,6 +480,8 @@ class _MakeAppointmentPageState extends State<MakeAppointmentPage> {
       onConfirmBtnTap: () {
         Navigator.of(context).pop();
         Navigator.of(context).pop();
+        Navigator.of(context).pop();
+        Navigator.of(context).pop();
       },
       title: 'Appointment Successfull',
       text:
