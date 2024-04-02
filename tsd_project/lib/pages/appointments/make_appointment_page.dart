@@ -476,6 +476,7 @@ class _MakeAppointmentPageState extends State<MakeAppointmentPage> {
     QuickAlert.show(
       context: context,
       type: QuickAlertType.success,
+      disableBackBtn: true,
       barrierDismissible: false,
       onConfirmBtnTap: () {
         Navigator.of(context).pop();
