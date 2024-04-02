@@ -55,13 +55,28 @@ class _WelcomePageState extends State<WelcomePage> {
       child: Column(
         children: [
           SizedBox(
-            height: screenHeight * 0.75,
+            height: screenHeight * 0.68,
             child: Align(
               alignment: Alignment.bottomCenter,
               child: Text(
                 'Mind Care',
                 style: TextStyle(
                   fontSize: screenWidth * 0.1,
+                  fontFamily: 'archivo_black.ttf',
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+          SizedBox(
+            height: screenHeight * 0.07,
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Text(
+                'Only Accessible Through NSBM Wifi Network',
+                style: TextStyle(
+                  fontSize: screenWidth * 0.035,
                   fontFamily: 'archivo_black.ttf',
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
