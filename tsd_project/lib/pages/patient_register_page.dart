@@ -302,26 +302,6 @@ class _PatientRegisterPageState extends State<PatientRegisterPage> {
                         ],
                       ),
                     ),
-
-                    const SizedBox(
-                      height: 15,
-                    ),
-
-                    //Creating the NSBM Wifi only message
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(20.0, 16.0, 20.0, 8.0),
-                      child: GradientText(
-                        'Only Accessible Within The NSBM Green University',
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 15),
-                        textAlign: TextAlign.center,
-                        colors: const [
-                          Color(0xff2a58e5),
-                          Color.fromARGB(255, 47, 153, 219),
-                          Color(0xff2a58e5),
-                        ],
-                      ),
-                    )
                   ]),
             ),
           )),
