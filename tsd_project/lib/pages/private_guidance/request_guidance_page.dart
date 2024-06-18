@@ -71,6 +71,7 @@ class _RequestGuidancePageState extends State<RequestGuidancePage> {
                     askedTime: item['asked_time'],
                     counselorFirstName: item['counselor_first_name'],
                     counselorLastName: item['counselor_last_name'],
+                    isPatientViewed: item['is_patient_viewed']
                   );
                 }).toList();
 
@@ -444,7 +445,38 @@ class _RequestGuidancePageState extends State<RequestGuidancePage> {
                                                   padding: const EdgeInsets.all(
                                                       15.0),
                                                   child: Container(
-                                                    decoration:
+                                                    decoration: privateQuestionsAndAnswersList[i].isPatientViewed == 0
+                                                        ? BoxDecoration(
+                                                        color: const Color.fromARGB(
+                                                            255, 232, 230, 230),
+                                                        borderRadius:
+                                                        const BorderRadius.only(
+                                                          topLeft:
+                                                          Radius.circular(15),
+                                                          topRight:
+                                                          Radius.circular(15),
+                                                          bottomLeft:
+                                                          Radius.circular(15),
+                                                          bottomRight:
+                                                          Radius.circular(15),
+                                                        ),
+                                                        border: Border.all(
+                                                          color: Colors.blueAccent,
+                                                          width: 5.0,
+                                                        ),
+                                                        boxShadow: [
+                                                          const BoxShadow(
+                                                              color:
+                                                              Color.fromRGBO(
+                                                                  92,
+                                                                  94,
+                                                                  95,
+                                                                  0.71),
+                                                              offset:
+                                                              Offset(5, 2),
+                                                              blurRadius: 4)
+                                                        ])
+                                                        :
                                                         const BoxDecoration(
                                                       color: Color.fromARGB(
                                                           255, 232, 230, 230),
@@ -615,6 +647,7 @@ class _RequestGuidancePageState extends State<RequestGuidancePage> {
                                                                               dynamic>
                                                                           privateQuestionDetails =
                                                                           {
+                                                                            'private_question_id': privateQuestionsAndAnswersList[i].privateQuestionId,
                                                                         'private_question':
                                                                             privateQuestionsAndAnswersList[i].privateQuestion,
                                                                         'private_answer':
@@ -777,6 +810,7 @@ class PrivateQuestionsAndAnswersDataModel {
   String askedTime;
   String counselorFirstName;
   String counselorLastName;
+  int isPatientViewed;
 
   PrivateQuestionsAndAnswersDataModel(
       {required this.privateQuestionId,
@@ -785,5 +819,6 @@ class PrivateQuestionsAndAnswersDataModel {
       required this.askedTime,
       required this.counselorFirstName,
       required this.counselorLastName,
-      required this.privateAnswer});
+      required this.privateAnswer,
+      required this.isPatientViewed});
 }

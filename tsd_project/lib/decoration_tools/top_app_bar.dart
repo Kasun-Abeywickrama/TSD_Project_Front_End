@@ -33,9 +33,9 @@ class CustomTopAppBar extends StatefulWidget implements PreferredSizeWidget {
 }
 
 class _CustomTopAppBarState extends State<CustomTopAppBar> {
-  String notificationAmount = "0";
+  String appointmentsNotificationsAmount = "0";
 
-  Future<void> setNotificationAmount(BuildContext context) async {
+  Future<void> setAppointmentsNotificationsAmount(BuildContext context) async {
     print("notification process executed");
     //This process Fetches the data from the backend
 
@@ -45,7 +45,7 @@ class _CustomTopAppBarState extends State<CustomTopAppBar> {
           String? accessToken = await retrieveAccessToken();
 
           // Obtaining the URL to a variable
-          String apiUrl = (await ReadApiEndpoints.readApiEndpointsData())["requestNotificationAmountEndpoint"] ;
+          String apiUrl = (await ReadApiEndpoints.readApiEndpointsData())["requestAppointmentsNotificationsAmountEndpoint"] ;
 
           //Converting the url to uri
           Uri uri = Uri.parse(apiUrl);
@@ -61,13 +61,13 @@ class _CustomTopAppBarState extends State<CustomTopAppBar> {
 
           if (response.statusCode == 200) {
             //Decode the response
-            final Map<String, dynamic> backendNotificationAmount =
+            final Map<String, dynamic> backendAppointmentsNotificationsAmount =
                 json.decode(response.body);
 
             if (context.mounted) {
               setState(() {
-                notificationAmount =
-                    backendNotificationAmount['notification_amount'];
+                appointmentsNotificationsAmount =
+                    backendAppointmentsNotificationsAmount['appointments_notifications_amount'];
               });
             }
           } else {
@@ -89,7 +89,7 @@ class _CustomTopAppBarState extends State<CustomTopAppBar> {
   Future<void> initialProcess(BuildContext context) async {
     if (await checkLoginStatus(context)) {
       if (context.mounted) {
-        setNotificationAmount(context);
+        setAppointmentsNotificationsAmount(context);
       }
     }
   }
@@ -175,43 +175,44 @@ class _CustomTopAppBarState extends State<CustomTopAppBar> {
           width: double.infinity,
           child: topIcon),
       actions: [
-        widget.pageIndex == 0
-            ? Stack(
-                children: [
-                  IconButton(
-                    icon: const Icon(
-                      Icons.notifications_outlined,
-                      size: 40.0,
-                      color: Colors.white,
+        widget.pageIndex == 0 ?
+          widget.pageName != "Appointment Mails" ?
+            appointmentsNotificationsAmount != "0" ?
+              Stack(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 10.0),
+                      child: IconButton(
+                        icon: const Icon(
+                          Icons.email,
+                          size: 35.0,
+                          color: Colors.white,
+                        ),
+                        onPressed: () {
+                          if (widget.navigateToAppointmentMails != null) {
+                            widget.navigateToAppointmentMails!();
+                          }
+                        },
+                      ),
                     ),
-                    onPressed: () {
-                      if (widget.navigateToAppointmentMails != null) {
-                        widget.navigateToAppointmentMails!();
-                      }
-                    },
-                  ),
-                  notificationAmount != "0"
-                      ? Positioned(
-                          right: 5.0,
-                          top: 5.0,
-                          child: CircleAvatar(
-                              backgroundColor: Colors.red,
-                              radius: 11.0,
-                              child: Text(
-                                notificationAmount,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 15.0,
-                                ),
-                              )),
-                        )
-                      : Positioned(
-                          right: 5.0,
-                          top: 5.0,
-                          child: Container(),
-                        )
-                ],
-              )
+                    Positioned(
+                            right: 10.0,
+                            top: 5.0,
+                            child: CircleAvatar(
+                                backgroundColor: Colors.red,
+                                radius: 11.0,
+                                child: Text(
+                                  appointmentsNotificationsAmount,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 15.0,
+                                  ),
+                                )),
+                          )
+                  ],
+                )
+                : Container()
+              : Container()
             : Container()
       ],
     );

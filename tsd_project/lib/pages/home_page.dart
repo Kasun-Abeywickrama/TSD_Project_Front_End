@@ -23,6 +23,8 @@ class _HomePageState extends State<HomePage> {
   //String to store the greeting
   String greeting = 'Nice to see you';
 
+  String privateQuestionsNotificationsAmount = "0";
+
   //Declaring the variable to check if the page is loading
   bool isLoading = true;
 
@@ -82,6 +84,51 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  Future<void> setPrivateQuestionsNotificationsAmount(BuildContext context) async {
+    print("notification process executed");
+    //This process Fetches the data from the backend
+
+    if (context.mounted) {
+      if (await checkLoginStatus(context)) {
+        try {
+          String? accessToken = await retrieveAccessToken();
+
+          // Obtaining the URL to a variable
+          String apiUrl = (await ReadApiEndpoints.readApiEndpointsData())["requestPrivateQuestionsNotificationsAmountEndpoint"] ;
+
+          //Converting the url to uri
+          Uri uri = Uri.parse(apiUrl);
+
+          //Requesting the data from the backend
+          final response = await http.get(
+            uri,
+            headers: {
+              'Authorization': 'Bearer $accessToken',
+              'Content-Type': 'application/json',
+            },
+          );
+
+          if (response.statusCode == 200) {
+            //Decode the response
+            final Map<String, dynamic> backendPrivateQuestionsNotificationsAmount =
+            json.decode(response.body);
+
+            if (context.mounted) {
+              setState(() {
+                privateQuestionsNotificationsAmount =
+                backendPrivateQuestionsNotificationsAmount['private_questions_notifications_amount'];
+              });
+            }
+          } else {
+            print('Failed to receive data ${response.body}');
+          }
+        } catch (e) {
+          print('Exception occured: $e');
+        }
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -92,6 +139,7 @@ class _HomePageState extends State<HomePage> {
     if (await checkLoginStatus(context)) {
       if (context.mounted) {
         setPersonalDetails(context);
+        setPrivateQuestionsNotificationsAmount(context);
         greeting = getGreeting();
       }
     }
@@ -329,82 +377,106 @@ class _HomePageState extends State<HomePage> {
                     ),
                     Padding(
                       padding: const EdgeInsets.all(20.0),
-                      child: Container(
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFFCDDEC),
-                          borderRadius: BorderRadius.circular(
-                              20.0), // Set the border radius
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(5.0),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                flex: 7, // 70% width
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(10.0),
-                                      child: Text(
-                                        'Request Guidance',
-                                        style: GoogleFonts.lato(
-                                            fontSize: 22.0,
-                                            color: const Color(0xFF86593D),
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 10.0),
-                                      child: Text(
-                                        'If you have any issues, please feel free to contact the counselors',
-                                        style: GoogleFonts.lato(
-                                            fontSize: 17.0,
-                                            color: const Color(0xFF86593D)),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 10.0, vertical: 20.0),
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              (MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      RequestGuidancePage())));
-                                        },
-                                        child: Text(
-                                          'Request Guidance',
-                                          style: GoogleFonts.lato(
-                                              fontSize: 22.0,
-                                              color: const Color(0xFF86593D),
-                                              fontWeight: FontWeight.bold),
+                      child: Stack(
+                        children: [
+                          Container(
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFFCDDEC),
+                              borderRadius: BorderRadius.circular(
+                                  20.0), // Set the border radius
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(5.0),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    flex: 7, // 70% width
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.all(10.0),
+                                          child: Text(
+                                            'Request Guidance',
+                                            style: GoogleFonts.lato(
+                                                fontSize: 22.0,
+                                                color: const Color(0xFF86593D),
+                                                fontWeight: FontWeight.bold),
+                                          ),
                                         ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              Expanded(
-                                flex: 3, // 30% width
-                                child: Center(
-                                  child: Container(
-                                    width: double.infinity,
-                                    margin: const EdgeInsets.only(right: 22.0),
-                                    child: Image.asset(
-                                      'assets/images/sample.png', // Path to your image in the assets folder
-                                      fit: BoxFit
-                                          .cover, // Adjust the fit as needed (cover, contain, etc.)
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 10.0),
+                                          child: Text(
+                                            'If you have any issues, please feel free to contact the counselors',
+                                            style: GoogleFonts.lato(
+                                                fontSize: 17.0,
+                                                color: const Color(0xFF86593D)),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 10.0, vertical: 20.0),
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              Navigator.push(
+                                                  context,
+                                                  (MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          RequestGuidancePage())));
+                                            },
+                                            child: Text(
+                                              'Request Guidance',
+                                              style: GoogleFonts.lato(
+                                                  fontSize: 22.0,
+                                                  color: const Color(0xFF86593D),
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ),
+                                        )
+                                      ],
                                     ),
                                   ),
-                                ),
+                                  Expanded(
+                                    flex: 3, // 30% width
+                                    child: Center(
+                                      child: Container(
+                                        width: double.infinity,
+                                        margin: const EdgeInsets.only(right: 22.0),
+                                        child: Image.asset(
+                                          'assets/images/sample.png', // Path to your image in the assets folder
+                                          fit: BoxFit
+                                              .cover, // Adjust the fit as needed (cover, contain, etc.)
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ],
+                            ),
                           ),
-                        ),
+                          privateQuestionsNotificationsAmount != "0"
+                              ? Positioned(
+                            right: 5.0,
+                            top: 5.0,
+                            child: CircleAvatar(
+                                backgroundColor: Colors.red,
+                                radius: 11.0,
+                                child: Text(
+                                  privateQuestionsNotificationsAmount,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 15.0,
+                                  ),
+                                )),
+                          )
+                              : Positioned(
+                            right: 5.0,
+                            top: 5.0,
+                            child: Container(),
+                          ),
+                        ],
                       ),
                     ),
                   ],

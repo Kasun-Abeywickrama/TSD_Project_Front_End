@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:tsd_project/decoration_tools/top_app_bar.dart';
 import 'package:tsd_project/important_tools/user_authentication.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import '../../decoration_tools/custom_loading_indicator.dart';
+import '../../important_tools/api_endpoints.dart';
 
 class DisplayPrivateQuestionPage extends StatefulWidget {
   final Map<String, dynamic> privateQuestionDetails;
@@ -14,10 +18,69 @@ class DisplayPrivateQuestionPage extends StatefulWidget {
 
 class _DisplayPrivateQuestionPageState
     extends State<DisplayPrivateQuestionPage> {
+
+  //Declaring the variable to check if the page is loading
+  bool isLoading = true;
+
+  Future<void> setPrivateQuestionIsPatientViewedTrue(BuildContext context) async {
+
+    if (context.mounted) {
+      if (await checkLoginStatus(context)) {
+        try {
+          String? accessToken = await retrieveAccessToken();
+
+          // Obtaining the URL to a variable
+          String apiUrl = (await ReadApiEndpoints.readApiEndpointsData())["makePrivateQuestionIsPatientViewedTrueEndpoint"];
+
+          //Converting the url to uri
+          Uri uri = Uri.parse(apiUrl);
+
+          Map<String, dynamic> privateQuestionId = {
+            'private_question_id': widget.privateQuestionDetails['private_question_id']
+          };
+
+          final response = await http.post(
+            uri,
+            headers: {
+              'Authorization': 'Bearer $accessToken',
+              'Content-Type': 'application/json',
+            },
+            body: json.encode(privateQuestionId),
+          );
+
+          if (response.statusCode == 201) {
+            //Decode the response
+            print(response.body);
+
+            if (context.mounted) {
+              //Intializing these variables and rebuild the build method
+              setState(() {
+                //Considering the page is loaded
+                isLoading = false;
+              });
+            }
+          } else {
+            print('Failed to send data ${response.body}');
+          }
+        } catch (e) {
+          print('Exception occured: $e');
+        }
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    Future.microtask(() => checkLoginStatus(context));
+    initialProcess(context);
+  }
+
+  Future<void> initialProcess(BuildContext context) async {
+    if (await checkLoginStatus(context)) {
+      if (context.mounted) {
+        setPrivateQuestionIsPatientViewedTrue(context);
+      }
+    }
   }
 
   @override
@@ -27,7 +90,10 @@ class _DisplayPrivateQuestionPageState
         pageIndex: 1,
         pageName: "Request Guidance",
       ),
-      body: Container(
+      body: isLoading
+        ? CustomLoadingIndicator()
+        :
+      Container(
         decoration: const BoxDecoration(color: Colors.white),
         child: ListView(children: [
           Padding(

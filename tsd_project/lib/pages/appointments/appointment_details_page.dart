@@ -19,7 +19,7 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
   //Declaring the variable to check if the page is loading
   bool isLoading = true;
 
-  Future<void> setIsPatientViewedTrue(BuildContext context) async {
+  Future<void> setAppointmentIsPatientViewedTrue(BuildContext context) async {
 
     if (context.mounted) {
       if (await checkLoginStatus(context)) {
@@ -27,7 +27,7 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
           String? accessToken = await retrieveAccessToken();
 
           // Obtaining the URL to a variable
-          String apiUrl = (await ReadApiEndpoints.readApiEndpointsData())["makeIsPatientViewedTrueEndpoint"];
+          String apiUrl = (await ReadApiEndpoints.readApiEndpointsData())["makeAppointmentIsPatientViewedTrueEndpoint"];
 
           //Converting the url to uri
           Uri uri = Uri.parse(apiUrl);
@@ -75,7 +75,7 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
   Future<void> initialProcess(BuildContext context) async {
     if (await checkLoginStatus(context)) {
       if (context.mounted) {
-        setIsPatientViewedTrue(context);
+        setAppointmentIsPatientViewedTrue(context);
       }
     }
   }

@@ -54,13 +54,17 @@ class ReadApiEndpoints{
 
       "requestAppointmentListEndpoint" : '$baseApiUrl/send_appointment_list/',
 
-      "makeIsPatientViewedTrueEndpoint" : '$baseApiUrl/make_is_patient_viewed_true/',
+      "makeAppointmentIsPatientViewedTrueEndpoint" : '$baseApiUrl/make_appointment_is_patient_viewed_true/',
 
-      "requestNotificationAmountEndpoint" : '$baseApiUrl/send_notification_amount/',
+      "requestAppointmentsNotificationsAmountEndpoint" : '$baseApiUrl/send_appointments_notifications_amount/',
 
       "requestPrivateQuestionsEndpoint" : '$baseApiUrl/send_private_questions/',
 
       "storePrivateQuestionEndpoint" : '$baseApiUrl/store_private_question/',
+
+      "makePrivateQuestionIsPatientViewedTrueEndpoint" : '$baseApiUrl/make_private_question_is_patient_viewed_true/',
+
+      "requestPrivateQuestionsNotificationsAmountEndpoint" : '$baseApiUrl/send_private_questions_notifications_amount/',
 
       "blacklistTokensEndpoint" : '$baseApiUrl/blacklist_tokens/',
 
