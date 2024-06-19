@@ -192,7 +192,7 @@ class _QuizResultPageState extends State<QuizResultPage> {
                                             child: Column(
                                               children: [
                                                 Text(
-                                                  time,
+                                                  time.substring(0,8),
                                                   style: const TextStyle(
                                                       fontSize: 17,
                                                       color: Color.fromRGBO(

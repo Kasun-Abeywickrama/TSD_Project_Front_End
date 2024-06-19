@@ -101,6 +101,13 @@ class _MakeAppointmentCounselorListPageState
     }
   }
 
+  Future<void> refreshProcess(BuildContext context) async {
+    setState(() {
+      isLoading = true;
+    });
+    initialProcess(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -114,7 +121,7 @@ class _MakeAppointmentCounselorListPageState
                 ? Container(
                     color: Colors.white,
                     child: RefreshIndicator(
-                      onRefresh: () => initialProcess(context),
+                      onRefresh: () => refreshProcess(context),
                       child: const CustomScrollView(slivers: [
                         SliverFillRemaining(
                           hasScrollBody: false,
@@ -141,7 +148,7 @@ class _MakeAppointmentCounselorListPageState
                     color: Colors.white,
                     //List View
                     child: RefreshIndicator(
-                      onRefresh: () => initialProcess(context),
+                      onRefresh: () => refreshProcess(context),
                       child: ListView(children: [
                         Padding(
                           padding: const EdgeInsets.all(15.0),

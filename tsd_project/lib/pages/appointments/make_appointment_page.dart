@@ -496,7 +496,7 @@ class _MakeAppointmentPageState extends State<MakeAppointmentPage> {
         context: context,
         type: QuickAlertType.warning,
         title: 'Appointment Already Made',
-        text: 'Please do the quiz again to make an another appointment!');
+        text: 'Please do the quiz again to make an another appointment to this Counselor!');
   }
 
   void counselorNotAvailableDailog() {

@@ -23,7 +23,7 @@ class _HomePageState extends State<HomePage> {
   //String to store the greeting
   String greeting = 'Nice to see you';
 
-  String privateQuestionsNotificationsAmount = "0";
+  String privateQuestionNotificationCount = "0";
 
   //Declaring the variable to check if the page is loading
   bool isLoading = true;
@@ -84,7 +84,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  Future<void> setPrivateQuestionsNotificationsAmount(BuildContext context) async {
+  Future<void> setPrivateQuestionNotificationCount(BuildContext context) async {
     print("notification process executed");
     //This process Fetches the data from the backend
 
@@ -94,7 +94,7 @@ class _HomePageState extends State<HomePage> {
           String? accessToken = await retrieveAccessToken();
 
           // Obtaining the URL to a variable
-          String apiUrl = (await ReadApiEndpoints.readApiEndpointsData())["requestPrivateQuestionsNotificationsAmountEndpoint"] ;
+          String apiUrl = (await ReadApiEndpoints.readApiEndpointsData())["requestPrivateQuestionNotificationCountEndpoint"] ;
 
           //Converting the url to uri
           Uri uri = Uri.parse(apiUrl);
@@ -110,13 +110,13 @@ class _HomePageState extends State<HomePage> {
 
           if (response.statusCode == 200) {
             //Decode the response
-            final Map<String, dynamic> backendPrivateQuestionsNotificationsAmount =
+            final Map<String, dynamic> backendPrivateQuestionNotificationCount =
             json.decode(response.body);
 
             if (context.mounted) {
               setState(() {
-                privateQuestionsNotificationsAmount =
-                backendPrivateQuestionsNotificationsAmount['private_questions_notifications_amount'];
+                privateQuestionNotificationCount =
+                backendPrivateQuestionNotificationCount['private_question_notification_count'];
               });
             }
           } else {
@@ -139,7 +139,7 @@ class _HomePageState extends State<HomePage> {
     if (await checkLoginStatus(context)) {
       if (context.mounted) {
         setPersonalDetails(context);
-        setPrivateQuestionsNotificationsAmount(context);
+        setPrivateQuestionNotificationCount(context);
         greeting = getGreeting();
       }
     }
@@ -378,6 +378,7 @@ class _HomePageState extends State<HomePage> {
                     Padding(
                       padding: const EdgeInsets.all(20.0),
                       child: Stack(
+                        clipBehavior: Clip.none,
                         children: [
                           Container(
                             width: double.infinity,
@@ -456,15 +457,15 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ),
                           ),
-                          privateQuestionsNotificationsAmount != "0"
+                          privateQuestionNotificationCount != "0"
                               ? Positioned(
-                            right: 5.0,
-                            top: 5.0,
+                            right: -3.0,
+                            top: -3.0,
                             child: CircleAvatar(
                                 backgroundColor: Colors.red,
                                 radius: 11.0,
                                 child: Text(
-                                  privateQuestionsNotificationsAmount,
+                                  privateQuestionNotificationCount,
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 15.0,

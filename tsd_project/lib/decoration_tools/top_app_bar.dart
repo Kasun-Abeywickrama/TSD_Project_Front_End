@@ -33,9 +33,9 @@ class CustomTopAppBar extends StatefulWidget implements PreferredSizeWidget {
 }
 
 class _CustomTopAppBarState extends State<CustomTopAppBar> {
-  String appointmentsNotificationsAmount = "0";
+  String appointmentNotificationCount = "0";
 
-  Future<void> setAppointmentsNotificationsAmount(BuildContext context) async {
+  Future<void> setAppointmentNotificationCount(BuildContext context) async {
     print("notification process executed");
     //This process Fetches the data from the backend
 
@@ -45,7 +45,7 @@ class _CustomTopAppBarState extends State<CustomTopAppBar> {
           String? accessToken = await retrieveAccessToken();
 
           // Obtaining the URL to a variable
-          String apiUrl = (await ReadApiEndpoints.readApiEndpointsData())["requestAppointmentsNotificationsAmountEndpoint"] ;
+          String apiUrl = (await ReadApiEndpoints.readApiEndpointsData())["requestAppointmentNotificationCountEndpoint"] ;
 
           //Converting the url to uri
           Uri uri = Uri.parse(apiUrl);
@@ -61,13 +61,13 @@ class _CustomTopAppBarState extends State<CustomTopAppBar> {
 
           if (response.statusCode == 200) {
             //Decode the response
-            final Map<String, dynamic> backendAppointmentsNotificationsAmount =
+            final Map<String, dynamic> backendAppointmentNotificationCount =
                 json.decode(response.body);
 
             if (context.mounted) {
               setState(() {
-                appointmentsNotificationsAmount =
-                    backendAppointmentsNotificationsAmount['appointments_notifications_amount'];
+                appointmentNotificationCount =
+                    backendAppointmentNotificationCount['appointment_notification_count'];
               });
             }
           } else {
@@ -89,7 +89,7 @@ class _CustomTopAppBarState extends State<CustomTopAppBar> {
   Future<void> initialProcess(BuildContext context) async {
     if (await checkLoginStatus(context)) {
       if (context.mounted) {
-        setAppointmentsNotificationsAmount(context);
+        setAppointmentNotificationCount(context);
       }
     }
   }
@@ -177,7 +177,7 @@ class _CustomTopAppBarState extends State<CustomTopAppBar> {
       actions: [
         widget.pageIndex == 0 ?
           widget.pageName != "Appointment Mails" ?
-            appointmentsNotificationsAmount != "0" ?
+            appointmentNotificationCount != "0" ?
               Stack(
                   children: [
                     Padding(
@@ -202,7 +202,7 @@ class _CustomTopAppBarState extends State<CustomTopAppBar> {
                                 backgroundColor: Colors.red,
                                 radius: 11.0,
                                 child: Text(
-                                  appointmentsNotificationsAmount,
+                                  appointmentNotificationCount,
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 15.0,

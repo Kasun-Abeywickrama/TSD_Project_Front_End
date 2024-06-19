@@ -352,7 +352,7 @@ class _PreviousQuizResultsPageState extends State<PreviousQuizResultsPage> {
                                                           Expanded(
                                                               child: Text(
                                                                   previousQuizResultsList[i]
-                                                                      .time,
+                                                                      .time.substring(0,8),
                                                                   style: const TextStyle(
                                                                       fontWeight:
                                                                           FontWeight

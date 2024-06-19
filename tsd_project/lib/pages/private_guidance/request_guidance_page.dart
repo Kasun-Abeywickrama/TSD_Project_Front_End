@@ -108,6 +108,13 @@ class _RequestGuidancePageState extends State<RequestGuidancePage> {
     }
   }
 
+  Future<void> refreshProcess(BuildContext context) async {
+    setState(() {
+      isLoading = true;
+    });
+    initialProcess(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -125,7 +132,7 @@ class _RequestGuidancePageState extends State<RequestGuidancePage> {
                 ? Container(
                     color: Colors.white,
                     child: RefreshIndicator(
-                      onRefresh: () => initialProcess(context),
+                      onRefresh: () => refreshProcess(context),
                       child: CustomScrollView(slivers: [
                         SliverFillRemaining(
                           hasScrollBody: false,
@@ -183,7 +190,7 @@ class _RequestGuidancePageState extends State<RequestGuidancePage> {
                     color: Colors.white,
                     //List View
                     child: RefreshIndicator(
-                        onRefresh: () => initialProcess(context),
+                        onRefresh: () => refreshProcess(context),
                         child: ListView(
                           children: [
                             SingleChildScrollView(
