@@ -471,8 +471,8 @@ class _RequestGuidancePageState extends State<RequestGuidancePage> {
                                                           color: Colors.blueAccent,
                                                           width: 5.0,
                                                         ),
-                                                        boxShadow: [
-                                                          const BoxShadow(
+                                                        boxShadow: const [
+                                                          BoxShadow(
                                                               color:
                                                               Color.fromRGBO(
                                                                   92,

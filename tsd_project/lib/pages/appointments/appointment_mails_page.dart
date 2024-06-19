@@ -314,6 +314,13 @@ class _AppointmentMailsPageState extends State<AppointmentMailsPage> {
                                                   color: Colors.blueAccent,
                                                   width: 5.0,
                                                 ),
+                                                boxShadow: const [
+                                                  BoxShadow(
+                                                      color: Color.fromRGBO(
+                                                          92, 94, 95, 0.71),
+                                                      offset: Offset(5, 2),
+                                                      blurRadius: 4)
+                                                ],
                                               )
                                             : const BoxDecoration(
                                                 color: Color.fromARGB(
