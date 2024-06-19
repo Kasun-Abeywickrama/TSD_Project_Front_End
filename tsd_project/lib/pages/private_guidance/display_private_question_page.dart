@@ -85,6 +85,9 @@ class _DisplayPrivateQuestionPageState
 
   @override
   Widget build(BuildContext context) {
+    
+    String askedTime = widget.privateQuestionDetails['asked_time'];
+    
     return Scaffold(
       appBar: CustomTopAppBar(
         pageIndex: 1,
@@ -161,8 +164,7 @@ class _DisplayPrivateQuestionPageState
                                       child: Column(
                                         children: [
                                           Text(
-                                            widget.privateQuestionDetails[
-                                                'asked_time'],
+                                            askedTime.substring(0,8),
                                             style: const TextStyle(
                                                 fontSize: 17,
                                                 color: Color.fromRGBO(
