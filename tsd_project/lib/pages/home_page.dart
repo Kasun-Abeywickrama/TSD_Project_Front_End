@@ -179,8 +179,10 @@ class _HomePageState extends State<HomePage> {
                                         style: GoogleFonts.pacifico(
                                             fontWeight: FontWeight.bold),
                                       ),
-                                      const TextSpan(
+                                      TextSpan(
                                         text: '!',
+                                        style: GoogleFonts.pacifico(
+                                            fontWeight: FontWeight.bold),
                                       ),
                                     ],
                                   ),
