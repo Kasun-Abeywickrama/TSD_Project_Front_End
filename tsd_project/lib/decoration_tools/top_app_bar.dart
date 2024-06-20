@@ -198,16 +198,23 @@ class _CustomTopAppBarState extends State<CustomTopAppBar> {
                     Positioned(
                             right: 15.0,
                             top: 5.0,
-                            child: CircleAvatar(
-                                backgroundColor: Colors.red,
-                                radius: 11.0,
-                                child: Text(
-                                  appointmentNotificationCount,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 15.0,
-                                  ),
-                                )),
+                            child: GestureDetector(
+                              onTap: () {
+                                if (widget.navigateToAppointmentMails != null) {
+                                  widget.navigateToAppointmentMails!();
+                                }
+                              },
+                              child: CircleAvatar(
+                                  backgroundColor: Colors.red,
+                                  radius: 11.0,
+                                  child: Text(
+                                    appointmentNotificationCount,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 15.0,
+                                    ),
+                                  )),
+                            ),
                           )
                   ],
                 )
