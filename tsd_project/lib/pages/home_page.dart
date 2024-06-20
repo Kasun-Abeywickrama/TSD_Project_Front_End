@@ -209,7 +209,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     Container(
                       height: 120.0,
-                      margin: const EdgeInsets.only(left: 25.0, top: 15.0),
+                      margin: const EdgeInsets.only(left: 25.0, top: 15.0, right: 25.0),
                       child: ListView(
                         scrollDirection: Axis.horizontal,
                         children: [
@@ -273,9 +273,8 @@ class _HomePageState extends State<HomePage> {
                             onTap: () {
                               feelingInfoDialog("Sad");
                             },
-                            child: Container(
+                            child: SizedBox(
                               width: 80.0,
-                              margin: const EdgeInsets.only(right: 22.0),
                               child: Image.asset(
                                 'assets/images/Sad.png', // Path to your image in the assets folder
                                 fit: BoxFit
