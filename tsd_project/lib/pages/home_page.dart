@@ -21,7 +21,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   //String to store the greeting
-  String greeting = "Nice to see you";
+  String greeting = 'Nice to see you';
 
   String privateQuestionNotificationCount = "0";
 
@@ -140,7 +140,7 @@ class _HomePageState extends State<HomePage> {
       if (context.mounted) {
         setPersonalDetails(context);
         setPrivateQuestionNotificationCount(context);
-        setGreeting(context);
+        greeting = getGreeting();
       }
     }
   }
@@ -487,25 +487,20 @@ class _HomePageState extends State<HomePage> {
           );
   }
 
-  //The function that sets greeting
-  Future<void> setGreeting(BuildContext context) async{
+  //The function that returns greeting
+  String getGreeting() {
     DateTime now = DateTime.now();
     int hour = now.hour;
-    String greet = "Nice to see you";
 
     if (hour < 12) {
-      greet = "Good Morning";
+      return 'Good Morning';
     } else if (hour < 18) {
-      greet = "Good Afternoon";
+      return 'Good Afternoon';
     } else if (hour < 22) {
-      greet = "Good Evening";
+      return 'Good Evening';
     } else {
-      greet = "Good Night";
+      return 'Good Night';
     }
-
-    setState(() {
-      greeting = greet;
-    });
   }
 
   //Dialog boxes for the feelings
