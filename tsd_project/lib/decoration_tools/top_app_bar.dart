@@ -181,7 +181,7 @@ class _CustomTopAppBarState extends State<CustomTopAppBar> {
               Stack(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(right: 10.0),
+                      padding: const EdgeInsets.only(right: 15.0),
                       child: IconButton(
                         icon: const Icon(
                           Icons.email,
@@ -196,7 +196,7 @@ class _CustomTopAppBarState extends State<CustomTopAppBar> {
                       ),
                     ),
                     Positioned(
-                            right: 10.0,
+                            right: 15.0,
                             top: 5.0,
                             child: CircleAvatar(
                                 backgroundColor: Colors.red,
