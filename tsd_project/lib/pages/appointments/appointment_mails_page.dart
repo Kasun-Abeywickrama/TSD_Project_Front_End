@@ -146,7 +146,6 @@ class _AppointmentMailsPageState extends State<AppointmentMailsPage> {
                       constraints: BoxConstraints(
                         maxWidth: screenWidth,
                       ),
-                      color: Colors.white,
                       child: Padding(
                         padding: const EdgeInsets.all(15.0),
                         child: Center(

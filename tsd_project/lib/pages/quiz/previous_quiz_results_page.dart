@@ -143,7 +143,6 @@ class _PreviousQuizResultsPageState extends State<PreviousQuizResultsPage> {
                         constraints: BoxConstraints(
                           maxWidth: screenWidth,
                         ),
-                        decoration: const BoxDecoration(color: Colors.white),
                         child: Padding(
                           padding: const EdgeInsets.all(15.0),
                           //A list.generate can only be used as a chilren of a column
