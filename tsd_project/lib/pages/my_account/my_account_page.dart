@@ -136,7 +136,7 @@ class _MyAccountPageState extends State<MyAccountPage> {
                                 Expanded(
                                   child: Container(
                                     constraints:
-                                        const BoxConstraints(maxWidth: 100),
+                                        const BoxConstraints(maxWidth: 75),
                                     child: ClipOval(
                                       child: Container(
                                         color: Colors.white,
