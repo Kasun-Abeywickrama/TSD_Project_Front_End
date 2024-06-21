@@ -136,7 +136,7 @@ class _MyAccountPageState extends State<MyAccountPage> {
                                 Expanded(
                                   child: Container(
                                     constraints:
-                                        const BoxConstraints(maxWidth: 75),
+                                        const BoxConstraints(maxWidth: 70),
                                     child: ClipOval(
                                       child: Container(
                                         color: Colors.white,
@@ -173,7 +173,7 @@ class _MyAccountPageState extends State<MyAccountPage> {
                                       height: 1),
                                 ),
                                 const SizedBox(
-                                  height: 10,
+                                  height: 20,
                                 ),
                                 InkWell(
                                   onTap: () {
@@ -252,7 +252,7 @@ class _MyAccountPageState extends State<MyAccountPage> {
                                         Expanded(
                                           flex: 1,
                                           child: Icon(
-                                            Icons.person_2_outlined,
+                                            Icons.person_outline_outlined,
                                             color: Color.fromRGBO(
                                                 3, 71, 120, 1),
                                             size: 30,
