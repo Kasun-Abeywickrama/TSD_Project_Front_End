@@ -448,7 +448,7 @@ class _MyAccountPageState extends State<MyAccountPage> {
                                         Expanded(
                                           flex: 9,
                                           child: Text(
-                                            'Close The Account',
+                                            'Delete The Account',
                                             textAlign: TextAlign.left,
                                             style: TextStyle(
                                                 color: Color.fromRGBO(
@@ -485,6 +485,7 @@ class _MyAccountPageState extends State<MyAccountPage> {
         text: 'Sign Out from your account !',
         confirmBtnText: 'Sign Out',
         onConfirmBtnTap: () {
+          loadingDialogSignOut();
           signOut(context);
         });
   }
@@ -516,7 +517,7 @@ class _MyAccountPageState extends State<MyAccountPage> {
   }
 
   Future<void> deleteAccount(BuildContext context) async{
-    loadingDialog();
+    loadingDialogDeleteAccount();
 
     if(context.mounted){
       if(await checkLoginStatus(context)){
@@ -575,14 +576,25 @@ class _MyAccountPageState extends State<MyAccountPage> {
         });
   }
 
-  //Creating the alert dialog box to display loading
-  void loadingDialog() {
+  //Creating the alert dialog box to display loading (delete account)
+  void loadingDialogDeleteAccount() {
     QuickAlert.show(
         context: context,
         type: QuickAlertType.loading,
         barrierDismissible: false,
         disableBackBtn: true,
         title: 'Deleting Account',
+        text: 'Please wait patiently!');
+  }
+
+  //Creating the alert dialog box to display loading (sign out)
+  void loadingDialogSignOut() {
+    QuickAlert.show(
+        context: context,
+        type: QuickAlertType.loading,
+        barrierDismissible: false,
+        disableBackBtn: true,
+        title: 'Signing Out',
         text: 'Please wait patiently!');
   }
 }
