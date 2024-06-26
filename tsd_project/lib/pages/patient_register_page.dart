@@ -109,7 +109,7 @@ class _PatientRegisterPageState extends State<PatientRegisterPage> {
                                   onChanged: (String value) {},
                                   validator: (value) {
                                     if (value!.isEmpty) {
-                                      return "Please enter a email address";
+                                      return "Please enter an email address";
                                     } else if (!EmailValidator.validate(value)) {
                                       return "Please enter a valid email address";
                                     } else {
