@@ -262,7 +262,7 @@ class _PatientRegisterPageState extends State<PatientRegisterPage> {
                           ])),
                     ),
 
-                    //Create the link or button to naviagate to the login form right here.
+                    //Create the link or button to navigate to the login form right here.
                     Padding(
                       padding: const EdgeInsets.fromLTRB(8.0, 16.0, 8.0, 8.0),
                       child: Column(
