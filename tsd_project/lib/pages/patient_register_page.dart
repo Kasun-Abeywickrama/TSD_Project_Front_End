@@ -50,7 +50,7 @@ class _PatientRegisterPageState extends State<PatientRegisterPage> {
                   children: [
                     //Adding register text
                     Padding(
-                      padding: EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(8.0),
                       child: GradientText(
                         'SIGN UP',
                         style: const TextStyle(
@@ -136,7 +136,7 @@ class _PatientRegisterPageState extends State<PatientRegisterPage> {
                                     prefixIcon: const Icon(Icons.password),
                                     filled: true,
                                     fillColor:
-                                        Color.fromARGB(255, 197, 218, 240),
+                                        const Color.fromARGB(255, 197, 218, 240),
                                     enabledBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(30.0),
                                       borderSide:
@@ -188,7 +188,7 @@ class _PatientRegisterPageState extends State<PatientRegisterPage> {
                                     prefixIcon: const Icon(Icons.password),
                                     filled: true,
                                     fillColor:
-                                        Color.fromARGB(255, 197, 218, 240),
+                                        const Color.fromARGB(255, 197, 218, 240),
                                     enabledBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(30.0),
                                       borderSide:
@@ -216,7 +216,7 @@ class _PatientRegisterPageState extends State<PatientRegisterPage> {
                                       return "Please retype the password";
                                     } else if (passwordController.text !=
                                         value) {
-                                      return 'Please correctly retype the password';
+                                      return 'Please retype the password correctly';
                                     } else {
                                       return null;
                                     }
