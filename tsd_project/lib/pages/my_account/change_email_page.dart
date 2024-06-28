@@ -337,8 +337,8 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
                                       ),
                                       child: TextFormField(
                                         controller: _passwordController,
-                                        keyboardType:
-                                            TextInputType.visiblePassword,
+                                        keyboardType: TextInputType.text,
+                                        obscureText: true,
                                         decoration: InputDecoration(
                                           hintText: 'Enter The Password',
                                           prefixIcon:

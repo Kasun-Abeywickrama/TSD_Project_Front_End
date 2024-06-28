@@ -113,7 +113,8 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                                 ),
                                 child: TextFormField(
                                   controller: _currentPasswordController,
-                                  keyboardType: TextInputType.visiblePassword,
+                                  keyboardType: TextInputType.text,
+                                  obscureText: true,
                                   decoration: InputDecoration(
                                     hintText: 'Enter the Current Password',
                                     prefixIcon: const Icon(Icons.password),
@@ -183,7 +184,8 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                                 ),
                                 child: TextFormField(
                                   controller: _newPasswordController,
-                                  keyboardType: TextInputType.visiblePassword,
+                                  keyboardType: TextInputType.text,
+                                  obscureText: true,
                                   decoration: InputDecoration(
                                     hintText: 'Enter The New Password',
                                     prefixIcon: const Icon(Icons.password),
@@ -256,7 +258,8 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                                   maxWidth: 450.0,
                                 ),
                                 child: TextFormField(
-                                  keyboardType: TextInputType.visiblePassword,
+                                  keyboardType: TextInputType.text,
+                                  obscureText: true,
                                   decoration: InputDecoration(
                                     hintText: 'Retype New Password',
                                     prefixIcon: const Icon(Icons.password),
@@ -289,7 +292,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                                   onChanged: (String value) {},
                                   validator: (value) {
                                     if (value != _newPasswordController.text) {
-                                      return "Please correctly retype the new password";
+                                      return "Please retype the new password correctly";
                                     } else {
                                       return null;
                                     }
@@ -474,7 +477,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
         context: context,
         type: QuickAlertType.error,
         title: 'Incorrect Password',
-        text: 'Please enter the correct password');
+        text: 'Please enter the correct current password');
   }
 
   //Creating the alert dialog box to display loading
