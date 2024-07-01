@@ -818,6 +818,8 @@ class _QuizPageState extends State<QuizPage> {
         type: QuickAlertType.warning,
         title: 'Quiz Is Under Maintenance !',
         text: 'Quiz is under maintanence, please try again later.',
+        barrierDismissible: false,
+        disableBackBtn: true,
         onConfirmBtnTap: () {
           Navigator.of(context).pop();
           Navigator.of(context).pop();
@@ -830,6 +832,8 @@ class _QuizPageState extends State<QuizPage> {
         type: QuickAlertType.warning,
         title: 'Quiz Has Been Updated !',
         text: 'The quiz has been updated recently, please retake the quiz',
+        barrierDismissible: false,
+        disableBackBtn: true,
         onConfirmBtnTap: () {
           Navigator.of(context).pop();
           Navigator.of(context).pop();
